@@ -213,6 +213,7 @@ export const getFiles = async (folderId: string) => {
 };
 
 export const addCollaborators = async (users: User[], workspaceId: string) => {
+  // biome-ignore lint/complexity/noForEach: <explanation>
   const response = users.forEach(async (user: User) => {
     const userExists = await db.query.collaborators.findFirst({
       where: (u, { eq }) =>
@@ -227,12 +228,12 @@ export const removeCollaborators = async (
   users: User[],
   workspaceId: string
 ) => {
-  const response = users.forEach(async (user: User) => {
+  for (const user of users) {
     const userExists = await db.query.collaborators.findFirst({
       where: (u, { eq }) =>
         and(eq(u.userId, user.id), eq(u.workspaceId, workspaceId)),
     });
-    if (userExists)
+    if (userExists) {
       await db
         .delete(collaborators)
         .where(
@@ -241,7 +242,8 @@ export const removeCollaborators = async (
             eq(collaborators.userId, user.id)
           )
         );
-  });
+    }
+  }
 };
 
 export const findUser = async (userId: string) => {

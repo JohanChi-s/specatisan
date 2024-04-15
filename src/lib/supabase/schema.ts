@@ -85,21 +85,17 @@ export const subscriptions = pgTable('subscriptions', {
   priceId: text('price_id').references(() => prices.id),
   quantity: integer('quantity'),
   cancelAtPeriodEnd: boolean('cancel_at_period_end'),
-  created: timestamp('created', { withTimezone: true, mode: 'string' })
-    .default(sql`now()`)
-    .notNull(),
+  created: timestamp('created', { withTimezone: true, mode: 'string' }).default(
+    sql`now()`
+  ),
   currentPeriodStart: timestamp('current_period_start', {
     withTimezone: true,
     mode: 'string',
-  })
-    .default(sql`now()`)
-    .notNull(),
+  }).default(sql`now()`),
   currentPeriodEnd: timestamp('current_period_end', {
     withTimezone: true,
     mode: 'string',
-  })
-    .default(sql`now()`)
-    .notNull(),
+  }).default(sql`now()`),
   endedAt: timestamp('ended_at', {
     withTimezone: true,
     mode: 'string',
@@ -120,22 +116,6 @@ export const subscriptions = pgTable('subscriptions', {
     withTimezone: true,
     mode: 'string',
   }).default(sql`now()`),
-});
-
-export const collaborators = pgTable('collaborators', {
-  id: uuid('id').defaultRandom().primaryKey().notNull(),
-  workspaceId: uuid('workspace_id')
-    .notNull()
-    .references(() => workspaces.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at', {
-    withTimezone: true,
-    mode: 'string',
-  })
-    .defaultNow()
-    .notNull(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
 });
 
 //Dont Delete!!!

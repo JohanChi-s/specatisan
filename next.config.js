@@ -1,11 +1,21 @@
+const webpackNodeExternals = require('webpack-node-externals');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true,
+    serverComponents: true, // Enable Server Components
+    serverActions: true, // Enable Server Actions
   },
-  images: {
-    domains: ['fmliqecnrxgzwvucipeu.supabase.co'],
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.externals = [webpackNodeExternals()];
+    }
+
+    return config;
   },
+  // images: {
+  //   domains: ['fmliqecnrxgzwvucipeu.supabase.co'],
+  // },
 };
 
 module.exports = nextConfig;
