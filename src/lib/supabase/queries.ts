@@ -2,7 +2,14 @@
 import { validate } from 'uuid';
 import { files, folders, users, workspaces } from '../../../migrations/schema';
 import db from './db';
-import { File, Folder, Subscription, User, workspace } from './supabase.types';
+import {
+  File,
+  Folder,
+  Price,
+  Subscription,
+  User,
+  workspace,
+} from './supabase.types';
 import { and, eq, ilike, notExists } from 'drizzle-orm';
 import { collaborators } from './schema';
 import { revalidatePath } from 'next/cache';
@@ -226,12 +233,13 @@ export const removeCollaborators = async (
   users: User[],
   workspaceId: string
 ) => {
-  for (const user of users) {
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  const response = users.forEach(async (user: User) => {
     const userExists = await db.query.collaborators.findFirst({
       where: (u, { eq }) =>
         and(eq(u.userId, user.id), eq(u.workspaceId, workspaceId)),
     });
-    if (userExists) {
+    if (userExists)
       await db
         .delete(collaborators)
         .where(
@@ -240,8 +248,7 @@ export const removeCollaborators = async (
             eq(collaborators.userId, user.id)
           )
         );
-    }
-  }
+  });
 };
 
 export const findUser = async (userId: string) => {
@@ -258,7 +265,8 @@ export const getActiveProductsWithPrice = async () => {
 
       with: {
         prices: {
-          where: (pri, { eq }) => eq(pri.active, true),
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          where: (pri: Price, { eq }: any) => eq(pri.active, true),
         },
       },
     });

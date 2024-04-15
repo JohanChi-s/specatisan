@@ -6,13 +6,13 @@ const nextConfig = {
     serverComponents: true, // Enable Server Components
     serverActions: true, // Enable Server Actions
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.externals = [webpackNodeExternals()];
-    }
+  // webpack: (config, { isServer }) => {
+  //   if (!isServer) {
+  //     config.externals = [webpackNodeExternals()];
+  //   }
 
-    return config;
-  },
+  //   return config;
+  // },
   // images: {
   //   domains: ['fmliqecnrxgzwvucipeu.supabase.co'],
   // },
