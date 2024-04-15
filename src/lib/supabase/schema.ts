@@ -77,6 +77,17 @@ export const files = pgTable('files', {
     }),
 });
 
+export const collaborators = pgTable('collaborators', {
+  id: uuid('id').defaultRandom().primaryKey().notNull(),
+  workspaceId: uuid('workspace_id')
+    .notNull()
+    .references(() => workspaces.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+    .defaultNow()
+    .notNull(),
+  userId: uuid('user_id').notNull(),
+});
+
 export const subscriptions = pgTable('subscriptions', {
   id: text('id').primaryKey().notNull(),
   userId: uuid('user_id').notNull(),

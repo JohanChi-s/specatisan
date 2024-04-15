@@ -28,10 +28,10 @@ export const getUserSubscriptionStatus = async (userId: string) => {
       where: (s, { eq }) => eq(s.userId, userId),
     });
     if (data) return { data: data as Subscription, error: null };
-    else return { data: null, error: null };
+    return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: `Error` };
+    return { data: null, error: 'Error' };
   }
 };
 
@@ -79,8 +79,7 @@ export const getWorkspaceDetails = async (workspaceId: string) => {
 export const getFileDetails = async (fileId: string) => {
   const isValid = validate(fileId);
   if (!isValid) {
-    data: [];
-    error: 'Error';
+    return { data: [], error: 'Error' };
   }
   try {
     const response = (await db
@@ -108,8 +107,7 @@ export const deleteFolder = async (folderId: string) => {
 export const getFolderDetails = async (folderId: string) => {
   const isValid = validate(folderId);
   if (!isValid) {
-    data: [];
-    error: 'Error';
+    return { data: [], error: 'Error' };
   }
 
   try {
