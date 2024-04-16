@@ -132,7 +132,7 @@ const WorkspaceCreator = () => {
 							</SelectItem>
 							<SelectItem value="shared">
 								<div className="p-2 flex gap-4 justify-center items-center">
-									<Share></Share>
+									<Share />
 									<article className="text-left flex flex-col">
 										<span>Shared</span>
 										<span>You can invite collaborators.</span>
