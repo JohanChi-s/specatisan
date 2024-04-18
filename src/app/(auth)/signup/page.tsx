@@ -18,7 +18,7 @@ import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import Logo from "../../../../public/cypresslogo.svg";
+import Logo from "../../../../public/vercel.svg";
 import Loader from "@/components/global/Loader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MailCheck } from "lucide-react";
@@ -100,12 +100,12 @@ const Signup = () => {
           justify-left
           items-center"
 				>
-					<Image src={Logo} alt="cypress Logo" width={50} height={50} />
+					<Image src={Logo} alt="specatisan Logo" width={50} height={50} />
 					<span
 						className="font-semibold
           dark:text-white text-4xl first-letter:ml-2"
 					>
-						cypress.
+						specatisan.
 					</span>
 				</Link>
 				<FormDescription

@@ -13,9 +13,9 @@ const nextConfig = {
 
   //   return config;
   // },
-  // images: {
-  //   domains: ['fmliqecnrxgzwvucipeu.supabase.co'],
-  // },
+  images: {
+    domains: ['lzikiidzevbmtqyuqhgk.supabase.co'],
+  },
 };
 
 module.exports = nextConfig;
