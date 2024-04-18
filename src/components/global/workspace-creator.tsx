@@ -3,8 +3,8 @@ import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { User, workspace } from "@/lib/supabase/supabase.types";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/select";
 import { SelectGroup } from "@radix-ui/react-select";
 import { Lock, Plus, Share } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { v4 } from "uuid";
 import { addCollaborators, createWorkspace } from "@/lib/supabase/queries";
 import CollaboratorSearch from "./collaborator-search";
-import { ScrollArea } from "../ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useToast } from "../ui/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/components/ui/use-toast";
 
 const WorkspaceCreator = () => {
 	const { user } = useSupabaseUser();

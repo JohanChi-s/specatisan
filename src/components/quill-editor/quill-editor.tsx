@@ -9,7 +9,7 @@ import React, {
 	useState,
 } from "react";
 import "quill/dist/quill.snow.css";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
 	deleteFile,
 	deleteFolder,
@@ -27,9 +27,9 @@ import {
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "../ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Badge } from "../ui/badge";
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import EmojiPicker from "../global/emoji-picker";
