@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { File } from "@/lib/supabase/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Ghost, MoreHorizontal } from "lucide-react";
+import { FileText, MoreHorizontal } from "lucide-react";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 // import { priorities, statuses } from "./DataTableToolbar";
 
@@ -39,12 +39,35 @@ export const columns: ColumnDef<File>[] = [
 	{
 		accessorKey: "title",
 		header: "Title",
+		cell: ({ row }) => {
+			const file = row.original;
+			return (
+				<div className="flex items-center">
+					<FileText className="h-4 w-4 mr-2" />
+					<span className="font-bold">{file.title}</span>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "createdAt",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Last Update" />
 		),
+		cell: ({ row }) => {
+			const file = row.original;
+			const createdAt = new Date(file.createdAt);
+			const formattedDate = `${createdAt.getDate()}-${
+				createdAt.getMonth() + 1
+			}-${createdAt.getFullYear().toString().slice(-2)}`;
+			const formattedTime = ` ${createdAt.getHours()}:${createdAt.getMinutes()}`;
+			return (
+				<div>
+					<span>{formattedDate}</span>
+					<span>{formattedTime}</span>
+				</div>
+			);
+		},
 	},
 	// {
 	// 	accessorKey: "priority",
@@ -95,8 +118,9 @@ export const columns: ColumnDef<File>[] = [
 							Copy file ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem>View customer</DropdownMenuItem>
-						<DropdownMenuItem>View file details</DropdownMenuItem>
+						<DropdownMenuItem>Share</DropdownMenuItem>
+						<DropdownMenuItem>Show hisoty actions</DropdownMenuItem>
+						<DropdownMenuItem>Delete File</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			);
