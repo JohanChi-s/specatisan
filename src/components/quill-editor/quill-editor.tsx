@@ -83,7 +83,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 	const [saving, setSaving] = useState(false);
 	const [localCursors, setLocalCursors] = useState<any>([]);
 
-	const details = useMemo(() => {
+	const getSelectedDirectory = useCallback(() => {
 		let selectedDir;
 		if (dirType === "file") {
 			selectedDir = state.workspaces
@@ -101,12 +101,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 				(workspace) => workspace.id === fileId,
 			);
 		}
-
-		if (selectedDir) {
-			return selectedDir;
-		}
-
-		return {
+		return selectedDir || {
 			title: dirDetails.title,
 			iconId: dirDetails.iconId,
 			createdAt: dirDetails.createdAt,
@@ -114,7 +109,9 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 			inTrash: dirDetails.inTrash,
 			bannerUrl: dirDetails.bannerUrl,
 		} as workspace | Folder | File;
-	}, [state, workspaceId, folderId]);
+	}, [state, workspaceId, folderId, fileId, dirType, dirDetails]);
+
+	const details = useMemo(getSelectedDirectory, [getSelectedDirectory]);
 
 	const generateBreadcrumbs = useCallback(() => {
 		if (!pathname || !state.workspaces || !workspaceId) return;
