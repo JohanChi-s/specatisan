@@ -286,7 +286,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 		setDeletingBanner(false);
 	};
 
-	useEffect(() => {
+	const fetchAndSetEditorData = useCallback(async () => {
 		if (!fileId) return;
 		let selectedDir;
 		const fetchInformation = async () => {
@@ -352,7 +352,9 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 			}
 		};
 		fetchInformation();
-	}, [fileId, workspaceId, quill, dirType]);
+	}, [fileId, workspaceId, quill, dirType, getFileDetails, router, dispatch]);
+
+	useEffect(fetchAndSetEditorData, [fetchAndSetEditorData]);
 
 	useEffect(() => {
 		if (quill === null || socket === null || !fileId || !localCursors.length)
