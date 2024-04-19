@@ -116,7 +116,7 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 		} as workspace | Folder | File;
 	}, [state, workspaceId, folderId]);
 
-	const breadCrumbs = useMemo(() => {
+	const generateBreadcrumbs = useCallback(() => {
 		if (!pathname || !state.workspaces || !workspaceId) return;
 		const segments = pathname
 			.split("/")
@@ -153,6 +153,8 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 
 		return `${workspaceBreadCrumb} ${folderBreadCrumb} ${fileBreadCrumb}`;
 	}, [state, pathname, workspaceId]);
+
+	const breadCrumbs = useMemo(generateBreadcrumbs, [generateBreadcrumbs]);
 
 	//
 	const wrapperRef = useCallback(async (wrapper: any) => {
