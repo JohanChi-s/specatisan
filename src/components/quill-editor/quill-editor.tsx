@@ -202,8 +202,12 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 				type: "DELETE_FILE",
 				payload: { fileId, folderId, workspaceId },
 			});
-			await deleteFile(fileId);
-			router.replace(`/dashboard/${workspaceId}`);
+			try {
+				await deleteFile(fileId);
+				router.replace(`/dashboard/${workspaceId}`);
+			} catch (error) {
+				console.error("Failed to delete file:", error);
+			}
 		}
 		if (dirType === "folder") {
 			if (!workspaceId) return;
