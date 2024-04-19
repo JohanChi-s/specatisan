@@ -223,7 +223,11 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
 				type: "UPDATE_WORKSPACE",
 				payload: { workspace: { iconId: icon }, workspaceId: fileId },
 			});
-			await updateWorkspace({ iconId: icon }, fileId);
+			try {
+			  await updateWorkspace({ iconId: icon }, fileId);
+			} catch (error) {
+			  console.error("Failed to update workspace icon:", error);
+			}
 		}
 		if (dirType === "folder") {
 			if (!workspaceId) return;
