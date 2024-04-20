@@ -217,6 +217,16 @@ export const getFiles = async (folderId: string) => {
   }
 };
 
+export const getAllFiles = async () => {
+  try {
+    const results = await db.select().from(files).orderBy(files.createdAt);
+    return { data: results, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: [], error: 'Error' };
+  }
+};
+
 export const addCollaborators = async (users: User[], workspaceId: string) => {
   // biome-ignore lint/complexity/noForEach: <explanation>
   const response = users.forEach(async (user: User) => {

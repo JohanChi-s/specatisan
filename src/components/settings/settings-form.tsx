@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
 import { User, workspace } from "@/lib/supabase/supabase.types";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
@@ -16,9 +16,9 @@ import {
 	Share,
 	User as UserIcon,
 } from "lucide-react";
-import { Separator } from "../ui/separator";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
 	addCollaborators,
 	deleteWorkspace,
@@ -48,10 +48,10 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import CollaboratorSearch from "../global/collaborator-search";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import LogoutButton from "../global/logout-button";
 import Link from "next/link";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";

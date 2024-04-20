@@ -1,16 +1,9 @@
-'use client';
+"use client";
 
-import React, {
-  Dispatch,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-} from 'react';
-import { File, Folder, workspace } from '../supabase/supabase.types';
-import { usePathname } from 'next/navigation';
-import { getFiles } from '../supabase/queries';
+import React, { Dispatch, createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import { File, Folder, workspace } from "../supabase/supabase.types";
+import { usePathname } from "next/navigation";
+import { getFiles } from "../supabase/queries";
 
 export type appFoldersType = Folder & { files: File[] | [] };
 export type appWorkspacesType = workspace & {
@@ -22,42 +15,42 @@ interface AppState {
 }
 
 type Action =
-  | { type: 'ADD_WORKSPACE'; payload: appWorkspacesType }
-  | { type: 'DELETE_WORKSPACE'; payload: string }
+  | { type: "ADD_WORKSPACE"; payload: appWorkspacesType }
+  | { type: "DELETE_WORKSPACE"; payload: string }
   | {
-      type: 'UPDATE_WORKSPACE';
+      type: "UPDATE_WORKSPACE";
       payload: { workspace: Partial<appWorkspacesType>; workspaceId: string };
     }
   | {
-      type: 'SET_WORKSPACES';
+      type: "SET_WORKSPACES";
       payload: { workspaces: appWorkspacesType[] | [] };
     }
   | {
-      type: 'SET_FOLDERS';
+      type: "SET_FOLDERS";
       payload: { workspaceId: string; folders: [] | appFoldersType[] };
     }
   | {
-      type: 'ADD_FOLDER';
+      type: "ADD_FOLDER";
       payload: { workspaceId: string; folder: appFoldersType };
     }
   | {
-      type: 'ADD_FILE';
+      type: "ADD_FILE";
       payload: { workspaceId: string; file: File; folderId: string };
     }
   | {
-      type: 'DELETE_FILE';
+      type: "DELETE_FILE";
       payload: { workspaceId: string; folderId: string; fileId: string };
     }
   | {
-      type: 'DELETE_FOLDER';
+      type: "DELETE_FOLDER";
       payload: { workspaceId: string; folderId: string };
     }
   | {
-      type: 'SET_FILES';
+      type: "SET_FILES";
       payload: { workspaceId: string; files: File[]; folderId: string };
     }
   | {
-      type: 'UPDATE_FOLDER';
+      type: "UPDATE_FOLDER";
       payload: {
         folder: Partial<appFoldersType>;
         workspaceId: string;
@@ -65,7 +58,7 @@ type Action =
       };
     }
   | {
-      type: 'UPDATE_FILE';
+      type: "UPDATE_FILE";
       payload: {
         file: Partial<File>;
         folderId: string;
@@ -76,24 +69,19 @@ type Action =
 
 const initialState: AppState = { workspaces: [] };
 
-const appReducer = (
-  state: AppState = initialState,
-  action: Action
-): AppState => {
+const appReducer = (state: AppState = initialState, action: Action): AppState => {
   switch (action.type) {
-    case 'ADD_WORKSPACE':
+    case "ADD_WORKSPACE":
       return {
         ...state,
         workspaces: [...state.workspaces, action.payload],
       };
-    case 'DELETE_WORKSPACE':
+    case "DELETE_WORKSPACE":
       return {
         ...state,
-        workspaces: state.workspaces.filter(
-          (workspace) => workspace.id !== action.payload
-        ),
+        workspaces: state.workspaces.filter((workspace) => workspace.id !== action.payload),
       };
-    case 'UPDATE_WORKSPACE':
+    case "UPDATE_WORKSPACE":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -106,12 +94,12 @@ const appReducer = (
           return workspace;
         }),
       };
-    case 'SET_WORKSPACES':
+    case "SET_WORKSPACES":
       return {
         ...state,
         workspaces: action.payload.workspaces,
       };
-    case 'SET_FOLDERS':
+    case "SET_FOLDERS":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -119,30 +107,26 @@ const appReducer = (
             return {
               ...workspace,
               folders: action.payload.folders.sort(
-                (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
+                (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
               ),
             };
           }
           return workspace;
         }),
       };
-    case 'ADD_FOLDER':
+    case "ADD_FOLDER":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           return {
             ...workspace,
             folders: [...workspace.folders, action.payload.folder].sort(
-              (a, b) =>
-                new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
+              (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
             ),
           };
         }),
       };
-    case 'UPDATE_FOLDER':
+    case "UPDATE_FOLDER":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -160,22 +144,20 @@ const appReducer = (
           return workspace;
         }),
       };
-    case 'DELETE_FOLDER':
+    case "DELETE_FOLDER":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.filter(
-                (folder) => folder.id !== action.payload.folderId
-              ),
+              folders: workspace.folders.filter((folder) => folder.id !== action.payload.folderId),
             };
           }
           return workspace;
         }),
       };
-    case 'SET_FILES':
+    case "SET_FILES":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -196,7 +178,7 @@ const appReducer = (
           return workspace;
         }),
       };
-    case 'ADD_FILE':
+    case "ADD_FILE":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -208,9 +190,7 @@ const appReducer = (
                   return {
                     ...folder,
                     files: [...folder.files, action.payload.file].sort(
-                      (a, b) =>
-                        new Date(a.createdAt).getTime() -
-                        new Date(b.createdAt).getTime()
+                      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
                     ),
                   };
                 }
@@ -221,7 +201,7 @@ const appReducer = (
           return workspace;
         }),
       };
-    case 'DELETE_FILE':
+    case "DELETE_FILE":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -232,9 +212,7 @@ const appReducer = (
                 if (folder.id === action.payload.folderId) {
                   return {
                     ...folder,
-                    files: folder.files.filter(
-                      (file) => file.id !== action.payload.fileId
-                    ),
+                    files: folder.files.filter((file) => file.id !== action.payload.fileId),
                   };
                 }
                 return folder;
@@ -244,7 +222,7 @@ const appReducer = (
           return workspace;
         }),
       };
-    case 'UPDATE_FILE':
+    case "UPDATE_FILE":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
@@ -298,7 +276,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const pathname = usePathname();
 
   const workspaceId = useMemo(() => {
-    const urlSegments = pathname?.split('/').filter(Boolean);
+    const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments.length > 1) {
         return urlSegments[1];
@@ -306,7 +284,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   const folderId = useMemo(() => {
-    const urlSegments = pathname?.split('/').filter(Boolean);
+    const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments?.length > 2) {
         return urlSegments[2];
@@ -314,7 +292,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   const fileId = useMemo(() => {
-    const urlSegments = pathname?.split('/').filter(Boolean);
+    const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments?.length > 3) {
         return urlSegments[3];
@@ -330,7 +308,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
       if (!data) return;
       dispatch({
-        type: 'SET_FILES',
+        type: "SET_FILES",
         payload: { workspaceId, files: data, folderId },
       });
     };
@@ -338,13 +316,11 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [folderId, workspaceId]);
 
   useEffect(() => {
-    console.log('App State Changed', state);
+    console.log("App State Changed", state);
   }, [state]);
 
   return (
-    <AppStateContext.Provider
-      value={{ state, dispatch, workspaceId, folderId, fileId }}
-    >
+    <AppStateContext.Provider value={{ state, dispatch, workspaceId, folderId, fileId }}>
       {children}
     </AppStateContext.Provider>
   );
@@ -355,7 +331,7 @@ export default AppStateProvider;
 export const useAppState = () => {
   const context = useContext(AppStateContext);
   if (!context) {
-    throw new Error('useAppState must be used within an AppStateProvider');
+    throw new Error("useAppState must be used within an AppStateProvider");
   }
   return context;
 };

@@ -42,11 +42,12 @@ export async function POST(request: NextRequest) {
           await upsertProductRecord(event.data.object as Stripe.Product);
           break;
         case 'price.created':
+        // biome-ignore lint/suspicious/noFallthroughSwitchClause: <explanation>
         case 'price.updated':
           await upsertPriceRecord(event.data.object as Stripe.Price);
         case 'customer.subscription.created':
         case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
+        case 'customer.subscription.deleted': {
           const subscription = event.data.object as Stripe.Subscription;
           await manageSubscriptionStatusChange(
             subscription.id,
@@ -55,7 +56,8 @@ export async function POST(request: NextRequest) {
           );
           console.log('FROM WEBHOOK🚀', subscription.status);
           break;
-        case 'checkout.session.completed':
+        }
+        case 'checkout.session.completed': {
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
           if (checkoutSession.mode === 'subscription') {
             const subscriptionId = checkoutSession.subscription;
@@ -66,6 +68,7 @@ export async function POST(request: NextRequest) {
             );
           }
           break;
+        }
         default:
           throw new Error('Unhandled relevant event!');
       }

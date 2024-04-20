@@ -10,15 +10,15 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "../ui/card";
+} from "@/components/ui/card";
 import EmojiPicker from "../global/emoji-picker";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Subscription, workspace } from "@/lib/supabase/supabase.types";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import Loader from "../global/Loader";
 import { createWorkspace } from "@/lib/supabase/queries";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { useAppState } from "@/lib/providers/state-provider";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";

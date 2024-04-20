@@ -1,0 +1,51 @@
+{
+  "editor.defaultFormatter": "biomejs.biome",
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "editor.fontLigatures": true,
+  "editor.formatOnPaste": false,
+  "cSpell.words": [
+    "animatejs",
+    "biomejs",
+    "birthdate",
+    "cmdk",
+    "consola",
+    "dtos",
+    "gsap",
+    "infras",
+    "Interactor",
+    "interactors",
+    "inversify",
+    "knip",
+    "kysely",
+    "langchain",
+    "lucide",
+    "millionjs",
+    "nextjs",
+    "openai",
+    "oxlint",
+    "partytown",
+    "pixelmatch",
+    "planetscale",
+    "pngjs",
+    "ratelimit",
+    "speedscope",
+    "tasuku",
+    "tauri",
+    "tickup",
+    "tsarch",
+    "unplugin",
+    "upstash",
+    "valibot",
+    "wasmer",
+    "zustand"
+  ]
+}
