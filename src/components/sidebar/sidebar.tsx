@@ -1,104 +1,116 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import React from "react";
-
-import { cookies } from "next/headers";
+'use client';
 import {
-	getCollaboratingWorkspaces,
-	getFolders,
-	getPrivateWorkspaces,
-	getSharedWorkspaces,
-	getUserSubscriptionStatus,
-} from "@/lib/supabase/queries";
-import { redirect } from "next/navigation";
-import { twMerge } from "tailwind-merge";
-import WorkspaceDropdown from "./workspace-dropdown";
-import PlanUsage from "./plan-usage";
-import NativeNavigation from "./native-navigation";
-import { ScrollArea } from "../ui/scroll-area";
-import FoldersDropdownList from "./folders-dropdown-list";
-import UserCard from "./user-card";
+  getCollaboratingWorkspaces,
+  getFolders,
+  getPrivateWorkspaces,
+  getSharedWorkspaces,
+  getUserSubscriptionStatus,
+} from '@/lib/supabase/queries';
+import { cn } from '@/lib/utils';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import WorkspaceSwitcher from './WorkspaceSwitcher';
+
+import AccountInfo from './AccountInfo';
+import SearchCommandPalette from './SearchCommandPalette';
+import { Separator } from '../ui/separator';
+import { Folder, workspace } from '@/lib/supabase/supabase.types';
 
 interface SidebarProps {
-	params: { workspaceId: string };
-	className?: string;
+  params: { workspaceId: string };
+  isCollapsed: boolean;
+  className?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = async ({ params, className }) => {
-	const supabase = createServerComponentClient({ cookies });
-	//user
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
+  const router = useRouter();
 
-	if (!user) return;
+  const [workspaceFolderData, setWorkspaceFolderData] = useState<Folder | any>(
+    []
+  );
+  const [privateWorkspaces, setPrivateWorkspaces] = useState<workspace | any>(
+    []
+  );
+  const [collaboratingWorkspaces, setCollaboratingWorkspaces] = useState<
+    workspace | any
+  >([]);
+  const [sharedWorkspaces, setSharedWorkspaces] = useState<workspace | any>([]);
 
-	//subscr
-	const { data: subscriptionData, error: subscriptionError } =
-		await getUserSubscriptionStatus(user.id);
+  useEffect(() => {
+    const supabase = createClientComponentClient();
 
-	//folders
-	const { data: workspaceFolderData, error: foldersError } = await getFolders(
-		params.workspaceId,
-	);
-	//error
-	if (subscriptionError || foldersError) redirect("/dashboard");
+    const fetchData = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.push('/login'); // Redirect to login if user is not authenticated
+          return;
+        }
 
-	const [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces] =
-		await Promise.all([
-			getPrivateWorkspaces(user.id),
-			getCollaboratingWorkspaces(user.id),
-			getSharedWorkspaces(user.id),
-		]);
+        // setUser(user);
 
-	//get all the different workspaces private collaborating shared
-	return (
-		<aside
-			className={twMerge(
-				"hidden sm:flex sm:flex-col w-[280px] shrink-0 p-4 md:gap-4 !justify-between",
-				className,
-			)}
-		>
-			<div>
-				<WorkspaceDropdown
-					privateWorkspaces={privateWorkspaces}
-					sharedWorkspaces={sharedWorkspaces}
-					collaboratingWorkspaces={collaboratingWorkspaces}
-					defaultValue={[
-						...privateWorkspaces,
-						...collaboratingWorkspaces,
-						...sharedWorkspaces,
-					].find((workspace) => workspace.id === params.workspaceId)}
-				/>
-				<PlanUsage
-					foldersLength={workspaceFolderData?.length || 0}
-					subscription={subscriptionData}
-				/>
-				<NativeNavigation myWorkspaceId={params.workspaceId} />
-				<ScrollArea
-					className="overflow-scroll relative
-          h-[450px]
-        "
-				>
-					<div
-						className="pointer-events-none 
-          w-full 
-          absolute 
-          bottom-0 
-          h-20 
-          bg-gradient-to-t 
-          from-background 
-          to-transparent 
-          z-40"
-					/>
-					<FoldersDropdownList
-						workspaceFolders={workspaceFolderData || []}
-						workspaceId={params.workspaceId}
-					/>
-				</ScrollArea>
-			</div>
-			<UserCard subscription={subscriptionData} />
-		</aside>
-	);
+        const { data: workspaceFolderData, error: foldersError } =
+          await getFolders(params.workspaceId);
+        if (workspaceFolderData) setWorkspaceFolderData(workspaceFolderData);
+        if (foldersError) {
+          router.push('/dashboard'); // Redirect to dashboard on folders error
+          return;
+        }
+
+        const [privateWs, collabWs, sharedWs] = await Promise.all([
+          getPrivateWorkspaces(user.id),
+          getCollaboratingWorkspaces(user.id),
+          getSharedWorkspaces(user.id),
+        ]);
+        setPrivateWorkspaces(privateWs);
+        setCollaboratingWorkspaces(collabWs);
+        setSharedWorkspaces(sharedWs);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [params.workspaceId, router]);
+
+  return (
+    <aside
+      data-collapsed={isCollapsed}
+      className="group flex flex-col gap-4 w-full py-2 data-[collapsed=true]:py-2"
+    >
+      <div className="p-2 w-full">
+        <div className="flex w-full items-center justify-between">
+          <WorkspaceSwitcher
+            privateWorkspaces={privateWorkspaces}
+            collaboratingWorkspaces={collaboratingWorkspaces}
+            sharedWorkspaces={sharedWorkspaces}
+            defaultWorkspace={[
+              ...privateWorkspaces,
+              ...sharedWorkspaces,
+              collaboratingWorkspaces,
+            ].find((workspace) => workspace?.id === params.workspaceId)}
+          />
+          <AccountInfo />
+        </div>
+        {/* Quick Search */}
+        <Separator orientation="horizontal" className="my-6" />
+
+        <div className="p-2">
+          <SearchCommandPalette />
+        </div>
+        {/* All Docs */}
+        {/* Setting */}
+        {/* Collections */}
+        {/* Others
+			Trash
+			Import */}
+      </div>
+    </aside>
+  );
 };
 
 export default Sidebar;
