@@ -1,13 +1,14 @@
 'use client';
 
+import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import * as React from 'react';
-import {
-  CaretSortIcon,
-  CheckIcon,
-  PlusCircledIcon,
-} from '@radix-ui/react-icons';
 
+import { useAppState } from '@/lib/providers/state-provider';
+import { workspace } from '@/lib/supabase/supabase.types';
+import { cn } from '@/lib/utils';
+import { Cloud } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Button } from '../ui/button';
 import {
   Command,
   CommandEmpty,
@@ -17,8 +18,6 @@ import {
   CommandList,
   CommandSeparator,
 } from '../ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Cloud } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -28,19 +27,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
-import { Button } from '../ui/button';
-import { workspace } from '@/lib/supabase/supabase.types';
-import { cn } from '@/lib/utils';
-import { useAppState } from '@/lib/providers/state-provider';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import CustomDialogTrigger from '../global/custom-dialog-trigger';
+import WorkspaceCreator from '../global/workspace-creator';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -178,44 +167,37 @@ export default function WorkspaceSwitcher({
           </DialogDescription>
         </DialogHeader>
         <div>
-          <div className="space-y-4 py-2 pb-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Workspace name</Label>
-              <Input id="name" placeholder="Acme Inc." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="plan">Subscription plan</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a plan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="free">
-                    <span className="font-medium">Free</span> -{' '}
-                    <span className="text-muted-foreground">
-                      Trial for two weeks
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="pro">
-                    <span className="font-medium">Pro</span> -{' '}
-                    <span className="text-muted-foreground">
-                      $9/month per user
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setShowNewWorkspaceDialog(false)}
+          <CustomDialogTrigger
+            header="Create A Workspace"
+            content={<WorkspaceCreator />}
+            description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
           >
-            Cancel
-          </Button>
-          <Button type="submit">Continue</Button>
-        </DialogFooter>
+            <div
+              className="flex 
+              transition-all 
+              hover:bg-muted 
+              justify-center 
+              items-center 
+              gap-2 
+              p-2 
+              w-full"
+            >
+              <article
+                className="text-slate-500 
+                rounded-full
+                 bg-slate-800 
+                 w-4 
+                 h-4 
+                 flex 
+                 items-center 
+                 justify-center"
+              >
+                +
+              </article>
+              Create workspace
+            </div>
+          </CustomDialogTrigger>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import WorkspaceSwitcher from './WorkspaceSwitcher';
+import Settings from '../settings/settings';
 
 import AccountInfo from './AccountInfo';
 import SearchCommandPalette from './SearchCommandPalette';
@@ -23,10 +24,11 @@ import {
   Download,
   FolderIcon,
   Plus,
-  Settings,
+  Settings2,
   Trash,
 } from 'lucide-react';
 import FoldersDropdownList from './folders-dropdown-list';
+import { useAppState } from '@/lib/providers/state-provider';
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -115,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           {/* All Docs */}
           <li className="flex items-center">
             <Link
-              href="#"
+              href={`/dashboard/${params.workspaceId}/alldocs`}
               className={cn(
                 buttonVariants({ variant: 'ghost', size: 'sm' }),
                 'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
@@ -125,21 +127,23 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               <span>All docs</span>
             </Link>
           </li>
-          <li className="flex items-center">
-            <Link
-              href="#"
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'sm' }),
-                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Setting</span>
-            </Link>
+          <li className="flex items-center w-full">
+            <Settings>
+              <Button
+                variant="ghost"
+                className={cn(
+                  buttonVariants({ variant: 'ghost', size: 'sm' }),
+                  'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+                )}
+              >
+                <Settings2 className="mr-2 h-4 w-4" />
+                <span>Setting</span>
+              </Button>
+            </Settings>
           </li>
-          <li className="flex items-center text-base">
+          {/* <li className="flex items-center text-base">
             <Link
-              href="#"
+              href={`/dashboard/${params.workspaceId}/tags`}
               className={cn(
                 buttonVariants({ variant: 'ghost', size: 'sm' }),
                 'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
@@ -148,7 +152,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               <Calendar className="mr-2 h-4 w-4" />
               <span>Journal</span>
             </Link>
-          </li>
+          </li> */}
         </ul>
         {/* Collections */}
         <FoldersDropdownList
