@@ -17,6 +17,16 @@ import AccountInfo from './AccountInfo';
 import SearchCommandPalette from './SearchCommandPalette';
 import { Separator } from '../ui/separator';
 import { Folder, workspace } from '@/lib/supabase/supabase.types';
+import { Button, buttonVariants } from '../ui/button';
+import {
+  Calendar,
+  Download,
+  FolderIcon,
+  Plus,
+  Settings,
+  Trash,
+} from 'lucide-react';
+import FoldersDropdownList from './folders-dropdown-list';
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -99,15 +109,97 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         {/* Quick Search */}
         <Separator orientation="horizontal" className="my-6" />
 
-        <div className="p-2">
-          <SearchCommandPalette />
-        </div>
-        {/* All Docs */}
-        {/* Setting */}
+        <SearchCommandPalette />
+
+        <ul className="w-full mt-2 gap-2">
+          {/* All Docs */}
+          <li className="flex items-center">
+            <Link
+              href="#"
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <FolderIcon className="mr-2 h-4 w-4" />
+              <span>All docs</span>
+            </Link>
+          </li>
+          <li className="flex items-center">
+            <Link
+              href="#"
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Setting</span>
+            </Link>
+          </li>
+          <li className="flex items-center text-base">
+            <Link
+              href="#"
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Calendar className="mr-2 h-4 w-4" />
+              <span>Journal</span>
+            </Link>
+          </li>
+        </ul>
         {/* Collections */}
-        {/* Others
-			Trash
-			Import */}
+        <FoldersDropdownList
+          workspaceFolders={workspaceFolderData}
+          workspaceId={params.workspaceId}
+        />
+
+        <Separator orientation="horizontal" className="my-2" />
+        {/* Others */}
+        <ul className="w-full mt-2 gap-2">
+          {/* All Docs */}
+          <span
+            className="text-Neutrals-8 
+        font-bold 
+        text-xs"
+          >
+            Others
+          </span>
+          <li className="flex items-center">
+            <Link
+              href="#"
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              <span>Trash</span>
+            </Link>
+          </li>
+          <li className="flex items-center">
+            <Link
+              href="#"
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              <span>Import</span>
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      <Button className="mt-auto p-4 flex items-center" variant="default">
+        <Plus size={24} className="mr-2" />
+        Create Docs
+      </Button>
+      <div className="flex flex-col items-center justify-center w-full h-10">
+        <span className="text-Neutrals-8 text-xs">© 2024 Specatisan</span>
       </div>
     </aside>
   );

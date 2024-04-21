@@ -13,12 +13,12 @@ import Dropdown from './Dropdown';
 import useSupabaseRealtime from '@/lib/hooks/useSupabaseRealtime';
 import { useSubscriptionModal } from '@/lib/providers/subscription-modal-provider';
 
-interface FoldersDropdownListProps {
+interface FavoritesDropdownListProps {
   workspaceFolders: Folder[];
   workspaceId: string;
 }
 
-const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
+const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
   workspaceFolders,
   workspaceId,
 }) => {
@@ -148,4 +148,4 @@ const FoldersDropdownList: React.FC<FoldersDropdownListProps> = ({
   );
 };
 
-export default FoldersDropdownList;
+export default FavoritesDropdownList;
