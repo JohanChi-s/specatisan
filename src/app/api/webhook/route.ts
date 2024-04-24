@@ -1,30 +1,29 @@
-import { stripe } from '@/lib/stripe';
+import { stripe } from "@/lib/stripe";
 import {
   manageSubscriptionStatusChange,
   upsertPriceRecord,
   upsertProductRecord,
-} from '@/lib/stripe/adminTasks';
-import { headers } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+} from "@/lib/stripe/adminTasks";
+import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
 
 const relevantEvents = new Set([
-  'product.created',
-  'product.updated',
-  'price.created',
-  'price.updated',
-  'checkout.session.completed',
-  'customer.subscription.created',
-  'customer.subscription.updated',
-  'customer.subscription.deleted',
+  "product.created",
+  "product.updated",
+  "price.created",
+  "price.updated",
+  "checkout.session.completed",
+  "customer.subscription.created",
+  "customer.subscription.updated",
+  "customer.subscription.deleted",
 ]);
 
 export async function POST(request: NextRequest) {
   const body = await request.text();
-  const sig = headers().get('Stripe-Signature');
+  const sig = headers().get("Stripe-Signature");
 
-  const webhookSecret =
-    process.env.STRIPE_WEBHOOK_SECRET_LIVE ?? process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET_LIVE ?? process.env.STRIPE_WEBHOOK_SECRET;
 
   let event: Stripe.Event;
   try {
@@ -37,47 +36,46 @@ export async function POST(request: NextRequest) {
   if (relevantEvents.has(event.type)) {
     try {
       switch (event.type) {
-        case 'product.created':
-        case 'product.updated':
+        case "product.created":
+        case "product.updated":
           await upsertProductRecord(event.data.object as Stripe.Product);
           break;
-        case 'price.created':
+        case "price.created":
         // biome-ignore lint/suspicious/noFallthroughSwitchClause: <explanation>
-        case 'price.updated':
+        case "price.updated":
           await upsertPriceRecord(event.data.object as Stripe.Price);
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
-        case 'customer.subscription.deleted': {
+        case "customer.subscription.created":
+        case "customer.subscription.updated":
+        case "customer.subscription.deleted": {
           const subscription = event.data.object as Stripe.Subscription;
           await manageSubscriptionStatusChange(
             subscription.id,
             subscription.customer as string,
-            event.type === 'customer.subscription.created'
+            event.type === "customer.subscription.created",
           );
-          console.log('FROM WEBHOOK🚀', subscription.status);
+          console.log("FROM WEBHOOK🚀", subscription.status);
           break;
         }
-        case 'checkout.session.completed': {
+        case "checkout.session.completed": {
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          if (checkoutSession.mode === 'subscription') {
+          if (checkoutSession.mode === "subscription") {
             const subscriptionId = checkoutSession.subscription;
             await manageSubscriptionStatusChange(
               subscriptionId as string,
               checkoutSession.customer as string,
-              true
+              true,
             );
           }
           break;
         }
         default:
-          throw new Error('Unhandled relevant event!');
+          throw new Error("Unhandled relevant event!");
       }
     } catch (error) {
       console.log(error);
-      return new NextResponse(
-        'Webhook error: "Webhook handler failed. View logs."',
-        { status: 400 }
-      );
+      return new NextResponse('Webhook error: "Webhook handler failed. View logs."', {
+        status: 400,
+      });
     }
   }
   return NextResponse.json({ received: true }, { status: 200 });

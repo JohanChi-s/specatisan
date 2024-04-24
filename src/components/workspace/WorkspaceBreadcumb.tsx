@@ -1,24 +1,24 @@
-'use client';
-import { Key, Slash } from 'lucide-react';
-import React from 'react';
+"use client";
+import { Key, Slash } from "lucide-react";
+import type React from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from '../ui/breadcrumb';
+} from "../ui/breadcrumb";
 
-interface BreadcrumbItemProps {
+interface BreadcrumbItem {
   href: string;
   label: string;
 }
 
 interface WorkspaceBreadcumbProps {
-  items?: BreadcrumbItemProps[];
+  items?: BreadcrumbItem[];
 }
 
-export const defaultBreadcumbItems = [{ href: '/', label: 'Home' }];
+export const defaultBreadcumbItems = [{ href: "/", label: "Home" }];
 
 const WorkspaceBreadcumb: React.FC<WorkspaceBreadcumbProps> = ({
   items = defaultBreadcumbItems,
