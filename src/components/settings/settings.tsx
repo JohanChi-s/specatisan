@@ -5,10 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import clsx from 'clsx';
-import React from 'react';
-import SettingsForm from './settings-form';
+} from "@/components/ui/dialog";
+import clsx from "clsx";
+import SettingsForm from "./settings-form";
 
 interface SettingsProps {
   children: React.ReactNode;
@@ -18,7 +17,7 @@ interface SettingsProps {
 const Settings: React.FC<SettingsProps> = ({ children, className }) => {
   return (
     <Dialog>
-      <DialogTrigger className={clsx('', className)} asChild>
+      <DialogTrigger className={clsx("", className)} asChild>
         {children}
       </DialogTrigger>
       <DialogContent

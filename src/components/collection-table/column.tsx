@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { File } from "@/lib/supabase/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { File as FileIcon, FileText, MoreHorizontal } from "lucide-react";
+import { Folder, MoreHorizontal } from "lucide-react";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 // import { priorities, statuses } from "./DataTableToolbar";
 
@@ -43,7 +43,7 @@ export const columns: ColumnDef<File>[] = [
       const file = row.original;
       return (
         <div className="flex items-center">
-          <FileIcon className="h-4 w-4 mr-2" />
+          <Folder className="h-4 w-4 mr-2" />
           <span className="font-bold">{file.title}</span>
         </div>
       );

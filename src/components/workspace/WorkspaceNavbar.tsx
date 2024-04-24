@@ -1,6 +1,4 @@
-'use client';
-
-import React from 'react';
+"use client";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,42 +7,58 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
-import Link from 'next/link';
-import { Separator } from '../ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from "@/components/ui/navigation-menu";
+import Link from "next/link";
+import { Separator } from "../ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "../ui/button";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/router";
 
-const WorkspaceNavbar = () => {
+type WorkspaceNavbarProps = {
+  workspaceId: string;
+  isShowTabs?: boolean;
+};
+
+const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
+  workspaceId,
+  isShowTabs = true,
+}) => {
   return (
-    <div className="flex items-center justify-center w-full h-12 rounded-sm mb-6">
-      <Tabs defaultValue="all">
-        <div className="flex items-center px-4 py-2">
-          <TabsList className="ml-auto">
-            <TabsTrigger
-              value="all"
-              className="text-zinc-600 dark:text-zinc-200"
-            >
-              All docs
-            </TabsTrigger>
-            <TabsTrigger
-              value="collections"
-              className="text-zinc-600 dark:text-zinc-200"
-            >
-              Collections
-            </TabsTrigger>
-            <TabsTrigger
-              value="tags"
-              className="text-zinc-600 dark:text-zinc-200"
-            >
-              Tags
-            </TabsTrigger>
-          </TabsList>
-        </div>
-        <Separator />
-        <TabsContent value="all" className="m-0"></TabsContent>
-        <TabsContent value="collections" className="m-0"></TabsContent>
-        <TabsContent value="tags" className="m-0"></TabsContent>
-      </Tabs>
+    <div className="flex items-center justify-between w-full h-12 rounded-sm mb-6">
+      {/* Create a back button with nextjs */}
+      <Button variant={"ghost"} onClick={() => {}}>
+        <ChevronLeft size={24} />
+      </Button>
+      {isShowTabs && (
+        <Tabs defaultValue="all">
+          <div className="flex items-center px-4 py-2">
+            <TabsList className="ml-auto">
+              <TabsTrigger
+                value="all"
+                className="text-zinc-600 dark:text-zinc-200"
+              >
+                <Link href={`/dashboard/${workspaceId}/alldocs`}>All docs</Link>
+              </TabsTrigger>
+              <TabsTrigger
+                value="collections"
+                className="text-zinc-600 dark:text-zinc-200"
+              >
+                <Link href={`/dashboard/${workspaceId}/collections`}>
+                  Collections
+                </Link>
+              </TabsTrigger>
+              <TabsTrigger
+                value="tags"
+                className="text-zinc-600 dark:text-zinc-200"
+              >
+                <Link href={`/dashboard/${workspaceId}/tags`}>Tags</Link>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <Separator />
+        </Tabs>
+      )}
     </div>
   );
 };

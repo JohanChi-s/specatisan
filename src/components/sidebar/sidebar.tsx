@@ -1,34 +1,35 @@
-'use client';
+"use client";
 import {
   getCollaboratingWorkspaces,
   getFolders,
   getPrivateWorkspaces,
   getSharedWorkspaces,
   getUserSubscriptionStatus,
-} from '@/lib/supabase/queries';
-import { cn } from '@/lib/utils';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import WorkspaceSwitcher from './WorkspaceSwitcher';
-import Settings from '../settings/settings';
+} from "@/lib/supabase/queries";
+import { cn } from "@/lib/utils";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import WorkspaceSwitcher from "./WorkspaceSwitcher";
+import Settings from "../settings/settings";
+import Trash from "../trash/trash";
 
-import AccountInfo from './AccountInfo';
-import SearchCommandPalette from './SearchCommandPalette';
-import { Separator } from '../ui/separator';
-import { Folder, workspace } from '@/lib/supabase/supabase.types';
-import { Button, buttonVariants } from '../ui/button';
+import AccountInfo from "./AccountInfo";
+import SearchCommandPalette from "./SearchCommandPalette";
+import { Separator } from "../ui/separator";
+import type { Folder, workspace } from "@/lib/supabase/supabase.types";
+import { Button, buttonVariants } from "../ui/button";
 import {
   Calendar,
   Download,
   FolderIcon,
   Plus,
   Settings2,
-  Trash,
-} from 'lucide-react';
-import FoldersDropdownList from './folders-dropdown-list';
-import { useAppState } from '@/lib/providers/state-provider';
+  Trash2,
+} from "lucide-react";
+import FoldersDropdownList from "./folders-dropdown-list";
+import { useAppState } from "@/lib/providers/state-provider";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -59,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) {
-          router.push('/login'); // Redirect to login if user is not authenticated
+          router.push("/login"); // Redirect to login if user is not authenticated
           return;
         }
 
@@ -69,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           await getFolders(params.workspaceId);
         if (workspaceFolderData) setWorkspaceFolderData(workspaceFolderData);
         if (foldersError) {
-          router.push('/dashboard'); // Redirect to dashboard on folders error
+          router.push("/dashboard"); // Redirect to dashboard on folders error
           return;
         }
 
@@ -82,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         setCollaboratingWorkspaces(collabWs);
         setSharedWorkspaces(sharedWs);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -119,8 +120,8 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
             <Link
               href={`/dashboard/${params.workspaceId}/alldocs`}
               className={cn(
-                buttonVariants({ variant: 'ghost', size: 'sm' }),
-                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <FolderIcon className="mr-2 h-4 w-4" />
@@ -132,8 +133,8 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               <Button
                 variant="ghost"
                 className={cn(
-                  buttonVariants({ variant: 'ghost', size: 'sm' }),
-                  'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
                 )}
               >
                 <Settings2 className="mr-2 h-4 w-4" />
@@ -173,13 +174,13 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           </span>
           <li className="flex items-center">
             <Link
-              href="#"
+              href={`/dashboard/${params.workspaceId}/trash`}
               className={cn(
-                buttonVariants({ variant: 'ghost', size: 'sm' }),
-                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
-              <Trash className="mr-2 h-4 w-4" />
+              <Trash2 className="mr-2 h-4 w-4" />
               <span>Trash</span>
             </Link>
           </li>
@@ -187,8 +188,8 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
             <Link
               href="#"
               className={cn(
-                buttonVariants({ variant: 'ghost', size: 'sm' }),
-                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <Download className="mr-2 h-4 w-4" />
