@@ -11,11 +11,12 @@ const File = async ({ params }: { params: { fileId: string } }) => {
 
   return (
     <div className="relative ">
-      <QuillEditor
+      File
+      {/* <QuillEditor
         dirType="file"
         fileId={params.fileId}
         dirDetails={data[0] || {}}
-      />
+      /> */}
     </div>
   );
 };

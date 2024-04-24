@@ -1,26 +1,16 @@
 'use client';
-import MobileSidebar from '@/components/sidebar/mobile-sidebar';
 import Sidebar from '@/components/sidebar/sidebar';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
-import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
-import {
-  AlertCircle,
-  Archive,
-  Inbox,
-  MessagesSquare,
-  Send,
-  ShoppingCart,
-  Trash2,
-  Users2,
-} from 'lucide-react';
 import React, { useState } from 'react';
-
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search } from 'lucide-react';
 interface LayoutProps {
   children: React.ReactNode;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -36,7 +26,7 @@ const defaultProps = {
 const Layout: React.FC<LayoutProps> = ({ children, params }) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultProps.defaultCollapsed);
   return (
-    <div className="flex w-full h-main-container-height">
+    <div className="flex w-full h-main-container-height bg-zinc-50">
       <TooltipProvider delayDuration={0}>
         <ResizablePanelGroup
           direction="horizontal"
@@ -53,7 +43,9 @@ const Layout: React.FC<LayoutProps> = ({ children, params }) => {
           </ResizablePanel>
           <ResizableHandle withHandle className="h-full" />
           <ResizablePanel defaultSize={defaultProps.defaultLayout[1]}>
-            <div className="flex h-full justify-center p-6">{children}</div>
+            <div className="flex h-full justify-center p-2 m-2 rounded-sm bg-white shadow-2xl">
+              {children}
+            </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </TooltipProvider>

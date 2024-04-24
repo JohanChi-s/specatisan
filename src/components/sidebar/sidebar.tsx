@@ -1,22 +1,35 @@
-'use client';
+"use client";
 import {
   getCollaboratingWorkspaces,
   getFolders,
   getPrivateWorkspaces,
   getSharedWorkspaces,
   getUserSubscriptionStatus,
-} from '@/lib/supabase/queries';
-import { cn } from '@/lib/utils';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import WorkspaceSwitcher from './WorkspaceSwitcher';
+} from "@/lib/supabase/queries";
+import { cn } from "@/lib/utils";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import WorkspaceSwitcher from "./WorkspaceSwitcher";
+import Settings from "../settings/settings";
+import Trash from "../trash/trash";
 
-import AccountInfo from './AccountInfo';
-import SearchCommandPalette from './SearchCommandPalette';
-import { Separator } from '../ui/separator';
-import { Folder, workspace } from '@/lib/supabase/supabase.types';
+import AccountInfo from "./AccountInfo";
+import SearchCommandPalette from "./SearchCommandPalette";
+import { Separator } from "../ui/separator";
+import type { Folder, workspace } from "@/lib/supabase/supabase.types";
+import { Button, buttonVariants } from "../ui/button";
+import {
+  Calendar,
+  Download,
+  FolderIcon,
+  Plus,
+  Settings2,
+  Trash2,
+} from "lucide-react";
+import FoldersDropdownList from "./folders-dropdown-list";
+import { useAppState } from "@/lib/providers/state-provider";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -47,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) {
-          router.push('/login'); // Redirect to login if user is not authenticated
+          router.push("/login"); // Redirect to login if user is not authenticated
           return;
         }
 
@@ -57,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           await getFolders(params.workspaceId);
         if (workspaceFolderData) setWorkspaceFolderData(workspaceFolderData);
         if (foldersError) {
-          router.push('/dashboard'); // Redirect to dashboard on folders error
+          router.push("/dashboard"); // Redirect to dashboard on folders error
           return;
         }
 
@@ -70,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         setCollaboratingWorkspaces(collabWs);
         setSharedWorkspaces(sharedWs);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -99,15 +112,99 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         {/* Quick Search */}
         <Separator orientation="horizontal" className="my-6" />
 
-        <div className="p-2">
-          <SearchCommandPalette />
-        </div>
-        {/* All Docs */}
-        {/* Setting */}
+        <SearchCommandPalette />
+
+        <ul className="w-full mt-2 gap-2">
+          {/* All Docs */}
+          <li className="flex items-center">
+            <Link
+              href={`/dashboard/${params.workspaceId}/alldocs`}
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+              )}
+            >
+              <FolderIcon className="mr-2 h-4 w-4" />
+              <span>All docs</span>
+            </Link>
+          </li>
+          <li className="flex items-center w-full">
+            <Settings>
+              <Button
+                variant="ghost"
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                )}
+              >
+                <Settings2 className="mr-2 h-4 w-4" />
+                <span>Setting</span>
+              </Button>
+            </Settings>
+          </li>
+          {/* <li className="flex items-center text-base">
+            <Link
+              href={`/dashboard/${params.workspaceId}/tags`}
+              className={cn(
+                buttonVariants({ variant: 'ghost', size: 'sm' }),
+                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
+              )}
+            >
+              <Calendar className="mr-2 h-4 w-4" />
+              <span>Journal</span>
+            </Link>
+          </li> */}
+        </ul>
         {/* Collections */}
-        {/* Others
-			Trash
-			Import */}
+        <FoldersDropdownList
+          workspaceFolders={workspaceFolderData}
+          workspaceId={params.workspaceId}
+        />
+
+        <Separator orientation="horizontal" className="my-2" />
+        {/* Others */}
+        <ul className="w-full mt-2 gap-2">
+          {/* All Docs */}
+          <span
+            className="text-Neutrals-8 
+        font-bold 
+        text-xs"
+          >
+            Others
+          </span>
+          <li className="flex items-center">
+            <Link
+              href={`/dashboard/${params.workspaceId}/trash`}
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+              )}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Trash</span>
+            </Link>
+          </li>
+          <li className="flex items-center">
+            <Link
+              href="#"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+              )}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              <span>Import</span>
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      <Button className="mt-auto p-4 flex items-center" variant="default">
+        <Plus size={24} className="mr-2" />
+        Create Docs
+      </Button>
+      <div className="flex flex-col items-center justify-center w-full h-10">
+        <span className="text-Neutrals-8 text-xs">© 2024 Specatisan</span>
       </div>
     </aside>
   );

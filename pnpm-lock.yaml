@@ -21,7 +21,7 @@ dependencies:
     specifier: canary
     version: 0.14.0-canary-202404191836-0a00322(lit@3.1.3)(yjs@13.6.14)
   '@hookform/resolvers':
-    specifier: ^3.3.2
+    specifier: ^3.3.4
     version: 3.3.4(react-hook-form@7.51.3)
   '@neondatabase/serverless':
     specifier: ^0.9.0
@@ -59,6 +59,9 @@ dependencies:
   '@radix-ui/react-progress':
     specifier: ^1.0.3
     version: 1.0.3(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-radio-group':
+    specifier: ^1.1.3
+    version: 1.1.3(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-scroll-area':
     specifier: ^1.0.5
     version: 1.0.5(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
@@ -132,13 +135,13 @@ dependencies:
     specifier: ^4.0.2
     version: 4.0.2
   react:
-    specifier: latest
+    specifier: ^18.2.0
     version: 18.2.0
   react-dom:
-    specifier: latest
+    specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-hook-form:
-    specifier: ^7.47.0
+    specifier: ^7.51.3
     version: 7.51.3(react@18.2.0)
   react-resizable-panels:
     specifier: ^2.0.18
@@ -168,7 +171,7 @@ dependencies:
     specifier: ^3.0.0
     version: 3.0.0
   zod:
-    specifier: ^3.22.4
+    specifier: ^3.22.5
     version: 3.22.5
 
 devDependencies:
@@ -2280,6 +2283,36 @@ packages:
       '@babel/runtime': 7.24.4
       '@radix-ui/react-context': 1.0.1(@types/react@18.2.79)(react@18.2.0)
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@types/react': 18.2.79
+      '@types/react-dom': 18.2.25
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@radix-ui/react-radio-group@1.1.3(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-x+yELayyefNeKeTx4fjK6j99Fs6c4qKm3aY38G3swQVTN6xMpsrbigC0uHs2L//g8q4qR7qOcww8430jJmi2ag==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.24.4
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-compose-refs': 1.0.1(@types/react@18.2.79)(react@18.2.0)
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.79)(react@18.2.0)
+      '@radix-ui/react-direction': 1.0.1(@types/react@18.2.79)(react@18.2.0)
+      '@radix-ui/react-presence': 1.0.1(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-roving-focus': 1.0.4(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.79)(react@18.2.0)
+      '@radix-ui/react-use-previous': 1.0.1(@types/react@18.2.79)(react@18.2.0)
+      '@radix-ui/react-use-size': 1.0.1(@types/react@18.2.79)(react@18.2.0)
       '@types/react': 18.2.79
       '@types/react-dom': 18.2.25
       react: 18.2.0
