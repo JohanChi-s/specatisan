@@ -447,7 +447,7 @@ export const comments = pgTable("comments", {
     .default(sql`now()`)
     .notNull(),
   content: jsonb("content").notNull(),
-  createById: uuid("create_by_id")
+  createById: uuid("created_by_id")
     .notNull()
     .references(() => users.id, {}),
   resolvedById: uuid("resolved_by_id").references(() => users.id, {}),
@@ -456,7 +456,7 @@ export const comments = pgTable("comments", {
     .references(() => collections.id, {
       onDelete: "cascade",
     }),
-  parrentCommentId: uuid("parrent_comment_id").references(() => comments.id, {
+  parrentCommentId: uuid("parent_comment_id").references(() => comments.id, {
     onDelete: "cascade",
   }),
 });

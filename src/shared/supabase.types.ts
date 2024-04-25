@@ -124,35 +124,35 @@ export type Database = {
       comments: {
         Row: {
           content: Json;
-          create_by_id: string;
+          created_by_id: string;
           created_at: string;
           document_id: string;
           id: string;
-          parrent_comment_id: string | null;
+          parent_comment_id: string | null;
           resolved_by_id: string | null;
         };
         Insert: {
           content: Json;
-          create_by_id: string;
+          created_by_id: string;
           created_at?: string;
           document_id: string;
           id?: string;
-          parrent_comment_id?: string | null;
+          parent_comment_id?: string | null;
           resolved_by_id?: string | null;
         };
         Update: {
           content?: Json;
-          create_by_id?: string;
+          created_by_id?: string;
           created_at?: string;
           document_id?: string;
           id?: string;
-          parrent_comment_id?: string | null;
+          parent_comment_id?: string | null;
           resolved_by_id?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: "comments_create_by_id_users_id_fk";
-            columns: ["create_by_id"];
+            columns: ["created_by_id"];
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
@@ -166,7 +166,7 @@ export type Database = {
           },
           {
             foreignKeyName: "comments_parrent_comment_id_comments_id_fk";
-            columns: ["parrent_comment_id"];
+            columns: ["parent_comment_id"];
             isOneToOne: false;
             referencedRelation: "comments";
             referencedColumns: ["id"];
