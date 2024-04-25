@@ -7,7 +7,7 @@ import {
   products,
   subscriptions,
   users,
-} from '../../../migrations/schema';
+} from '../supabase/schema';
 import { stripe } from './index';
 import { eq } from 'drizzle-orm';
 import { toDateTime } from '../utils';

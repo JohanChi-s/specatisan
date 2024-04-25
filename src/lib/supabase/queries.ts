@@ -1,6 +1,6 @@
 'use server';
 import { validate } from 'uuid';
-import { files, folders, users, workspaces } from '../../../migrations/schema';
+import { files, collections, users, workspaces } from "../supabase/schema";
 import db from './db';
 import {
   File,
@@ -42,7 +42,7 @@ export const getUserSubscriptionStatus = async (userId: string) => {
   }
 };
 
-export const getFolders = async (workspaceId: string) => {
+export const getcollections = async (workspaceId: string) => {
   const isValid = validate(workspaceId);
   if (!isValid)
     return {
@@ -53,9 +53,9 @@ export const getFolders = async (workspaceId: string) => {
   try {
     const results: Folder[] | [] = await db
       .select()
-      .from(folders)
-      .orderBy(folders.createdAt)
-      .where(eq(folders.workspaceId, workspaceId));
+      .from(collections)
+      .orderBy(collections.createdAt)
+      .where(eq(collections.workspaceId, workspaceId));
     return { data: results, error: null };
   } catch (error) {
     return { data: null, error: 'Error' };
@@ -120,8 +120,8 @@ export const getFolderDetails = async (folderId: string) => {
   try {
     const response = (await db
       .select()
-      .from(folders)
-      .where(eq(folders.id, folderId))
+      .from(collections)
+      .where(eq(collections.id, folderId))
       .limit(1)) as Folder[];
 
     return { data: response, error: null };
@@ -290,7 +290,7 @@ export const getActiveProductsWithPrice = async () => {
 
 export const createFolder = async (folder: Folder) => {
   try {
-    const results = await db.insert(folders).values(folder);
+    const results = await db.insert(collections).values(folder);
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
@@ -313,7 +313,7 @@ export const updateFolder = async (
   folderId: string
 ) => {
   try {
-    await db.update(folders).set(folder).where(eq(folders.id, folderId));
+    await db.update(collections).set(folder).where(eq(collections.id, folderId));
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
