@@ -1,92 +1,105 @@
-'use client';
-import { useAppState } from '@/lib/providers/state-provider';
-import { Folder } from '@/lib/supabase/supabase.types';
-import React, { useEffect, useState } from 'react';
-import TooltipComponent from '../global/tooltip-component';
-import { PlusIcon } from 'lucide-react';
-import { useSupabaseUser } from '@/lib/providers/supabase-user-provider';
-import { v4 } from 'uuid';
-import { createFolder } from '@/lib/supabase/queries';
-import { useToast } from '../ui/use-toast';
-import { Accordion } from '../ui/accordion';
-import Dropdown from './Dropdown';
-import useSupabaseRealtime from '@/lib/hooks/useSupabaseRealtime';
-import { useSubscriptionModal } from '@/lib/providers/subscription-modal-provider';
+"use client";
+import useSupabaseRealtime from "@/lib/hooks/useSupabaseRealtime";
+import { useAppState } from "@/lib/providers/state-provider";
+import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { createCollection } from "@/server/api/queries";
+import type { Collection } from "@/shared/supabase.types";
+import { PlusIcon } from "lucide-react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { v4 } from "uuid";
+import TooltipComponent from "../global/tooltip-component";
+import { Accordion } from "../ui/accordion";
+import { useToast } from "../ui/use-toast";
+import Dropdown from "./Dropdown";
 
 interface FavoritesDropdownListProps {
-  workspaceFolders: Folder[];
+  workspaceCollections: Collection[];
   workspaceId: string;
 }
 
 const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
-  workspaceFolders,
+  workspaceCollections,
   workspaceId,
 }) => {
   useSupabaseRealtime();
-  const { state, dispatch, folderId } = useAppState();
+  const { state, dispatch, collectionId } = useAppState();
   const { open, setOpen } = useSubscriptionModal();
   const { toast } = useToast();
-  const [folders, setFolders] = useState(workspaceFolders);
+  const [collections, setCollections] = useState(workspaceCollections);
   const { subscription } = useSupabaseUser();
 
   //effec set nitial satte server app state
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (workspaceFolders.length > 0) {
+    if (workspaceCollections.length > 0) {
       dispatch({
-        type: 'SET_FOLDERS',
+        type: "SET_COLLECTIONS",
         payload: {
           workspaceId,
-          folders: workspaceFolders.map((folder) => ({
-            ...folder,
-            files:
+          collections: workspaceCollections.map((collection) => ({
+            ...collection,
+            documents:
               state.workspaces
                 .find((workspace) => workspace.id === workspaceId)
-                ?.folders.find((f) => f.id === folder.id)?.files || [],
+                ?.collections.find((f) => f.id === collection.id)?.documents ||
+              [],
           })),
         },
       });
     }
-  }, [workspaceFolders, workspaceId]);
+  }, [workspaceCollections, workspaceId]);
   //state
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    setFolders(
+    setCollections(
       state.workspaces.find((workspace) => workspace.id === workspaceId)
-        ?.folders || []
+        ?.collections || []
     );
   }, [state]);
 
-  //add folder
-  const addFolderHandler = async () => {
-    if (folders.length >= 3 && !subscription) {
+  //add collection
+  const addCollectionHandler = async () => {
+    if (collections.length >= 3 && !subscription) {
       setOpen(true);
       return;
     }
-    const newFolder: Folder = {
-      data: null,
-      id: v4(),
-      createdAt: new Date().toISOString(),
-      title: 'Untitled',
-      iconId: '📄',
+    const newCollection: Collection = {
+      documentStructure: null,
+      createAt: new Date().toISOString(),
+      name: "Untitled",
+      icon: "📄",
       inTrash: null,
       workspaceId,
-      bannerUrl: '',
+      bannerUrl: "",
+      id: v4(),
+      urlId: "",
+      description: null,
+      color: null,
+      index: null,
+      permission: null,
+      maintainerApprovalRequired: null,
+      sharing: null,
+      importId: null,
+      createdById: "",
     };
     dispatch({
-      type: 'ADD_FOLDER',
-      payload: { workspaceId, folder: { ...newFolder, files: [] } },
+      type: "ADD_COLLECTION",
+      payload: { workspaceId, collection: { ...newCollection, documents: [] } },
     });
-    const { data, error } = await createFolder(newFolder);
+    const { data, error } = await createCollection(newCollection);
     if (error) {
       toast({
-        title: 'Error',
-        variant: 'destructive',
-        description: 'Could not create the folder',
+        title: "Error",
+        variant: "destructive",
+        description: "Could not create the collection",
       });
     } else {
       toast({
-        title: 'Success',
-        description: 'Created folder.',
+        title: "Success",
+        description: "Created collection.",
       });
     }
   };
@@ -115,9 +128,9 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
         >
           Collections
         </span>
-        <TooltipComponent message="Create Folder">
+        <TooltipComponent message="Create Collection">
           <PlusIcon
-            onClick={addFolderHandler}
+            onClick={addCollectionHandler}
             size={16}
             className="group-hover/title:inline-block
             hidden 
@@ -129,18 +142,18 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
       </div>
       <Accordion
         type="multiple"
-        defaultValue={[folderId || '']}
+        defaultValue={[collectionId || ""]}
         className="pb-20"
       >
-        {folders
-          .filter((folder) => !folder.inTrash)
-          .map((folder) => (
+        {collections
+          .filter((collection) => !collection.inTrash)
+          .map((collection) => (
             <Dropdown
-              key={folder.id}
-              title={folder.title}
-              listType="folder"
-              id={folder.id}
-              iconId={folder.iconId}
+              key={collection.id}
+              title={collection.name}
+              listType="collection"
+              id={collection.id}
+              iconId={collection.icon}
             />
           ))}
       </Accordion>
