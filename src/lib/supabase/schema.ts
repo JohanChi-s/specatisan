@@ -165,7 +165,7 @@ export const NotificationChannelType = pgEnum("notification_channel_type", [
 
 export const documents = pgTable("documents", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   title: text("title").notNull(),
   summary: text("summary"),
   fullwidth: boolean("fullwidth").default(false),
@@ -202,8 +202,8 @@ export const documents = pgTable("documents", {
 export const views = pgTable("views", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   count: integer("count").default(0),
-  lastEditingAt: timestamp("last_editing_at", { withTimezone: true, mode: "string" }),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  lastEditingAt: timestamp("last_editing_at", { withTimezone: true, mode: "string" }).default(sql`now()`),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   documentId: uuid("document_id")
     .notNull()
     .references(() => documents.id, { onDelete: "cascade" }),
@@ -215,7 +215,7 @@ export const views = pgTable("views", {
 export const stars = pgTable("stars", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   index: text("index"),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   documentId: uuid("document_id").references(() => documents.id, { onDelete: "cascade" }),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
   collectionId: uuid("collection_id").references(() => collections.id, { onDelete: "cascade" }),
@@ -223,7 +223,7 @@ export const stars = pgTable("stars", {
 
 export const memberShip = pgTable("user_permissions", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -235,11 +235,11 @@ export const memberShip = pgTable("user_permissions", {
 
 export const collections = pgTable("collections", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   urlId: text("url_id").notNull().unique(),
   name: text("name").notNull(),
   description: text("description"),
-  icon: text("icon"),
+  icon: text("icon").notNull(),
   color: text("color"),
   index: text("index"),
   permission: text("permission"),
@@ -250,6 +250,7 @@ export const collections = pgTable("collections", {
   importId: uuid("import_id"),
   createdById: uuid("created_by_id").notNull(),
   teamId: uuid("team_id").notNull(),
+  bannerUrl: text("banner_url"),
   // Define foreign key constraint
   workspaceId: uuid("workspace_id")
     .notNull()
@@ -261,13 +262,13 @@ export const collaborators = pgTable("collaborators", {
   workspaceId: uuid("workspace_id")
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   userId: uuid("user_id").notNull(),
 });
 
 export const workspaces = pgTable("workspaces", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   workspaceOwner: uuid("workspace_owner").notNull(),
   title: text("title").notNull(),
   iconId: text("icon_id").notNull(),
@@ -300,7 +301,7 @@ export const users = pgTable("users", {
 
 export const events = pgTable("events", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   type: text("type").notNull(),
   modelId: uuid("model_id").notNull(),
   name: text("name").notNull(),
@@ -383,7 +384,7 @@ export const subscriptions = pgTable("subscriptions", {
 
 export const fileOperations = pgTable("file_operations", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   state: text("state").notNull(),
   error: text("error"),
   size: integer("size"),
@@ -397,7 +398,7 @@ export const fileOperations = pgTable("file_operations", {
 
 export const notifications = pgTable("notifications", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   readAt: timestamp("read_at", { withTimezone: true, mode: "string" }),
   archivedAt: timestamp("archived_at", { withTimezone: true, mode: "string" }),
   actoId: uuid("actor_id").references(() => users.id),
@@ -417,7 +418,7 @@ export const comments = pgTable("comments", {
     withTimezone: true,
     mode: "string",
   })
-    .defaultNow()
+    .default(sql`now()`)
     .notNull(),
   content: jsonb("content").notNull(),
   createById: uuid("create_by_id")
@@ -436,8 +437,8 @@ export const comments = pgTable("comments", {
 
 export const policies = pgTable("policies", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   name: text("name").notNull(),
   abilities: jsonb("abilities").notNull(),
   workspaceId: uuid("workspace_id")
@@ -447,7 +448,7 @@ export const policies = pgTable("policies", {
 
 export const revisions = pgTable("revisions", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   title: text("title").notNull(),
   text: text("text").notNull(),
   emoji: text("emoji"),
@@ -459,7 +460,7 @@ export const revisions = pgTable("revisions", {
 
 export const shares = pgTable("shares", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).default(sql`now()`).notNull(),
   documentId: uuid("document_id")
     .notNull()
     .references(() => documents.id, { onDelete: "cascade" }),

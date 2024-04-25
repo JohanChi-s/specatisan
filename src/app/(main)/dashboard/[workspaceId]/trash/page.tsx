@@ -1,37 +1,37 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import {
-  type appFoldersType,
   useAppState,
+  type appCollectionsType,
 } from "@/lib/providers/state-provider";
-import type { File } from "@/lib/supabase/supabase.types";
-import { FileIcon, FolderIcon } from "lucide-react";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import type { Collection, Document } from "@/shared/supabase.types";
+import { FolderIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const TrashPage = () => {
   const { state, workspaceId } = useAppState();
-  const [folders, setFolders] = useState<appFoldersType[] | []>([]);
-  const [files, setFiles] = useState<File[] | []>([]);
+  const [collections, setCollections] = useState<appCollectionsType[] | []>([]);
+  const [documents, setDocuments] = useState<Document[] | []>([]);
 
   useEffect(() => {
-    const stateFolders =
+    const stateCollections =
       state.workspaces
         .find((workspace) => workspace.id === workspaceId)
-        ?.folders.filter((folder) => folder.inTrash) || [];
-    setFolders(stateFolders);
+        ?.collections.filter((collection: Collection) => collection.inTrash) ||
+      [];
+    setCollections(stateCollections);
 
-    const stateFiles: File[] = [];
-    for (const folder of state.workspaces.find(
+    const stateDocuments: Document[] = [];
+    for (const collection of state.workspaces.find(
       (workspace) => workspace.id === workspaceId
-    )?.folders || []) {
-      for (const file of folder.files) {
-        if (file.inTrash) {
-          stateFiles.push(file);
+    )?.collections || []) {
+      for (const document of collection.documents) {
+        if (document.inTrash) {
+          stateDocuments.push(document);
         }
       }
     }
-    setFiles(stateFiles);
+    setDocuments(stateDocuments);
   }, [state, workspaceId]);
 
   return (

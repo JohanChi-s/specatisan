@@ -16,8 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
-import { createWorkspace } from "@/lib/supabase/queries";
-import type { Subscription, workspace } from "@/lib/supabase/supabase.types";
+import { createWorkspace } from "@/server/api/queries";
+import type { Subscription, Workspace } from "@/shared/supabase.types";
 import type { CreateWorkspaceFormSchema } from "@/lib/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
@@ -55,21 +55,21 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
   const onSubmit: SubmitHandler<
     z.infer<typeof CreateWorkspaceFormSchema>
   > = async (value) => {
-    const file = value.logo?.[0];
-    let filePath = null;
+    const document = value.logo?.[0];
+    let documentPath = null;
     const workspaceUUID = v4();
-    console.log(file);
+    console.log(document);
 
-    if (file) {
+    if (document) {
       try {
         const { data, error } = await supabase.storage
           .from("workspace-logos")
-          .upload(`workspaceLogo.${workspaceUUID}`, file, {
+          .upload(`workspaceLogo.${workspaceUUID}`, document, {
             cacheControl: "3600",
             upsert: true,
           });
         if (error) throw new Error("");
-        filePath = data.path;
+        documentPath = data.path;
       } catch (error) {
         console.log("Error", error);
         toast({
@@ -79,7 +79,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
     }
     try {
-      const newWorkspace: workspace = {
+      const newWorkspace: Workspace = {
         data: null,
         createdAt: new Date().toISOString(),
         iconId: selectedEmoji,
@@ -87,7 +87,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
         inTrash: "",
         title: value.workspaceName,
         workspaceOwner: user.id,
-        logo: filePath || null,
+        logo: documentPath || null,
         bannerUrl: "",
       };
       const { data, error: createError } = await createWorkspace(newWorkspace);
@@ -96,7 +96,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
       dispatch({
         type: "ADD_WORKSPACE",
-        payload: { ...newWorkspace, folders: [] },
+        payload: { ...newWorkspace, collections: [] },
       });
 
       toast({

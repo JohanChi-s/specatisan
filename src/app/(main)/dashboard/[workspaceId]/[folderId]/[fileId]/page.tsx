@@ -1,24 +1,24 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import React from 'react';
-import QuillEditor from '@/components/quill-editor/quill-editor';
-import { getFileDetails } from '@/lib/supabase/queries';
-import { redirect } from 'next/navigation';
+import React from "react";
+import QuillEditor from "@/components/quill-editor/quill-editor";
+import { getDocumentDetails } from "@/server/api/queries";
+import { redirect } from "next/navigation";
 
-const File = async ({ params }: { params: { fileId: string } }) => {
-  const { data, error } = await getFileDetails(params.fileId);
-  if (error || !data.length) redirect('/dashboard');
+const Document = async ({ params }: { params: { documentId: string } }) => {
+  const { data, error } = await getDocumentDetails(params.documentId);
+  if (error || !data?.length) redirect("/dashboard");
 
   return (
     <div className="relative ">
-      File
+      Document
       {/* <QuillEditor
-        dirType="file"
-        fileId={params.fileId}
+        dirType="document"
+        documentId={params.documentId}
         dirDetails={data[0] || {}}
       /> */}
     </div>
   );
 };
 
-export default File;
+export default Document;

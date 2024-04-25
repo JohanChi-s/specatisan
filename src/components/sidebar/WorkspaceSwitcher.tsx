@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons';
-import * as React from 'react';
+import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import * as React from "react";
 
-import { useAppState } from '@/lib/providers/state-provider';
-import { workspace } from '@/lib/supabase/supabase.types';
-import { cn } from '@/lib/utils';
-import { Cloud } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from '../ui/button';
+import { useAppState } from "@/lib/providers/state-provider";
+import { Workspace } from "@/shared/supabase.types";
+import { cn } from "@/lib/utils";
+import { Cloud } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
   Command,
   CommandEmpty,
@@ -17,7 +17,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '../ui/command';
+} from "../ui/command";
 import {
   Dialog,
   DialogContent,
@@ -26,20 +26,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import CustomDialogTrigger from '../global/custom-dialog-trigger';
-import WorkspaceCreator from '../global/workspace-creator';
+} from "../ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import CustomDialogTrigger from "../global/custom-dialog-trigger";
+import WorkspaceCreator from "../global/workspace-creator";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
 interface WorkspaceSwitcherProps extends PopoverTriggerProps {
-  privateWorkspaces: workspace[] | [];
-  sharedWorkspaces: workspace[] | [];
-  collaboratingWorkspaces: workspace[] | [];
-  defaultWorkspace: workspace | undefined;
+  privateWorkspaces: Workspace[] | [];
+  sharedWorkspaces: Workspace[] | [];
+  collaboratingWorkspaces: Workspace[] | [];
+  defaultWorkspace: Workspace | undefined;
 }
 
 export default function WorkspaceSwitcher({
@@ -53,33 +53,33 @@ export default function WorkspaceSwitcher({
   const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] =
     React.useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = React.useState<
-    workspace | undefined
+    Workspace | undefined
   >(defaultWorkspace);
   const { state, dispatch } = useAppState();
 
   React.useEffect(() => {
     if (!state.workspaces.length) {
       dispatch({
-        type: 'SET_WORKSPACES',
+        type: "SET_WORKSPACES",
         payload: {
           workspaces: [
             ...privateWorkspaces,
             ...sharedWorkspaces,
             ...collaboratingWorkspaces,
-          ].map((workspace) => ({ ...workspace, folders: [] })),
+          ].map((Workspace) => ({ ...Workspace, collections: [] })),
         },
       });
     }
   }, [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces]);
 
-  const handleSelect = (option: workspace) => {
+  const handleSelect = (option: Workspace) => {
     setSelectedWorkspace(option);
     setOpen(false);
   };
 
   React.useEffect(() => {
     const findSelectedWorkspace = state.workspaces.find(
-      (workspace) => workspace.id === defaultWorkspace?.id
+      (Workspace) => Workspace.id === defaultWorkspace?.id
     );
     if (findSelectedWorkspace) setSelectedWorkspace(findSelectedWorkspace);
   }, [state, defaultWorkspace]);
@@ -113,27 +113,27 @@ export default function WorkspaceSwitcher({
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading="Workspaces">
-                {privateWorkspaces.map((workspace) => (
+                {privateWorkspaces.map((Workspace) => (
                   <CommandItem
-                    key={workspace.id}
-                    onSelect={() => handleSelect(workspace)}
+                    key={Workspace.id}
+                    onSelect={() => handleSelect(Workspace)}
                     className="text-sm"
                   >
                     <Avatar className="mr-2 h-5 w-5">
                       <AvatarImage
-                        src={`https://avatar.vercel.sh/${workspace.bannerUrl}.png`}
-                        alt={workspace.title}
+                        src={`https://avatar.vercel.sh/${Workspace.bannerUrl}.png`}
+                        alt={Workspace.title}
                         className="grayscale"
                       />
                       <AvatarFallback>SC</AvatarFallback>
                     </Avatar>
-                    {workspace.title}
+                    {Workspace.title}
                     <CheckIcon
                       className={cn(
-                        'ml-auto h-4 w-4',
-                        selectedWorkspace?.id === workspace.id
-                          ? 'opacity-100'
-                          : 'opacity-0'
+                        "ml-auto h-4 w-4",
+                        selectedWorkspace?.id === Workspace.id
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                   </CommandItem>
@@ -161,16 +161,16 @@ export default function WorkspaceSwitcher({
       </Popover>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create workspace</DialogTitle>
+          <DialogTitle>Create Workspace</DialogTitle>
           <DialogDescription>
-            Add a new workspace to manage products and customers.
+            Add a new Workspace to manage products and customers.
           </DialogDescription>
         </DialogHeader>
         <div>
           <CustomDialogTrigger
             header="Create A Workspace"
             content={<WorkspaceCreator />}
-            description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
+            description="Workspaces give you the power to collaborate with others. You can change your Workspace privacy settings after creating the Workspace too."
           >
             <div
               className="flex 
@@ -194,7 +194,7 @@ export default function WorkspaceSwitcher({
               >
                 +
               </article>
-              Create workspace
+              Create Workspace
             </div>
           </CustomDialogTrigger>
         </div>

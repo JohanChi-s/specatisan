@@ -53,7 +53,7 @@ export type PublicEnv = {
   SENTRY_TUNNEL: string | undefined;
   SLACK_CLIENT_ID: string | undefined;
   SLACK_APP_ID: string | undefined;
-  FILE_STORAGE_IMPORT_MAX_SIZE: number;
+  DOCUMENT_STORAGE_IMPORT_MAX_SIZE: number;
   EMAIL_ENABLED: boolean;
   PDF_EXPORT_ENABLED: boolean;
   DEFAULT_LANGUAGE: string;

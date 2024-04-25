@@ -1,3 +1,12 @@
+import { collections,
+  comments,
+  customers,
+  collaborators,
+  products,
+  documents, events, notifications, policies, prices, revisions, shares, stars, subscriptions, users, views, workspaces } 
+from "@/lib/supabase/schema"
+import { InferSelectModel } from "drizzle-orm"
+
 export type Json =
   | string
   | number
@@ -1262,3 +1271,25 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+
+    
+export type Workspace = InferSelectModel<typeof workspaces>;
+export type Collection = InferSelectModel<typeof collections>;
+export type Document = InferSelectModel<typeof documents>;
+export type User = InferSelectModel<typeof users>;
+export type Comment = InferSelectModel<typeof comments>;
+export type Revision = InferSelectModel<typeof revisions>;
+export type View = InferSelectModel<typeof views>;
+export type Share = InferSelectModel<typeof shares>;
+export type Star = InferSelectModel<typeof stars>;
+export type Notification = InferSelectModel<typeof notifications>;
+export type Subscription = InferSelectModel<typeof subscriptions>;
+export type Price = InferSelectModel<typeof prices>;
+export type Event = InferSelectModel<typeof events>;
+export type Policy = InferSelectModel<typeof policies>;
+export type Customer = InferSelectModel<typeof customers>;
+export type Collaborator = InferSelectModel<typeof collaborators>;
+export type Product = InferSelectModel<typeof products>;
+export type ProductWirhPrice = Product & {
+  prices?: Price[];
+};

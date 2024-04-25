@@ -1,13 +1,20 @@
 "use client";
 
-import React, { Dispatch, createContext, useContext, useEffect, useMemo, useReducer } from "react";
-import { File, Folder, workspace } from "../supabase/supabase.types";
+import { getDocumentByCollectionId } from "@/server/api/document";
 import { usePathname } from "next/navigation";
-import { getFiles } from "../supabase/queries";
+import React, {
+  Dispatch,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
+import { Collection, Document, Workspace } from "../../shared/supabase.types";
 
-export type appFoldersType = Folder & { files: File[] | [] };
-export type appWorkspacesType = workspace & {
-  folders: appFoldersType[] | [];
+export type appCollectionsType = Collection & { documents: Document[] | [] };
+export type appWorkspacesType = Workspace & {
+  collections: appCollectionsType[] | [];
 };
 
 interface AppState {
@@ -26,50 +33,65 @@ type Action =
       payload: { workspaces: appWorkspacesType[] | [] };
     }
   | {
-      type: "SET_FOLDERS";
-      payload: { workspaceId: string; folders: [] | appFoldersType[] };
+      type: "SET_COLLECTIONS";
+      payload: { workspaceId: string; collections: [] | appCollectionsType[] };
     }
   | {
-      type: "ADD_FOLDER";
-      payload: { workspaceId: string; folder: appFoldersType };
+      type: "ADD_COLLECTION";
+      payload: { workspaceId: string; collection: appCollectionsType };
     }
   | {
-      type: "ADD_FILE";
-      payload: { workspaceId: string; file: File; folderId: string };
-    }
-  | {
-      type: "DELETE_FILE";
-      payload: { workspaceId: string; folderId: string; fileId: string };
-    }
-  | {
-      type: "DELETE_FOLDER";
-      payload: { workspaceId: string; folderId: string };
-    }
-  | {
-      type: "SET_FILES";
-      payload: { workspaceId: string; files: File[]; folderId: string };
-    }
-  | {
-      type: "UPDATE_FOLDER";
+      type: "ADD_DOCUMENT";
       payload: {
-        folder: Partial<appFoldersType>;
         workspaceId: string;
-        folderId: string;
+        document: Document;
+        collectionId: string;
       };
     }
   | {
-      type: "UPDATE_FILE";
+      type: "DELETE_DOCUMENT";
       payload: {
-        file: Partial<File>;
-        folderId: string;
         workspaceId: string;
-        fileId: string;
+        collectionId: string;
+        documentId: string;
+      };
+    }
+  | {
+      type: "DELETE_COLLECTION";
+      payload: { workspaceId: string; collectionId: string };
+    }
+  | {
+      type: "SET_DOCUMENTS";
+      payload: {
+        workspaceId: string;
+        documents: Document[];
+        collectionId: string;
+      };
+    }
+  | {
+      type: "UPDATE_COLLECTION";
+      payload: {
+        collection: Partial<appCollectionsType>;
+        workspaceId: string;
+        collectionId: string;
+      };
+    }
+  | {
+      type: "UPDATE_DOCUMENT";
+      payload: {
+        document: Partial<Document>;
+        collectionId: string;
+        workspaceId: string;
+        documentId: string;
       };
     };
 
 const initialState: AppState = { workspaces: [] };
 
-const appReducer = (state: AppState = initialState, action: Action): AppState => {
+const appReducer = (
+  state: AppState = initialState,
+  action: Action
+): AppState => {
   switch (action.type) {
     case "ADD_WORKSPACE":
       return {
@@ -79,7 +101,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
     case "DELETE_WORKSPACE":
       return {
         ...state,
-        workspaces: state.workspaces.filter((workspace) => workspace.id !== action.payload),
+        workspaces: state.workspaces.filter(
+          (workspace) => workspace.id !== action.payload
+        ),
       };
     case "UPDATE_WORKSPACE":
       return {
@@ -99,152 +123,167 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
         ...state,
         workspaces: action.payload.workspaces,
       };
-    case "SET_FOLDERS":
+    case "SET_COLLECTIONS":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: action.payload.folders.sort(
-                (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+              collections: action.payload.collections.sort(
+                (a, b) =>
+                  new Date(a.createAt).getTime() -
+                  new Date(b.createAt).getTime()
               ),
             };
           }
           return workspace;
         }),
       };
-    case "ADD_FOLDER":
+    case "ADD_COLLECTION":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           return {
             ...workspace,
-            folders: [...workspace.folders, action.payload.folder].sort(
-              (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+            collections: [
+              ...workspace.collections,
+              action.payload.collection,
+            ].sort(
+              (a, b) =>
+                new Date(a.createAt).getTime() - new Date(b.createAt).getTime()
             ),
           };
         }),
       };
-    case "UPDATE_FOLDER":
+    case "UPDATE_COLLECTION":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
-                  return { ...folder, ...action.payload.folder };
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
+                  return { ...collection, ...action.payload.collection };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
           return workspace;
         }),
       };
-    case "DELETE_FOLDER":
+    case "DELETE_COLLECTION":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.filter((folder) => folder.id !== action.payload.folderId),
+              collections: workspace.collections.filter(
+                (collection) => collection.id !== action.payload.collectionId
+              ),
             };
           }
           return workspace;
         }),
       };
-    case "SET_FILES":
+    case "SET_DOCUMENTS":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: action.payload.files,
+                    ...collection,
+                    documents: action.payload.documents,
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
           return workspace;
         }),
       };
-    case "ADD_FILE":
+    case "ADD_DOCUMENT":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: [...folder.files, action.payload.file].sort(
-                      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+                    ...collection,
+                    documents: [
+                      ...collection.documents,
+                      action.payload.document,
+                    ].sort(
+                      (a, b) =>
+                        new Date(a.createdAt).getTime() -
+                        new Date(b.createdAt).getTime()
                     ),
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
           return workspace;
         }),
       };
-    case "DELETE_FILE":
+    case "DELETE_DOCUMENT":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folder: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collection: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: folder.files.filter((file) => file.id !== action.payload.fileId),
+                    ...collection,
+                    documents: collection.documents.filter(
+                      (document) => document.id !== action.payload.documentId
+                    ),
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
           return workspace;
         }),
       };
-    case "UPDATE_FILE":
+    case "UPDATE_DOCUMENT":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: folder.files.map((file) => {
-                      if (file.id === action.payload.fileId) {
+                    ...collection,
+                    documents: collection.documents.map((document) => {
+                      if (document.id === action.payload.documentId) {
                         return {
-                          ...file,
-                          ...action.payload.file,
+                          ...document,
+                          ...action.payload.document,
                         };
                       }
-                      return file;
+                      return document;
                     }),
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
@@ -261,8 +300,8 @@ const AppStateContext = createContext<
       state: AppState;
       dispatch: Dispatch<Action>;
       workspaceId: string | undefined;
-      folderId: string | undefined;
-      fileId: string | undefined;
+      collectionId: string | undefined;
+      documentId: string | undefined;
     }
   | undefined
 >(undefined);
@@ -283,7 +322,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
   }, [pathname]);
 
-  const folderId = useMemo(() => {
+  const collectionId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments?.length > 2) {
@@ -291,7 +330,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
   }, [pathname]);
 
-  const fileId = useMemo(() => {
+  const documentId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments?.length > 3) {
@@ -300,27 +339,31 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!folderId || !workspaceId) return;
-    const fetchFiles = async () => {
-      const { error: filesError, data } = await getFiles(folderId);
-      if (filesError) {
-        console.log(filesError);
+    if (!collectionId || !workspaceId) return;
+    const fetchDocuments = async () => {
+      const { error: documentsError, data } = await getDocumentByCollectionId(
+        collectionId
+      );
+      if (documentsError) {
+        console.log(documentsError);
       }
       if (!data) return;
       dispatch({
-        type: "SET_FILES",
-        payload: { workspaceId, files: data, folderId },
+        type: "SET_DOCUMENTS",
+        payload: { workspaceId, documents: data, collectionId },
       });
     };
-    fetchFiles();
-  }, [folderId, workspaceId]);
+    fetchDocuments();
+  }, [collectionId, workspaceId]);
 
   useEffect(() => {
     console.log("App State Changed", state);
   }, [state]);
 
   return (
-    <AppStateContext.Provider value={{ state, dispatch, workspaceId, folderId, fileId }}>
+    <AppStateContext.Provider
+      value={{ state, dispatch, workspaceId, collectionId, documentId }}
+    >
       {children}
     </AppStateContext.Provider>
   );

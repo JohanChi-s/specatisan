@@ -1,8 +1,8 @@
-import { columns } from "@/components/files-table/column";
-import { DataTable } from "@/components/files-table/data-table";
+import { columns } from "@/components/documents-table/column";
+import { DataTable } from "@/components/documents-table/data-table";
 import WorkspaceBreadcumb from "@/components/workspace/WorkspaceBreadcumb";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
-import { getAllFiles } from "@/lib/supabase/queries";
+import { getDocumentByWorkspaceId } from "@/server/api/queries";
 import router from "next/navigation";
 
 type AllDocsPageProps = {
@@ -10,8 +10,8 @@ type AllDocsPageProps = {
 };
 
 const AllDocsPage: React.FC<AllDocsPageProps> = async ({ workspaceId }) => {
-  const { data, error } = await getAllFiles();
-  if (error || !data.length) router.redirect("/dashboard");
+  const { data, error } = await getDocumentByWorkspaceId(workspaceId);
+  if (error || !data?.length) router.redirect("/dashboard");
   // Rest of the code...
 
   return (
@@ -20,7 +20,7 @@ const AllDocsPage: React.FC<AllDocsPageProps> = async ({ workspaceId }) => {
       <WorkspaceNavbar workspaceId={workspaceId} />
       {/* Breadcumb */}
       <WorkspaceBreadcumb />
-      <DataTable columns={columns} data={data} />
+      {/* <DataTable columns={columns} data={data} /> */}
     </div>
   );
 };
