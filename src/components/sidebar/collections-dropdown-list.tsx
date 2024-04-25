@@ -14,12 +14,12 @@ import { Accordion } from "../ui/accordion";
 import { useToast } from "../ui/use-toast";
 import Dropdown from "./Dropdown";
 
-interface FavoritesDropdownListProps {
+interface CollectionsDropdownListProps {
   workspaceCollections: Collection[];
   workspaceId: string;
 }
 
-const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
+const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
   workspaceCollections,
   workspaceId,
 }) => {
@@ -49,16 +49,15 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
         },
       });
     }
-  }, [workspaceCollections, workspaceId]);
+  }, [workspaceCollections, workspaceId, dispatch]);
   //state
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     setCollections(
       state.workspaces.find((workspace) => workspace.id === workspaceId)
         ?.collections || []
     );
-  }, [state]);
+  }, [state, workspaceId]);
 
   //add collection
   const addCollectionHandler = async () => {
@@ -68,13 +67,13 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
     }
     const newCollection: Collection = {
       documentStructure: null,
+      id: v4(),
       createAt: new Date().toISOString(),
       name: "Untitled",
       icon: "📄",
       inTrash: null,
       workspaceId,
       bannerUrl: "",
-      id: v4(),
       urlId: "",
       description: null,
       color: null,
@@ -111,7 +110,6 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
         sticky 
         z-20 
         top-0 
-        bg-background 
         w-full  
         h-10 
         group/title 
@@ -161,4 +159,4 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
   );
 };
 
-export default FavoritesDropdownList;
+export default CollectionsDropdownList;

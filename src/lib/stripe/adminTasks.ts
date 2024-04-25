@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { Price, Product, Subscription } from '../supabase/supabase.types';
+import { Price, Product, Subscription } from '../../shared/supabase.types';
 import db from '../supabase/db';
 import {
   customers,
@@ -7,7 +7,7 @@ import {
   products,
   subscriptions,
   users,
-} from '../../../migrations/schema';
+} from '../supabase/schema';
 import { stripe } from './index';
 import { eq } from 'drizzle-orm';
 import { toDateTime } from '../utils';

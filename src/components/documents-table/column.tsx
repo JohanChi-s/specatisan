@@ -9,13 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { File } from "@/lib/supabase/supabase.types";
+import type { Document } from "@/shared/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Folder, MoreHorizontal } from "lucide-react";
+import { File as FileIcon, FileText, MoreHorizontal } from "lucide-react";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 // import { priorities, statuses } from "./DataTableToolbar";
 
-export const columns: ColumnDef<File>[] = [
+export const columns: ColumnDef<Document>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -40,11 +40,11 @@ export const columns: ColumnDef<File>[] = [
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => {
-      const file = row.original;
+      const document = row.original;
       return (
         <div className="flex items-center">
-          <Folder className="h-4 w-4 mr-2" />
-          <span className="font-bold">{file.title}</span>
+          <FileIcon className="h-4 w-4 mr-2" />
+          <span className="font-bold">{document.title}</span>
         </div>
       );
     },
@@ -55,8 +55,8 @@ export const columns: ColumnDef<File>[] = [
       <DataTableColumnHeader column={column} title="Last Update" />
     ),
     cell: ({ row }) => {
-      const file = row.original;
-      const createdAt = new Date(file.createdAt);
+      const document = row.original;
+      const createdAt = new Date(document.createdAt);
       const formattedDate = `${createdAt.getDate()}-${
         createdAt.getMonth() + 1
       }-${createdAt.getFullYear().toString().slice(-2)}`;
@@ -100,7 +100,7 @@ export const columns: ColumnDef<File>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const file = row.original;
+      const document = row.original;
 
       return (
         <DropdownMenu>
@@ -113,14 +113,14 @@ export const columns: ColumnDef<File>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(file.title)}
+              onClick={() => navigator.clipboard.writeText(document.title)}
             >
-              Copy file ID
+              Copy document ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Share</DropdownMenuItem>
             <DropdownMenuItem>Show hisoty actions</DropdownMenuItem>
-            <DropdownMenuItem>Delete File</DropdownMenuItem>
+            <DropdownMenuItem>Delete Document</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
