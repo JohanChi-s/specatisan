@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
-import { createWorkspace } from "@/server/api/queries";
+import { createWorkspace } from "@/lib/supabase/queries";
 import type { Subscription, Workspace } from "@/shared/supabase.types";
 import type { CreateWorkspaceFormSchema } from "@/lib/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";

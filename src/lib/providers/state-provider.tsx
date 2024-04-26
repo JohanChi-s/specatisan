@@ -1,6 +1,5 @@
 "use client";
 
-import { getDocumentByCollectionId } from "@/server/api/document";
 import { usePathname } from "next/navigation";
 import React, {
   Dispatch,
@@ -11,6 +10,7 @@ import React, {
   useReducer,
 } from "react";
 import { Collection, Document, Workspace } from "../../shared/supabase.types";
+import { getDocumentByCollectionId } from "../supabase/queries";
 
 export type appCollectionsType = Collection & { documents: Document[] | [] };
 export type appWorkspacesType = Workspace & {
@@ -338,23 +338,23 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
   }, [pathname]);
 
-  useEffect(() => {
-    if (!collectionId || !workspaceId) return;
-    const fetchDocuments = async () => {
-      const { error: documentsError, data } = await getDocumentByCollectionId(
-        collectionId
-      );
-      if (documentsError) {
-        console.log(documentsError);
-      }
-      if (!data) return;
-      dispatch({
-        type: "SET_DOCUMENTS",
-        payload: { workspaceId, documents: data, collectionId },
-      });
-    };
-    fetchDocuments();
-  }, [collectionId, workspaceId]);
+  // useEffect(() => {
+  //   if (!collectionId || !workspaceId) return;
+  //   const fetchDocuments = async () => {
+  //     const { error: documentsError, data } = await getDocumentByCollectionId(
+  //       collectionId
+  //     );
+  //     if (documentsError) {
+  //       console.log(documentsError);
+  //     }
+  //     if (!data) return;
+  //     dispatch({
+  //       type: "SET_DOCUMENTS",
+  //       payload: { workspaceId, documents: data, collectionId },
+  //     });
+  //   };
+  //   fetchDocuments();
+  // }, [collectionId, workspaceId]);
 
   useEffect(() => {
     console.log("App State Changed", state);

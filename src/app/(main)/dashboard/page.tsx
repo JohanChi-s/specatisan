@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import db from "@/lib/supabase/db";
 import { redirect } from "next/navigation";
 import DashboardSetup from "@/components/dashboard-setup/dashboard-setup";
-import { getUserSubscriptionStatus } from "@/server/api/queries";
+import { getUserSubscriptionStatus } from "@/lib/supabase/queries";
 
 const DashboardPage = async () => {
   const supabase = createServerComponentClient({ cookies });

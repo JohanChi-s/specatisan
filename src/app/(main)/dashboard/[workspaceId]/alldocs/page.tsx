@@ -2,7 +2,7 @@ import { columns } from "@/components/documents-table/column";
 import { DataTable } from "@/components/documents-table/data-table";
 import WorkspaceBreadcumb from "@/components/workspace/WorkspaceBreadcumb";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
-import { getDocumentByWorkspaceId } from "@/server/api/queries";
+import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
 import router from "next/navigation";
 
 type AllDocsPageProps = {

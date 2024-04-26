@@ -1,7 +1,7 @@
 "use client";
 import { useAppState } from "@/lib/providers/state-provider";
 import { UploadBannerFormSchema } from "@/lib/types";
-import { updateDocument, updateWorkspace } from "@/server/api/queries";
+import { updateDocument, updateWorkspace } from "@/lib/supabase/queries";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";

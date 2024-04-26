@@ -190,7 +190,7 @@ export const documents = pgTable("documents", {
   createdById: uuid("created_by_id")
     .notNull()
     .references(() => users.id),
-  templateId: uuid("template_id").references(() => documents.id),
+  // templateId: uuid("template_id").references(() => documents.id),
   collectionId: uuid("collection_id")
     .notNull()
     .references(() => collections.id),
@@ -456,9 +456,9 @@ export const comments = pgTable("comments", {
     .references(() => collections.id, {
       onDelete: "cascade",
     }),
-  parrentCommentId: uuid("parent_comment_id").references(() => comments.id, {
-    onDelete: "cascade",
-  }),
+  // parrentCommentId: uuid("parent_comment_id").references(() => comments.id, {
+  //   onDelete: "cascade",
+  // }),
 });
 
 export const policies = pgTable("policies", {

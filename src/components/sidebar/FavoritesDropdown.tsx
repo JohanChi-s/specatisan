@@ -3,7 +3,7 @@ import useSupabaseRealtime from "@/lib/hooks/useSupabaseRealtime";
 import { useAppState } from "@/lib/providers/state-provider";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { createCollection } from "@/server/api/queries";
+import { createCollection } from "@/lib/supabase/queries";
 import type { Collection } from "@/shared/supabase.types";
 import { PlusIcon } from "lucide-react";
 import type React from "react";

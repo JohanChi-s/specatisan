@@ -5,7 +5,7 @@ import { Subscription } from "../../shared/supabase.types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useToast } from "@/components/ui/use-toast";
-import { getUserSubscriptionStatus } from "@/server/api/queries";
+import { getUserSubscriptionStatus } from "@/lib/supabase/queries";
 
 type SupabaseUserContextType = {
   user: AuthUser | null;
@@ -44,15 +44,15 @@ export const SupabaseUserProvider: React.FC<SupabaseUserProviderProps> = ({
       if (user) {
         console.log(user);
         setUser(user);
-        const { data, error } = await getUserSubscriptionStatus(user.id);
-        if (data) setSubscription(data);
-        if (error) {
-          toast({
-            title: "Unexpected Error",
-            description:
-              "Oppse! An unexpected error happened. Try again later.",
-          });
-        }
+        // const { data, error } = await getUserSubscriptionStatus(user.id);
+        // if (data) setSubscription(data);
+        // if (error) {
+        //   toast({
+        //     title: "Unexpected Error",
+        //     description:
+        //       "Oppse! An unexpected error happened. Try again later.",
+        //   });
+        // }
       }
     };
     getUser();

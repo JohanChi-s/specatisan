@@ -5,7 +5,7 @@ import {
   getCollectionByWorkspaceId,
   getPrivateWorkspaces,
   getSharedWorkspaces,
-} from "@/server/api/queries";
+} from "@/lib/supabase/queries";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

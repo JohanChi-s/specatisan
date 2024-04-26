@@ -20,7 +20,7 @@ import {
   updateDocument,
   updateCollection,
   updateWorkspace,
-} from "@/server/api/queries";
+} from "@/lib/supabase/queries";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Tooltip,

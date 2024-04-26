@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import React from "react";
 import QuillEditor from "@/components/quill-editor/quill-editor";
-import { getDocumentDetails } from "@/server/api/queries";
+import { getDocumentDetails } from "@/lib/supabase/queries";
 import { redirect } from "next/navigation";
 
 const Document = async ({ params }: { params: { documentId: string } }) => {

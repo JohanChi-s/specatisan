@@ -25,7 +25,7 @@ import {
   getCollaborators,
   removeCollaborators,
   updateWorkspace,
-} from "@/server/api/queries";
+} from "@/lib/supabase/queries";
 import { v4 } from "uuid";
 import {
   Select,

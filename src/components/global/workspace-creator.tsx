@@ -16,7 +16,7 @@ import {
 import { Lock, Plus, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { v4 } from "uuid";
-import { addCollaborators, createWorkspace } from "@/server/api/queries";
+import { addCollaborators, createWorkspace } from "@/lib/supabase/queries";
 import CollaboratorSearch from "./collaborator-search";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

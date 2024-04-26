@@ -2,7 +2,7 @@
 
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 import { useAppState } from "@/lib/providers/state-provider";
-import { getCollectionByWorkspaceId } from "@/server/api/queries";
+import { getCollectionByWorkspaceId } from "@/lib/supabase/queries";
 import type { Collection } from "@/shared/supabase.types";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";

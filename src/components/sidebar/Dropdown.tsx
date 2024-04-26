@@ -5,7 +5,7 @@ import {
   createDocument,
   updateCollection,
   updateDocument,
-} from "@/server/api/queries";
+} from "@/lib/supabase/queries";
 import { Document } from "@/shared/supabase.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import clsx from "clsx";
