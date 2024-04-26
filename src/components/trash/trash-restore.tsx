@@ -1,44 +1,41 @@
-"use client";
-import {
-  appCollectionsType,
-  useAppState,
-} from "@/lib/providers/state-provider";
-import { Document } from "@/shared/supabase.types";
-import { FileIcon, FolderIcon } from "lucide-react";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+'use client';
+import { appFoldersType, useAppState } from '@/lib/providers/state-provider';
+import { File } from '@/lib/supabase/supabase.types';
+import { FileIcon, FolderIcon } from 'lucide-react';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 
 const TrashRestore = () => {
   const { state, workspaceId } = useAppState();
-  const [collections, setCollections] = useState<appCollectionsType[] | []>([]);
-  const [documents, setDocuments] = useState<Document[] | []>([]);
+  const [folders, setFolders] = useState<appFoldersType[] | []>([]);
+  const [files, setFiles] = useState<File[] | []>([]);
 
   useEffect(() => {
-    const stateCollections =
+    const stateFolders =
       state.workspaces
         .find((workspace) => workspace.id === workspaceId)
-        ?.collections.filter((collection) => collection.inTrash) || [];
-    setCollections(stateCollections);
+        ?.folders.filter((folder) => folder.inTrash) || [];
+    setFolders(stateFolders);
 
-    let stateDocuments: Document[] = [];
+    let stateFiles: File[] = [];
     state.workspaces
       .find((workspace) => workspace.id === workspaceId)
-      ?.collections.forEach((collection) => {
-        collection.documents.forEach((document) => {
-          if (document.inTrash) {
-            stateDocuments.push(document);
+      ?.folders.forEach((folder) => {
+        folder.files.forEach((file) => {
+          if (file.inTrash) {
+            stateFiles.push(file);
           }
         });
       });
-    setDocuments(stateDocuments);
+    setFiles(stateFiles);
   }, [state, workspaceId]);
 
   return (
     <section>
-      {!!collections.length && (
+      {!!folders.length && (
         <>
-          <h3>Collections</h3>
-          {collections.map((collection) => (
+          <h3>Folders</h3>
+          {folders.map((folder) => (
             <Link
               className="hover:bg-muted
             rounded-md
@@ -46,39 +43,39 @@ const TrashRestore = () => {
             flex
             item-center
             justify-between"
-              href={`/dashboard/${collection.workspaceId}/${collection.id}`}
-              key={collection.id}
+              href={`/dashboard/${folder.workspaceId}/${folder.id}`}
+              key={folder.id}
             >
               <article>
                 <aside className="flex items-center gap-2">
                   <FolderIcon />
-                  {collection.name}
+                  {folder.title}
                 </aside>
               </article>
             </Link>
           ))}
         </>
       )}
-      {!!documents.length && (
+      {!!files.length && (
         <>
-          <h3>Documents</h3>
-          {documents.map((document) => (
+          <h3>Files</h3>
+          {files.map((file) => (
             <Link
-              key={document.id}
+              key={file.id}
               className=" hover:bg-muted rounded-md p-2 flex items-center justify-between"
-              href={`/dashboard/${document.workspaceId}/${document.collectionId}/${document.id}`}
+              href={`/dashboard/${file.workspaceId}/${file.folderId}/${file.id}`}
             >
               <article>
                 <aside className="flex items-center gap-2">
                   <FileIcon />
-                  {document.title}
+                  {file.title}
                 </aside>
               </article>
             </Link>
           ))}
         </>
       )}
-      {!documents.length && !collections.length && (
+      {!files.length && !folders.length && (
         <div
           className="
           text-muted-foreground

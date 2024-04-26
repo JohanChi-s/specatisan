@@ -1,10 +1,10 @@
-"use client";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { User, Workspace } from "@/shared/supabase.types";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+'use client';
+import { useSupabaseUser } from '@/lib/providers/supabase-user-provider';
+import { User, workspace } from '@/lib/supabase/supabase.types';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -12,22 +12,22 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Lock, Plus, Share } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { v4 } from "uuid";
-import { addCollaborators, createWorkspace } from "@/server/api/queries";
-import CollaboratorSearch from "./collaborator-search";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/components/ui/use-toast";
+} from '@/components/ui/select';
+import { Lock, Plus, Share } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { v4 } from 'uuid';
+import { addCollaborators, createWorkspace } from '@/lib/supabase/queries';
+import CollaboratorSearch from './collaborator-search';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useToast } from '@/components/ui/use-toast';
 
 const WorkspaceCreator = () => {
   const { user } = useSupabaseUser();
   const { toast } = useToast();
   const router = useRouter();
-  const [permissions, setPermissions] = useState("private");
-  const [title, setTitle] = useState("");
+  const [permissions, setPermissions] = useState('private');
+  const [title, setTitle] = useState('');
   const [collaborators, setCollaborators] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,24 +43,24 @@ const WorkspaceCreator = () => {
     setIsLoading(true);
     const uuid = v4();
     if (user?.id) {
-      const newWorkspace: Workspace = {
+      const newWorkspace: workspace = {
         data: null,
         createdAt: new Date().toISOString(),
-        iconId: "💼",
+        iconId: '💼',
         id: uuid,
-        inTrash: "",
+        inTrash: '',
         title,
         workspaceOwner: user.id,
         logo: null,
-        bannerUrl: "",
+        bannerUrl: '',
       };
-      if (permissions === "private") {
-        toast({ title: "Success", description: "Created the workspace" });
+      if (permissions === 'private') {
+        toast({ title: 'Success', description: 'Created the workspace' });
         await createWorkspace(newWorkspace);
         router.refresh();
       }
-      if (permissions === "shared") {
-        toast({ title: "Success", description: "Created the workspace" });
+      if (permissions === 'shared') {
+        toast({ title: 'Success', description: 'Created the workspace' });
         await createWorkspace(newWorkspace);
         await addCollaborators(collaborators, uuid);
         router.refresh();
@@ -143,7 +143,7 @@ const WorkspaceCreator = () => {
           </SelectContent>
         </Select>
       </>
-      {permissions === "shared" && (
+      {permissions === 'shared' && (
         <div>
           <CollaboratorSearch
             existingCollaborators={collaborators}
@@ -158,7 +158,7 @@ const WorkspaceCreator = () => {
           </CollaboratorSearch>
           <div className="mt-4">
             <span className="text-sm text-muted-foreground">
-              Collaborators {collaborators.length || ""}
+              Collaborators {collaborators.length || ''}
             </span>
             <ScrollArea
               className="
@@ -228,10 +228,10 @@ const WorkspaceCreator = () => {
         type="button"
         disabled={
           !title ||
-          (permissions === "shared" && collaborators.length === 0) ||
+          (permissions === 'shared' && collaborators.length === 0) ||
           isLoading
         }
-        variant={"secondary"}
+        variant={'secondary'}
         onClick={createItem}
       >
         Create

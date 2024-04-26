@@ -257,7 +257,7 @@ export const collections = pgTable("collections", {
   urlId: text("url_id").notNull().unique(),
   name: text("name").notNull(),
   description: text("description"),
-  icon: text("icon").notNull(),
+  icon: text("icon"),
   color: text("color"),
   index: text("index"),
   permission: text("permission"),
@@ -444,7 +444,7 @@ export const comments = pgTable("comments", {
     withTimezone: true,
     mode: "string",
   })
-    .default(sql`now()`)
+    .defaultNow()
     .notNull(),
   content: jsonb("content").notNull(),
   createById: uuid("created_by_id")

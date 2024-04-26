@@ -1,25 +1,35 @@
 "use client";
-import { cn } from "@/lib/utils";
 import {
   getCollaboratingWorkspaces,
-  getCollectionByWorkspaceId,
+  getFolders,
   getPrivateWorkspaces,
   getSharedWorkspaces,
-} from "@/server/api/queries";
+  getUserSubscriptionStatus,
+} from "@/lib/supabase/queries";
+import { cn } from "@/lib/utils";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Settings from "../settings/settings";
 import WorkspaceSwitcher from "./WorkspaceSwitcher";
+import Settings from "../settings/settings";
+import Trash from "../trash/trash";
 
-import type { Collection, Workspace } from "@/shared/supabase.types";
-import { Download, FolderIcon, Plus, Settings2, Trash2 } from "lucide-react";
-import { Button, buttonVariants } from "../ui/button";
-import { Separator } from "../ui/separator";
 import AccountInfo from "./AccountInfo";
 import SearchCommandPalette from "./SearchCommandPalette";
-import CollectionsDropdownList from "./collections-dropdown-list";
+import { Separator } from "../ui/separator";
+import type { Folder, workspace } from "@/lib/supabase/supabase.types";
+import { Button, buttonVariants } from "../ui/button";
+import {
+  Calendar,
+  Download,
+  FolderIcon,
+  Plus,
+  Settings2,
+  Trash2,
+} from "lucide-react";
+import FoldersDropdownList from "./folders-dropdown-list";
+import { useAppState } from "@/lib/providers/state-provider";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -30,16 +40,16 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
   const router = useRouter();
 
-  const [workspaceCollectionData, setWorkspaceCollectionData] = useState<
-    Collection | any
-  >([]);
-  const [privateWorkspaces, setPrivateWorkspaces] = useState<Workspace | any>(
+  const [workspaceFolderData, setWorkspaceFolderData] = useState<Folder | any>(
+    []
+  );
+  const [privateWorkspaces, setPrivateWorkspaces] = useState<workspace | any>(
     []
   );
   const [collaboratingWorkspaces, setCollaboratingWorkspaces] = useState<
-    Workspace | any
+    workspace | any
   >([]);
-  const [sharedWorkspaces, setSharedWorkspaces] = useState<Workspace | any>([]);
+  const [sharedWorkspaces, setSharedWorkspaces] = useState<workspace | any>([]);
 
   useEffect(() => {
     const supabase = createClientComponentClient();
@@ -56,12 +66,11 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
 
         // setUser(user);
 
-        const { data: workspaceCollectionData, error: collectionsError } =
-          await getCollectionByWorkspaceId(params.workspaceId);
-        if (workspaceCollectionData)
-          setWorkspaceCollectionData(workspaceCollectionData);
-        if (collectionsError) {
-          router.push("/dashboard"); // Redirect to dashboard on collections error
+        const { data: workspaceFolderData, error: foldersError } =
+          await getFolders(params.workspaceId);
+        if (workspaceFolderData) setWorkspaceFolderData(workspaceFolderData);
+        if (foldersError) {
+          router.push("/dashboard"); // Redirect to dashboard on folders error
           return;
         }
 
@@ -147,8 +156,8 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           </li> */}
         </ul>
         {/* Collections */}
-        <CollectionsDropdownList
-          workspaceCollections={workspaceCollectionData}
+        <FoldersDropdownList
+          workspaceFolders={workspaceFolderData}
           workspaceId={params.workspaceId}
         />
 
