@@ -1,7 +1,7 @@
-'use client';
-import { useSupabaseUser } from '@/lib/providers/supabase-user-provider';
-import { User } from '@/lib/supabase/supabase.types';
-import React, { useEffect, useRef, useState } from 'react';
+"use client";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { User } from "@/lib/supabase/supabase.types";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -9,14 +9,14 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { Label } from '../ui/label';
-import { Search } from 'lucide-react';
-import { Input } from '../ui/input';
-import { ScrollArea } from '../ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from '../ui/button';
-import { getUsersFromSearch } from '@/lib/supabase/queries';
+} from "@/components/ui/sheet";
+import { Label } from "../ui/label";
+import { Search } from "lucide-react";
+import { Input } from "../ui/input";
+import { ScrollArea } from "../ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { getUsersFromSearch } from "@/lib/supabase/queries";
 
 interface CollaboratorSearchProps {
   existingCollaborators: User[] | [];
@@ -39,7 +39,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
     };
   }, []);
 
-  const getUserData = ()=>{}
+  const getUserData = () => {};
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (timerRef) clearTimeout(timerRef.current);

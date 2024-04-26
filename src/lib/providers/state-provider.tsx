@@ -1,9 +1,16 @@
 "use client";
 
-import React, { Dispatch, createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import React, {
+  Dispatch,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
 import { File, Folder, workspace } from "../supabase/supabase.types";
 import { usePathname } from "next/navigation";
-import { getFiles } from "../supabase/queries";
+import { getFiles } from "@/lib/supabase/queries";
 
 export type appFoldersType = Folder & { files: File[] | [] };
 export type appWorkspacesType = workspace & {
@@ -69,7 +76,10 @@ type Action =
 
 const initialState: AppState = { workspaces: [] };
 
-const appReducer = (state: AppState = initialState, action: Action): AppState => {
+const appReducer = (
+  state: AppState = initialState,
+  action: Action
+): AppState => {
   switch (action.type) {
     case "ADD_WORKSPACE":
       return {
@@ -79,7 +89,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
     case "DELETE_WORKSPACE":
       return {
         ...state,
-        workspaces: state.workspaces.filter((workspace) => workspace.id !== action.payload),
+        workspaces: state.workspaces.filter(
+          (workspace) => workspace.id !== action.payload
+        ),
       };
     case "UPDATE_WORKSPACE":
       return {
@@ -107,7 +119,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
             return {
               ...workspace,
               folders: action.payload.folders.sort(
-                (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+                (a, b) =>
+                  new Date(a.createdAt).getTime() -
+                  new Date(b.createdAt).getTime()
               ),
             };
           }
@@ -121,7 +135,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
           return {
             ...workspace,
             folders: [...workspace.folders, action.payload.folder].sort(
-              (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+              (a, b) =>
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime()
             ),
           };
         }),
@@ -151,7 +167,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.filter((folder) => folder.id !== action.payload.folderId),
+              folders: workspace.folders.filter(
+                (folder) => folder.id !== action.payload.folderId
+              ),
             };
           }
           return workspace;
@@ -190,7 +208,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
                   return {
                     ...folder,
                     files: [...folder.files, action.payload.file].sort(
-                      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+                      (a, b) =>
+                        new Date(a.createdAt).getTime() -
+                        new Date(b.createdAt).getTime()
                     ),
                   };
                 }
@@ -212,7 +232,9 @@ const appReducer = (state: AppState = initialState, action: Action): AppState =>
                 if (folder.id === action.payload.folderId) {
                   return {
                     ...folder,
-                    files: folder.files.filter((file) => file.id !== action.payload.fileId),
+                    files: folder.files.filter(
+                      (file) => file.id !== action.payload.fileId
+                    ),
                   };
                 }
                 return folder;
@@ -320,7 +342,9 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [state]);
 
   return (
-    <AppStateContext.Provider value={{ state, dispatch, workspaceId, folderId, fileId }}>
+    <AppStateContext.Provider
+      value={{ state, dispatch, workspaceId, folderId, fileId }}
+    >
       {children}
     </AppStateContext.Provider>
   );

@@ -1,27 +1,27 @@
-'use client';
+"use client";
 import {
   appFoldersType,
   appWorkspacesType,
   useAppState,
-} from '@/lib/providers/state-provider';
-import { Folder, workspace } from '@/lib/supabase/supabase.types';
-import { UploadBannerFormSchema } from '@/lib/types';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import React from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import Loader from '../global/Loader';
+} from "@/lib/providers/state-provider";
+import { Folder, workspace } from "@/lib/supabase/supabase.types";
+import { UploadBannerFormSchema } from "@/lib/types";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import Loader from "../global/Loader";
 import {
   updateFile,
   updateFolder,
   updateWorkspace,
-} from '@/lib/supabase/queries';
+} from "@/lib/supabase/queries";
 
 interface BannerUploadFormProps {
-  dirType: 'workspace' | 'file' | 'folder';
+  dirType: "workspace" | "file" | "folder";
   id: string;
 }
 
@@ -34,9 +34,9 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
     reset,
     formState: { isSubmitting: isUploading, errors },
   } = useForm<z.infer<typeof UploadBannerFormSchema>>({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
-      banner: '',
+      banner: "",
     },
   });
   const onSubmitHandler: SubmitHandler<
@@ -49,16 +49,16 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
 
       const uploadBanner = async () => {
         const { data, error } = await supabase.storage
-          .from('file-banners')
-          .upload(`banner-${id}`, file, { cacheControl: '5', upsert: true });
+          .from("file-banners")
+          .upload(`banner-${id}`, file, { cacheControl: "5", upsert: true });
         if (error) throw new Error();
         filePath = data.path;
       };
-      if (dirType === 'file') {
+      if (dirType === "file") {
         if (!workspaceId || !folderId) return;
         await uploadBanner();
         dispatch({
-          type: 'UPDATE_FILE',
+          type: "UPDATE_FILE",
           payload: {
             file: { bannerUrl: filePath },
             fileId: id,
@@ -67,11 +67,11 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
           },
         });
         await updateFile({ bannerUrl: filePath }, id);
-      } else if (dirType === 'folder') {
+      } else if (dirType === "folder") {
         if (!workspaceId || !folderId) return;
         await uploadBanner();
         dispatch({
-          type: 'UPDATE_FOLDER',
+          type: "UPDATE_FOLDER",
           payload: {
             folderId: id,
             folder: { bannerUrl: filePath },
@@ -79,11 +79,11 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
           },
         });
         await updateFolder({ bannerUrl: filePath }, id);
-      } else if (dirType === 'workspace') {
+      } else if (dirType === "workspace") {
         if (!workspaceId) return;
         await uploadBanner();
         dispatch({
-          type: 'UPDATE_WORKSPACE',
+          type: "UPDATE_WORKSPACE",
           payload: {
             workspace: { bannerUrl: filePath },
             workspaceId,
@@ -98,10 +98,7 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
       onSubmit={handleSubmit(onSubmitHandler)}
       className="flex flex-col gap-2"
     >
-      <Label
-        className="text-sm text-muted-foreground"
-        htmlFor="bannerImage"
-      >
+      <Label className="text-sm text-muted-foreground" htmlFor="bannerImage">
         Banner Image
       </Label>
       <Input
@@ -109,16 +106,13 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
         type="file"
         accept="image/*"
         disabled={isUploading}
-        {...register('banner', { required: 'Banner Image is required' })}
+        {...register("banner", { required: "Banner Image is required" })}
       />
       <small className="text-red-600">
         {errors.banner?.message?.toString()}
       </small>
-      <Button
-        disabled={isUploading}
-        type="submit"
-      >
-        {!isUploading ? 'Upload Banner' : <Loader />}
+      <Button disabled={isUploading} type="submit">
+        {!isUploading ? "Upload Banner" : <Loader />}
       </Button>
     </form>
   );
