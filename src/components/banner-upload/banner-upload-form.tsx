@@ -1,24 +1,33 @@
 "use client";
-import { useAppState } from "@/lib/providers/state-provider";
+import {
+  appFoldersType,
+  appWorkspacesType,
+  useAppState,
+} from "@/lib/providers/state-provider";
+import { Folder, workspace } from "@/lib/supabase/supabase.types";
 import { UploadBannerFormSchema } from "@/lib/types";
-import { updateDocument, updateWorkspace } from "@/lib/supabase/queries";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import Loader from "../global/Loader";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import Loader from "../global/Loader";
+import {
+  updateFile,
+  updateFolder,
+  updateWorkspace,
+} from "@/lib/supabase/queries";
 
 interface BannerUploadFormProps {
-  dirType: "workspace" | "document";
+  dirType: "workspace" | "file" | "folder";
   id: string;
 }
 
 const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
   const supabase = createClientComponentClient();
-  const { state, workspaceId, collectionId, dispatch } = useAppState();
+  const { state, workspaceId, folderId, dispatch } = useAppState();
   const {
     register,
     handleSubmit,
@@ -33,45 +42,54 @@ const BannerUploadForm: React.FC<BannerUploadFormProps> = ({ dirType, id }) => {
   const onSubmitHandler: SubmitHandler<
     z.infer<typeof UploadBannerFormSchema>
   > = async (values) => {
-    const document = values.banner?.[0];
-    if (!document || !id) return;
+    const file = values.banner?.[0];
+    if (!file || !id) return;
     try {
-      let documentPath = null;
+      let filePath = null;
 
       const uploadBanner = async () => {
         const { data, error } = await supabase.storage
-          .from("document-banners")
-          .upload(`banner-${id}`, document, {
-            cacheControl: "5",
-            upsert: true,
-          });
+          .from("file-banners")
+          .upload(`banner-${id}`, file, { cacheControl: "5", upsert: true });
         if (error) throw new Error();
-        documentPath = data.path;
+        filePath = data.path;
       };
-      if (dirType === "document") {
-        if (!workspaceId || !collectionId) return;
+      if (dirType === "file") {
+        if (!workspaceId || !folderId) return;
         await uploadBanner();
         dispatch({
-          type: "UPDATE_DOCUMENT",
+          type: "UPDATE_FILE",
           payload: {
-            document: { bannerUrl: documentPath },
-            documentId: id,
-            collectionId,
+            file: { bannerUrl: filePath },
+            fileId: id,
+            folderId,
             workspaceId,
           },
         });
-        await updateDocument(id, { bannerUrl: documentPath });
+        await updateFile({ bannerUrl: filePath }, id);
+      } else if (dirType === "folder") {
+        if (!workspaceId || !folderId) return;
+        await uploadBanner();
+        dispatch({
+          type: "UPDATE_FOLDER",
+          payload: {
+            folderId: id,
+            folder: { bannerUrl: filePath },
+            workspaceId,
+          },
+        });
+        await updateFolder({ bannerUrl: filePath }, id);
       } else if (dirType === "workspace") {
         if (!workspaceId) return;
         await uploadBanner();
         dispatch({
           type: "UPDATE_WORKSPACE",
           payload: {
-            workspace: { bannerUrl: documentPath },
+            workspace: { bannerUrl: filePath },
             workspaceId,
           },
         });
-        await updateWorkspace({ bannerUrl: documentPath }, id);
+        await updateWorkspace({ bannerUrl: filePath }, id);
       }
     } catch (error) {}
   };

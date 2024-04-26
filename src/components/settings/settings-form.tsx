@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
-import { User, Workspace } from "@/shared/supabase.types";
+import { User, workspace } from "@/lib/supabase/supabase.types";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -67,7 +67,7 @@ const SettingsForm = () => {
   const [permissions, setPermissions] = useState("private");
   const [collaborators, setCollaborators] = useState<User[] | []>([]);
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
-  const [workspaceDetails, setWorkspaceDetails] = useState<Workspace>();
+  const [workspaceDetails, setWorkspaceDetails] = useState<workspace>();
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -129,13 +129,13 @@ const SettingsForm = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!workspaceId) return;
-    const document = e.target.files?.[0];
-    if (!document) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
     const uuid = v4();
     setUploadingLogo(true);
     const { data, error } = await supabase.storage
       .from("workspace-logos")
-      .upload(`workspaceLogo.${uuid}`, document, {
+      .upload(`workspaceLogo.${uuid}`, file, {
         cacheControl: "3600",
         upsert: true,
       });
