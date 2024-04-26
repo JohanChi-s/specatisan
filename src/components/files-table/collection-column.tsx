@@ -9,13 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Document } from "@/lib/supabase/supabase.types";
+import type { Collection } from "@/lib/supabase/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { File as FileIcon, FileText, MoreHorizontal } from "lucide-react";
+import { FolderIcon, FileText, MoreHorizontal } from "lucide-react";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 // import { priorities, statuses } from "./DataTableToolbar";
 
-export const columns: ColumnDef<Document>[] = [
+export const collectionColumns: ColumnDef<Collection>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -37,14 +37,14 @@ export const columns: ColumnDef<Document>[] = [
     ),
   },
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: "Title",
     cell: ({ row }) => {
-      const document = row.original;
+      const collection = row.original;
       return (
         <div className="flex items-center">
-          <FileIcon className="h-4 w-4 mr-2" />
-          <span className="font-bold">{document.title}</span>
+          <FolderIcon className="h-4 w-4 mr-2" />
+          <span className="font-bold">{collection.name}</span>
         </div>
       );
     },
@@ -55,8 +55,8 @@ export const columns: ColumnDef<Document>[] = [
       <DataTableColumnHeader column={column} title="Last Update" />
     ),
     cell: ({ row }) => {
-      const document = row.original;
-      const createdAt = new Date(document.createdAt);
+      const collection = row.original;
+      const createdAt = new Date(collection.createdAt);
       const formattedDate = `${createdAt.getDate()}-${
         createdAt.getMonth() + 1
       }-${createdAt.getFullYear().toString().slice(-2)}`;
@@ -100,7 +100,7 @@ export const columns: ColumnDef<Document>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const document = row.original;
+      const collection = row.original;
 
       return (
         <DropdownMenu>
@@ -113,9 +113,9 @@ export const columns: ColumnDef<Document>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(document.title)}
+              onClick={() => navigator.clipboard.writeText(collection.name)}
             >
-              Copy document ID
+              Copy collection ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Share</DropdownMenuItem>

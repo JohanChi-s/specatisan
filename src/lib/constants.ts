@@ -118,7 +118,7 @@ export const PRICING_CARDS = [
     highlightFeature: '',
     freatures: [
       'Unlimited blocks for teams',
-      'Unlimited file uploads',
+      'Unlimited document uploads',
       '30 day page history',
       'Invite 2 guests',
     ],
@@ -130,7 +130,7 @@ export const PRICING_CARDS = [
     highlightFeature: 'Everything in free +',
     freatures: [
       'Unlimited blocks for teams',
-      'Unlimited file uploads',
+      'Unlimited document uploads',
       '1 year day page history',
       'Invite 10 guests',
     ],

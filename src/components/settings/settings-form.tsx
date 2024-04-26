@@ -129,13 +129,13 @@ const SettingsForm = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!workspaceId) return;
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const document = e.target.documents?.[0];
+    if (!document) return;
     const uuid = v4();
     setUploadingLogo(true);
     const { data, error } = await supabase.storage
       .from("workspace-logos")
-      .upload(`workspaceLogo.${uuid}`, file, {
+      .upload(`workspaceLogo.${uuid}`, document, {
         cacheControl: "3600",
         upsert: true,
       });

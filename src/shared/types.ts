@@ -17,7 +17,7 @@ export enum ExportContentType {
   Pdf = "application/pdf",
 }
 
-export enum FileOperationFormat {
+export enum DocumentOperationFormat {
   JSON = "json",
   MarkdownZip = "outline-markdown",
   HTMLZip = "html",
@@ -25,12 +25,12 @@ export enum FileOperationFormat {
   Notion = "notion",
 }
 
-export enum FileOperationType {
+export enum DocumentOperationType {
   Import = "import",
   Export = "export",
 }
 
-export enum FileOperationState {
+export enum DocumentOperationState {
   Creating = "creating",
   Uploading = "uploading",
   Complete = "complete",
@@ -138,7 +138,7 @@ export enum UserPreference {
 export type UserPreferences = { [key in UserPreference]?: boolean };
 
 export type SourceMetadata = {
-  /** The original source file name. */
+  /** The original source document name. */
   fileName?: string;
   /** The original source mime type. */
   mimeType?: string;

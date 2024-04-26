@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons';
-import * as React from 'react';
+import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import * as React from "react";
 
-import { useAppState } from '@/lib/providers/state-provider';
-import { workspace } from '@/lib/supabase/supabase.types';
-import { cn } from '@/lib/utils';
-import { Cloud } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from '../ui/button';
+import { useAppState } from "@/lib/providers/state-provider";
+import { workspace } from "@/lib/supabase/supabase.types";
+import { cn } from "@/lib/utils";
+import { Cloud } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
   Command,
   CommandEmpty,
@@ -17,7 +17,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '../ui/command';
+} from "../ui/command";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +26,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import CustomDialogTrigger from '../global/custom-dialog-trigger';
-import WorkspaceCreator from '../global/workspace-creator';
+} from "../ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import CustomDialogTrigger from "../global/custom-dialog-trigger";
+import WorkspaceCreator from "../global/workspace-creator";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -60,13 +60,13 @@ export default function WorkspaceSwitcher({
   React.useEffect(() => {
     if (!state.workspaces.length) {
       dispatch({
-        type: 'SET_WORKSPACES',
+        type: "SET_WORKSPACES",
         payload: {
           workspaces: [
             ...privateWorkspaces,
             ...sharedWorkspaces,
             ...collaboratingWorkspaces,
-          ].map((workspace) => ({ ...workspace, folders: [] })),
+          ].map((workspace) => ({ ...workspace, collections: [] })),
         },
       });
     }
@@ -130,10 +130,10 @@ export default function WorkspaceSwitcher({
                     {workspace.title}
                     <CheckIcon
                       className={cn(
-                        'ml-auto h-4 w-4',
+                        "ml-auto h-4 w-4",
                         selectedWorkspace?.id === workspace.id
-                          ? 'opacity-100'
-                          : 'opacity-0'
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                   </CommandItem>

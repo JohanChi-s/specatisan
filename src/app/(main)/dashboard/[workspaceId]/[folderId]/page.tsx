@@ -2,18 +2,21 @@ export const dynamic = "force-dynamic";
 
 import React from "react";
 import QuillEditor from "@/components/quill-editor/quill-editor";
-import { getFolderDetails } from "@/lib/supabase/queries";
+import { getCollectionDetails } from "@/lib/supabase/queries";
 import { redirect } from "next/navigation";
 
-const Folder = async ({ params }: { params: { folderId: string } }) => {
-  const { data, error } = await getFolderDetails(params.folderId);
-  if (error || !data.length) redirect("/dashboard");
+const Collection = async ({ params }: { params: { collectionId: string } }) => {
+  const { data, error } = await getCollectionDetails(params.collectionId);
+  if (error || !data.length) {
+    console.log("error", error);
+    redirect("/dasboard");
+  }
 
   return (
     <div className="relative ">
       {/* <QuillEditor
-        dirType="folder"
-        fileId={params.folderId}
+        dirType="collection"
+        fileId={params.collectionId}
         dirDetails={data[0] || {}}
       /> */}
       Workspace
@@ -21,4 +24,4 @@ const Folder = async ({ params }: { params: { folderId: string } }) => {
   );
 };
 
-export default Folder;
+export default Collection;

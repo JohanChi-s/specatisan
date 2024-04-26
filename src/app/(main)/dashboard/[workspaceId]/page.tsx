@@ -7,7 +7,10 @@ import React from "react";
 
 const Workspace = async ({ params }: { params: { workspaceId: string } }) => {
   const { data, error } = await getWorkspaceDetails(params.workspaceId);
-  if (error || !data.length) redirect("/dashboard");
+  if (error) {
+    console.log("error", error);
+    redirect("/login");
+  }
   return (
     <div className="relative">
       {/* <QuillEditor

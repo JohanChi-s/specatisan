@@ -8,13 +8,13 @@ import React, {
   useMemo,
   useReducer,
 } from "react";
-import { File, Folder, workspace } from "../supabase/supabase.types";
+import { Document, Collection, workspace } from "../supabase/supabase.types";
 import { usePathname } from "next/navigation";
-import { getFiles } from "@/lib/supabase/queries";
+import { getDocuments } from "@/lib/supabase/queries";
 
-export type appFoldersType = Folder & { files: File[] | [] };
+export type appCollectionsType = Collection & { documents: Document[] | [] };
 export type appWorkspacesType = workspace & {
-  folders: appFoldersType[] | [];
+  collections: appCollectionsType[] | [];
 };
 
 interface AppState {
@@ -34,41 +34,49 @@ type Action =
     }
   | {
       type: "SET_FOLDERS";
-      payload: { workspaceId: string; folders: [] | appFoldersType[] };
+      payload: { workspaceId: string; collections: [] | appCollectionsType[] };
     }
   | {
       type: "ADD_FOLDER";
-      payload: { workspaceId: string; folder: appFoldersType };
+      payload: { workspaceId: string; collection: appCollectionsType };
     }
   | {
       type: "ADD_FILE";
-      payload: { workspaceId: string; file: File; folderId: string };
+      payload: {
+        workspaceId: string;
+        document: Document;
+        collectionId: string;
+      };
     }
   | {
       type: "DELETE_FILE";
-      payload: { workspaceId: string; folderId: string; fileId: string };
+      payload: { workspaceId: string; collectionId: string; fileId: string };
     }
   | {
       type: "DELETE_FOLDER";
-      payload: { workspaceId: string; folderId: string };
+      payload: { workspaceId: string; collectionId: string };
     }
   | {
       type: "SET_FILES";
-      payload: { workspaceId: string; files: File[]; folderId: string };
+      payload: {
+        workspaceId: string;
+        documents: Document[];
+        collectionId: string;
+      };
     }
   | {
       type: "UPDATE_FOLDER";
       payload: {
-        folder: Partial<appFoldersType>;
+        collection: Partial<appCollectionsType>;
         workspaceId: string;
-        folderId: string;
+        collectionId: string;
       };
     }
   | {
       type: "UPDATE_FILE";
       payload: {
-        file: Partial<File>;
-        folderId: string;
+        document: Partial<Document>;
+        collectionId: string;
         workspaceId: string;
         fileId: string;
       };
@@ -118,7 +126,7 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: action.payload.folders.sort(
+              collections: action.payload.collections.sort(
                 (a, b) =>
                   new Date(a.createdAt).getTime() -
                   new Date(b.createdAt).getTime()
@@ -134,7 +142,10 @@ const appReducer = (
         workspaces: state.workspaces.map((workspace) => {
           return {
             ...workspace,
-            folders: [...workspace.folders, action.payload.folder].sort(
+            collections: [
+              ...workspace.collections,
+              action.payload.collection,
+            ].sort(
               (a, b) =>
                 new Date(a.createdAt).getTime() -
                 new Date(b.createdAt).getTime()
@@ -149,11 +160,11 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
-                  return { ...folder, ...action.payload.folder };
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
+                  return { ...collection, ...action.payload.collection };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
@@ -167,8 +178,8 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.filter(
-                (folder) => folder.id !== action.payload.folderId
+              collections: workspace.collections.filter(
+                (collection) => collection.id !== action.payload.collectionId
               ),
             };
           }
@@ -182,14 +193,14 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: action.payload.files,
+                    ...collection,
+                    documents: action.payload.documents,
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
@@ -203,18 +214,21 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: [...folder.files, action.payload.file].sort(
+                    ...collection,
+                    documents: [
+                      ...collection.documents,
+                      action.payload.document,
+                    ].sort(
                       (a, b) =>
                         new Date(a.createdAt).getTime() -
                         new Date(b.createdAt).getTime()
                     ),
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
@@ -228,16 +242,16 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folder: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collection: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: folder.files.filter(
-                      (file) => file.id !== action.payload.fileId
+                    ...collection,
+                    documents: collection.documents.filter(
+                      (document) => document.id !== action.payload.fileId
                     ),
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
@@ -251,22 +265,22 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              folders: workspace.folders.map((folder) => {
-                if (folder.id === action.payload.folderId) {
+              collections: workspace.collections.map((collection) => {
+                if (collection.id === action.payload.collectionId) {
                   return {
-                    ...folder,
-                    files: folder.files.map((file) => {
-                      if (file.id === action.payload.fileId) {
+                    ...collection,
+                    documents: collection.documents.map((document) => {
+                      if (document.id === action.payload.fileId) {
                         return {
-                          ...file,
-                          ...action.payload.file,
+                          ...document,
+                          ...action.payload.document,
                         };
                       }
-                      return file;
+                      return document;
                     }),
                   };
                 }
-                return folder;
+                return collection;
               }),
             };
           }
@@ -283,7 +297,7 @@ const AppStateContext = createContext<
       state: AppState;
       dispatch: Dispatch<Action>;
       workspaceId: string | undefined;
-      folderId: string | undefined;
+      collectionId: string | undefined;
       fileId: string | undefined;
     }
   | undefined
@@ -305,7 +319,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
   }, [pathname]);
 
-  const folderId = useMemo(() => {
+  const collectionId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments?.length > 2) {
@@ -322,20 +336,20 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!folderId || !workspaceId) return;
-    const fetchFiles = async () => {
-      const { error: filesError, data } = await getFiles(folderId);
+    if (!collectionId || !workspaceId) return;
+    const fetchDocuments = async () => {
+      const { error: filesError, data } = await getDocuments(collectionId);
       if (filesError) {
         console.log(filesError);
       }
       if (!data) return;
       dispatch({
         type: "SET_FILES",
-        payload: { workspaceId, files: data, folderId },
+        payload: { workspaceId, documents: data, collectionId },
       });
     };
-    fetchFiles();
-  }, [folderId, workspaceId]);
+    fetchDocuments();
+  }, [collectionId, workspaceId]);
 
   useEffect(() => {
     console.log("App State Changed", state);
@@ -343,7 +357,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
 
   return (
     <AppStateContext.Provider
-      value={{ state, dispatch, workspaceId, folderId, fileId }}
+      value={{ state, dispatch, workspaceId, collectionId, fileId }}
     >
       {children}
     </AppStateContext.Provider>

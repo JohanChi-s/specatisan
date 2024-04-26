@@ -55,16 +55,16 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
   const onSubmit: SubmitHandler<
     z.infer<typeof CreateWorkspaceFormSchema>
   > = async (value) => {
-    const file = value.logo?.[0];
+    const document = value.logo?.[0];
     let filePath = null;
     const workspaceUUID = v4();
-    console.log(file);
+    console.log(document);
 
-    if (file) {
+    if (document) {
       try {
         const { data, error } = await supabase.storage
           .from("workspace-logos")
-          .upload(`workspaceLogo.${workspaceUUID}`, file, {
+          .upload(`workspaceLogo.${workspaceUUID}`, document, {
             cacheControl: "3600",
             upsert: true,
           });
@@ -96,7 +96,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
       dispatch({
         type: "ADD_WORKSPACE",
-        payload: { ...newWorkspace, folders: [] },
+        payload: { ...newWorkspace, collections: [] },
       });
 
       toast({

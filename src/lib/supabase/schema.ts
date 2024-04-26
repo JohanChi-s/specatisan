@@ -191,9 +191,6 @@ export const documents = pgTable("documents", {
     .notNull()
     .references(() => users.id),
   // templateId: uuid("template_id").references(() => documents.id),
-  collectionId: uuid("collection_id")
-    .notNull()
-    .references(() => collections.id),
   iconId: text("icon_id").notNull(),
   data: text("data"),
   collaboratorIds: text("collaborator_ids").array(),
@@ -202,7 +199,7 @@ export const documents = pgTable("documents", {
   workspaceId: uuid("workspace_id")
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
-  folderId: uuid("folder_id")
+  collectionId: uuid("collection_id")
     .notNull()
     .references(() => collections.id, { onDelete: "cascade" }),
 });
@@ -251,7 +248,7 @@ export const memberShip = pgTable("user_permissions", {
 
 export const collections = pgTable("collections", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
-  createAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .default(sql`now()`)
     .notNull(),
   urlId: text("url_id").notNull().unique(),

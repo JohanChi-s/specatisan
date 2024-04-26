@@ -214,7 +214,7 @@ export type Database = {
           created_by_id: string;
           data: string | null;
           emoji: string | null;
-          folder_id: string;
+          collection_id: string;
           fullwidth: boolean | null;
           icon_id: string;
           id: string;
@@ -241,7 +241,7 @@ export type Database = {
           created_by_id: string;
           data?: string | null;
           emoji?: string | null;
-          folder_id: string;
+          collection_id: string;
           fullwidth?: boolean | null;
           icon_id: string;
           id?: string;
@@ -268,7 +268,7 @@ export type Database = {
           created_by_id?: string;
           data?: string | null;
           emoji?: string | null;
-          folder_id?: string;
+          collection_id?: string;
           fullwidth?: boolean | null;
           icon_id?: string;
           id?: string;
@@ -301,8 +301,8 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "documents_folder_id_collections_id_fk";
-            columns: ["folder_id"];
+            foreignKeyName: "documents_collection_id_collections_id_fk";
+            columns: ["collection_id"];
             isOneToOne: false;
             referencedRelation: "collections";
             referencedColumns: ["id"];

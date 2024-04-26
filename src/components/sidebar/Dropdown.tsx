@@ -10,18 +10,22 @@ import {
 } from "../ui/accordion";
 import clsx from "clsx";
 import EmojiPicker from "../global/emoji-picker";
-import { createFile, updateFile, updateFolder } from "@/lib/supabase/queries";
+import {
+  createDocument,
+  updateDocument,
+  updateCollection,
+} from "@/lib/supabase/queries";
 import { useToast } from "../ui/use-toast";
 import TooltipComponent from "../global/tooltip-component";
 import { PlusIcon, Trash } from "lucide-react";
-import { File } from "@/lib/supabase/supabase.types";
+import { Document } from "@/lib/supabase/supabase.types";
 import { v4 } from "uuid";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 
 interface DropdownProps {
   title: string;
   id: string;
-  listType: "folder" | "file";
+  listType: "collection" | "document";
   iconId: string;
   children?: React.ReactNode;
   disabled?: boolean;
@@ -39,16 +43,16 @@ const Dropdown: React.FC<DropdownProps> = ({
   const supabase = createClientComponentClient();
   const { toast } = useToast();
   const { user } = useSupabaseUser();
-  const { state, dispatch, workspaceId, folderId } = useAppState();
+  const { state, dispatch, workspaceId, collectionId } = useAppState();
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
-  //folder Title synced with server data and local
-  const folderTitle: string | undefined = useMemo(() => {
-    if (listType === "folder") {
+  //collection Title synced with server data and local
+  const collectionTitle: string | undefined = useMemo(() => {
+    if (listType === "collection") {
       const stateTitle = state.workspaces
         .find((workspace) => workspace.id === workspaceId)
-        ?.folders.find((folder) => folder.id === id)?.title;
+        ?.collections.find((collection) => collection.id === id)?.title;
       if (title === stateTitle || !stateTitle) return title;
       return stateTitle;
     }
@@ -57,12 +61,16 @@ const Dropdown: React.FC<DropdownProps> = ({
   //fileItitle
 
   const fileTitle: string | undefined = useMemo(() => {
-    if (listType === "file") {
-      const fileAndFolderId = id.split("folder");
+    if (listType === "document") {
+      const fileAndCollectionId = id.split("collection");
       const stateTitle = state.workspaces
         .find((workspace) => workspace.id === workspaceId)
-        ?.folders.find((folder) => folder.id === fileAndFolderId[0])
-        ?.files.find((file) => file.id === fileAndFolderId[1])?.title;
+        ?.collections.find(
+          (collection) => collection.id === fileAndCollectionId[0]
+        )
+        ?.documents.find(
+          (document) => document.id === fileAndCollectionId[1]
+        )?.title;
       if (title === stateTitle || !stateTitle) return title;
       return stateTitle;
     }
@@ -70,13 +78,13 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   //Navigate the user to a different page
   const navigatatePage = (accordionId: string, type: string) => {
-    if (type === "folder") {
+    if (type === "collection") {
       router.push(`/dashboard/${workspaceId}/${accordionId}`);
     }
-    if (type === "file") {
+    if (type === "document") {
       router.push(
-        `/dashboard/${workspaceId}/${folderId}/${
-          accordionId.split("folder")[1]
+        `/dashboard/${workspaceId}/${collectionId}/${
+          accordionId.split("collection")[1]
         }`
       );
     }
@@ -91,29 +99,32 @@ const Dropdown: React.FC<DropdownProps> = ({
   const handleBlur = async () => {
     if (!isEditing) return;
     setIsEditing(false);
-    const fId = id.split("folder");
+    const fId = id.split("collection");
     if (fId?.length === 1) {
-      if (!folderTitle) return;
+      if (!collectionTitle) return;
       toast({
         title: "Success",
-        description: "Folder title changed.",
+        description: "Collection title changed.",
       });
-      await updateFolder({ title }, fId[0]);
+      await updateCollection({ title }, fId[0]);
     }
 
     if (fId.length === 2 && fId[1]) {
       if (!fileTitle) return;
-      const { data, error } = await updateFile({ title: fileTitle }, fId[1]);
+      const { data, error } = await updateDocument(
+        { title: fileTitle },
+        fId[1]
+      );
       if (error) {
         toast({
           title: "Error",
           variant: "destructive",
-          description: "Could not update the title for this file",
+          description: "Could not update the title for this document",
         });
       } else
         toast({
           title: "Success",
-          description: "File title changed.",
+          description: "Document title changed.",
         });
     }
   };
@@ -121,53 +132,56 @@ const Dropdown: React.FC<DropdownProps> = ({
   //onchanges
   const onChangeEmoji = async (selectedEmoji: string) => {
     if (!workspaceId) return;
-    if (listType === "folder") {
+    if (listType === "collection") {
       dispatch({
         type: "UPDATE_FOLDER",
         payload: {
           workspaceId,
-          folderId: id,
-          folder: { iconId: selectedEmoji },
+          collectionId: id,
+          collection: { iconId: selectedEmoji },
         },
       });
-      const { data, error } = await updateFolder({ iconId: selectedEmoji }, id);
+      const { data, error } = await updateCollection(
+        { iconId: selectedEmoji },
+        id
+      );
       if (error) {
         toast({
           title: "Error",
           variant: "destructive",
-          description: "Could not update the emoji for this folder",
+          description: "Could not update the emoji for this collection",
         });
       } else {
         toast({
           title: "Success",
-          description: "Update emoji for the folder",
+          description: "Update emoji for the collection",
         });
       }
     }
   };
-  const folderTitleChange = (e: any) => {
+  const collectionTitleChange = (e: any) => {
     if (!workspaceId) return;
-    const fid = id.split("folder");
+    const fid = id.split("collection");
     if (fid.length === 1) {
       dispatch({
         type: "UPDATE_FOLDER",
         payload: {
-          folder: { title: e.target.value },
-          folderId: fid[0],
+          collection: { title: e.target.value },
+          collectionId: fid[0],
           workspaceId,
         },
       });
     }
   };
   const fileTitleChange = (e: any) => {
-    if (!workspaceId || !folderId) return;
-    const fid = id.split("folder");
+    if (!workspaceId || !collectionId) return;
+    const fid = id.split("collection");
     if (fid.length === 2 && fid[1]) {
       dispatch({
         type: "UPDATE_FILE",
         payload: {
-          file: { title: e.target.value },
-          folderId,
+          document: { title: e.target.value },
+          collectionId,
           workspaceId,
           fileId: fid[1],
         },
@@ -178,17 +192,17 @@ const Dropdown: React.FC<DropdownProps> = ({
   //move to trash
   const moveToTrash = async () => {
     if (!user?.email || !workspaceId) return;
-    const pathId = id.split("folder");
-    if (listType === "folder") {
+    const pathId = id.split("collection");
+    if (listType === "collection") {
       dispatch({
         type: "UPDATE_FOLDER",
         payload: {
-          folder: { inTrash: `Deleted by ${user?.email}` },
-          folderId: pathId[0],
+          collection: { inTrash: `Deleted by ${user?.email}` },
+          collectionId: pathId[0],
           workspaceId,
         },
       });
-      const { data, error } = await updateFolder(
+      const { data, error } = await updateCollection(
         { inTrash: `Deleted by ${user?.email}` },
         pathId[0]
       );
@@ -196,27 +210,27 @@ const Dropdown: React.FC<DropdownProps> = ({
         toast({
           title: "Error",
           variant: "destructive",
-          description: "Could not move the folder to trash",
+          description: "Could not move the collection to trash",
         });
       } else {
         toast({
           title: "Success",
-          description: "Moved folder to trash",
+          description: "Moved collection to trash",
         });
       }
     }
 
-    if (listType === "file") {
+    if (listType === "document") {
       dispatch({
         type: "UPDATE_FILE",
         payload: {
-          file: { inTrash: `Deleted by ${user?.email}` },
-          folderId: pathId[0],
+          document: { inTrash: `Deleted by ${user?.email}` },
+          collectionId: pathId[0],
           workspaceId,
           fileId: pathId[1],
         },
       });
-      const { data, error } = await updateFile(
+      const { data, error } = await updateDocument(
         { inTrash: `Deleted by ${user?.email}` },
         pathId[1]
       );
@@ -224,33 +238,33 @@ const Dropdown: React.FC<DropdownProps> = ({
         toast({
           title: "Error",
           variant: "destructive",
-          description: "Could not move the folder to trash",
+          description: "Could not move the collection to trash",
         });
       } else {
         toast({
           title: "Success",
-          description: "Moved folder to trash",
+          description: "Moved collection to trash",
         });
       }
     }
   };
 
-  const isFolder = listType === "folder";
+  const isCollection = listType === "collection";
   const groupIdentifies = clsx(
     "dark:text-white whitespace-nowrap flex justify-between items-center w-full relative",
     {
-      "group/folder": isFolder,
-      "group/file": !isFolder,
+      "group/collection": isCollection,
+      "group/document": !isCollection,
     }
   );
 
   const listStyles = useMemo(
     () =>
       clsx("relative", {
-        "border-none text-md": isFolder,
-        "border-none ml-6 text-[16px] py-1": !isFolder,
+        "border-none text-md": isCollection,
+        "border-none ml-6 text-[16px] py-1": !isCollection,
       }),
-    [isFolder]
+    [isCollection]
   );
 
   const hoverStyles = useMemo(
@@ -258,17 +272,17 @@ const Dropdown: React.FC<DropdownProps> = ({
       clsx(
         "h-full hidden rounded-sm absolute right-0 items-center justify-center",
         {
-          "group-hover/file:block": listType === "file",
-          "group-hover/folder:block": listType === "folder",
+          "group-hover/document:block": listType === "document",
+          "group-hover/collection:block": listType === "collection",
         }
       ),
-    [isFolder]
+    [isCollection]
   );
 
-  const addNewFile = async () => {
+  const addNewDocument = async () => {
     if (!workspaceId) return;
-    const newFile: File = {
-      folderId: id,
+    const newDocument: Document = {
+      collectionId: id,
       data: null,
       createdAt: new Date().toISOString(),
       inTrash: null,
@@ -280,19 +294,19 @@ const Dropdown: React.FC<DropdownProps> = ({
     };
     dispatch({
       type: "ADD_FILE",
-      payload: { file: newFile, folderId: id, workspaceId },
+      payload: { document: newDocument, collectionId: id, workspaceId },
     });
-    const { data, error } = await createFile(newFile);
+    const { data, error } = await createDocument(newDocument);
     if (error) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Could not create a file",
+        description: "Could not create a document",
       });
     } else {
       toast({
         title: "Success",
-        description: "File created.",
+        description: "Document created.",
       });
     }
   };
@@ -312,7 +326,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         p-2 
         dark:text-muted-foreground 
         text-sm"
-        disabled={listType === "file"}
+        disabled={listType === "document"}
       >
         <div className={groupIdentifies}>
           <div
@@ -327,7 +341,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             </div>
             <input
               type="text"
-              value={listType === "folder" ? folderTitle : fileTitle}
+              value={listType === "collection" ? collectionTitle : fileTitle}
               className={clsx(
                 "outline-none overflow-hidden w-[140px] text-Neutrals/neutrals-7",
                 {
@@ -339,22 +353,24 @@ const Dropdown: React.FC<DropdownProps> = ({
               onDoubleClick={handleDoubleClick}
               onBlur={handleBlur}
               onChange={
-                listType === "folder" ? folderTitleChange : fileTitleChange
+                listType === "collection"
+                  ? collectionTitleChange
+                  : fileTitleChange
               }
             />
           </div>
           <div className={hoverStyles}>
-            <TooltipComponent message="Delete Folder">
+            <TooltipComponent message="Delete Collection">
               <Trash
                 onClick={moveToTrash}
                 size={15}
                 className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
               />
             </TooltipComponent>
-            {listType === "folder" && !isEditing && (
-              <TooltipComponent message="Add File">
+            {listType === "collection" && !isEditing && (
+              <TooltipComponent message="Add Document">
                 <PlusIcon
-                  onClick={addNewFile}
+                  onClick={addNewDocument}
                   size={15}
                   className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
                 />
@@ -366,17 +382,17 @@ const Dropdown: React.FC<DropdownProps> = ({
       <AccordionContent>
         {state.workspaces
           .find((workspace) => workspace.id === workspaceId)
-          ?.folders.find((folder) => folder.id === id)
-          ?.files.filter((file) => !file.inTrash)
-          .map((file) => {
-            const customFileId = `${id}folder${file.id}`;
+          ?.collections.find((collection) => collection.id === id)
+          ?.documents.filter((document) => !document.inTrash)
+          .map((document) => {
+            const customDocumentId = `${id}collection${document.id}`;
             return (
               <Dropdown
-                key={file.id}
-                title={file.title}
-                listType="file"
-                id={customFileId}
-                iconId={file.iconId}
+                key={document.id}
+                title={document.title}
+                listType="document"
+                id={customDocumentId}
+                iconId={document.iconId}
               />
             );
           })}
