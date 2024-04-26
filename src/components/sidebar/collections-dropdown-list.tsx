@@ -27,7 +27,7 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
   const { open, setOpen } = useSubscriptionModal();
   const { toast } = useToast();
   const [collections, setCollections] = useState(workspaceCollections);
-  const { subscription } = useSupabaseUser();
+  const { subscription, user } = useSupabaseUser();
 
   //effec set nitial satte server app state
   useEffect(() => {
@@ -64,14 +64,23 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
       return;
     }
     const newCollection: Collection = {
-      data: null,
+      documentStructure: null,
       id: v4(),
       createdAt: new Date().toISOString(),
-      title: "Untitled",
-      iconId: "📄",
+      name: "Untitled",
+      icon: "📄",
       inTrash: null,
       workspaceId,
       bannerUrl: "",
+      urlId: "",
+      description: null,
+      color: null,
+      index: null,
+      permission: null,
+      maintainerApprovalRequired: null,
+      sharing: false,
+      importId: null,
+      createdById: user?.id || "",
     };
     dispatch({
       type: "ADD_FOLDER",

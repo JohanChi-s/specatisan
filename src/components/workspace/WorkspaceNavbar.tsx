@@ -16,7 +16,7 @@ import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/router";
 
 type WorkspaceNavbarProps = {
-  workspaceId: string;
+  workspaceId?: string;
   isShowTabs?: boolean;
 };
 
