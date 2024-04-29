@@ -49,26 +49,6 @@ export const collectionColumns: ColumnDef<Collection>[] = [
       );
     },
   },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Update" />
-    ),
-    cell: ({ row }) => {
-      const collection = row.original;
-      const createdAt = new Date(collection.createdAt);
-      const formattedDate = `${createdAt.getDate()}-${
-        createdAt.getMonth() + 1
-      }-${createdAt.getFullYear().toString().slice(-2)}`;
-      const formattedTime = ` ${createdAt.getHours()}:${createdAt.getMinutes()}`;
-      return (
-        <div>
-          <span>{formattedDate}</span>
-          <span>{formattedTime}</span>
-        </div>
-      );
-    },
-  },
   // {
   // 	accessorKey: "priority",
   // 	header: ({ column }) => (
@@ -120,7 +100,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>Share</DropdownMenuItem>
             <DropdownMenuItem>Show hisoty actions</DropdownMenuItem>
-            <DropdownMenuItem>Delete Document</DropdownMenuItem>
+            <DropdownMenuItem>Delete Collection</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

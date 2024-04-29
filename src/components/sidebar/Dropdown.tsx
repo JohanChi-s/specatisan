@@ -21,6 +21,7 @@ import { PlusIcon, Trash } from "lucide-react";
 import { Document } from "@/lib/supabase/supabase.types";
 import { v4 } from "uuid";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { Collection } from "@/shared2/supabase.types";
 
 interface DropdownProps {
   title: string;
@@ -52,7 +53,9 @@ const Dropdown: React.FC<DropdownProps> = ({
     if (listType === "collection") {
       const stateTitle = state.workspaces
         .find((workspace) => workspace.id === workspaceId)
-        ?.collections.find((collection) => collection.id === id)?.title;
+        ?.collections.find(
+          (collection: Collection) => collection.id === id
+        )?.title;
       if (title === stateTitle || !stateTitle) return title;
       return stateTitle;
     }
@@ -66,10 +69,10 @@ const Dropdown: React.FC<DropdownProps> = ({
       const stateTitle = state.workspaces
         .find((workspace) => workspace.id === workspaceId)
         ?.collections.find(
-          (collection) => collection.id === fileAndCollectionId[0]
+          (collection: Collection) => collection.id === fileAndCollectionId[0]
         )
         ?.documents.find(
-          (document) => document.id === fileAndCollectionId[1]
+          (document: Document) => document.id === fileAndCollectionId[1]
         )?.title;
       if (title === stateTitle || !stateTitle) return title;
       return stateTitle;
@@ -106,7 +109,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         title: "Success",
         description: "Collection title changed.",
       });
-      await updateCollection({ title }, fId[0]);
+      await updateCollection({ name: title }, fId[0]);
     }
 
     if (fId.length === 2 && fId[1]) {
@@ -138,11 +141,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         payload: {
           workspaceId,
           collectionId: id,
-          collection: { iconId: selectedEmoji },
+          collection: { icon: selectedEmoji },
         },
       });
       const { data, error } = await updateCollection(
-        { iconId: selectedEmoji },
+        { icon: selectedEmoji },
         id
       );
       if (error) {
@@ -166,7 +169,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       dispatch({
         type: "UPDATE_FOLDER",
         payload: {
-          collection: { title: e.target.value },
+          collection: { name: e.target.value },
           collectionId: fid[0],
           workspaceId,
         },
@@ -276,7 +279,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           "group-hover/collection:block": listType === "collection",
         }
       ),
-    [isCollection]
+    [listType]
   );
 
   const addNewDocument = async () => {
@@ -291,6 +294,20 @@ const Dropdown: React.FC<DropdownProps> = ({
       id: v4(),
       workspaceId,
       bannerUrl: "",
+      summary: null,
+      template: null,
+      text: null,
+      fullwidth: null,
+      emoji: null,
+      contenct: null,
+      revisionCount: null,
+      archivedAt: null,
+      publishedAt: null,
+      sourceMetadata: undefined,
+      parentDocumentId: null,
+      lastModifiedById: null,
+      createdById: "",
+      collaboratorIds: null,
     };
     dispatch({
       type: "ADD_FILE",
@@ -382,9 +399,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       <AccordionContent>
         {state.workspaces
           .find((workspace) => workspace.id === workspaceId)
-          ?.collections.find((collection) => collection.id === id)
-          ?.documents.filter((document) => !document.inTrash)
-          .map((document) => {
+          ?.collections.find((collection: Collection) => collection.id === id)
+          ?.documents.filter((document: Document) => !document.inTrash)
+          .map((document: Document) => {
             const customDocumentId = `${id}collection${document.id}`;
             return (
               <Dropdown

@@ -17,7 +17,7 @@ export enum ExportContentType {
   Pdf = "application/pdf",
 }
 
-export enum DocumentOperationFormat {
+export enum FileOperationFormat {
   JSON = "json",
   MarkdownZip = "outline-markdown",
   HTMLZip = "html",
@@ -25,12 +25,12 @@ export enum DocumentOperationFormat {
   Notion = "notion",
 }
 
-export enum DocumentOperationType {
+export enum FileOperationType {
   Import = "import",
   Export = "export",
 }
 
-export enum DocumentOperationState {
+export enum FileOperationState {
   Creating = "creating",
   Uploading = "uploading",
   Complete = "complete",
@@ -110,17 +110,17 @@ export enum DocumentPermission {
 export type IntegrationSettings<T> = T extends IntegrationType.Embed
   ? { url: string }
   : T extends IntegrationType.Analytics
-    ? { measurementId: string }
-    : T extends IntegrationType.Post
-      ? { url: string; channel: string; channelId: string }
-      : T extends IntegrationType.Command
-        ? { serviceTeamId: string }
-        :
-            | { url: string }
-            | { url: string; channel: string; channelId: string }
-            | { serviceTeamId: string }
-            | { measurementId: string }
-            | undefined;
+  ? { measurementId: string }
+  : T extends IntegrationType.Post
+  ? { url: string; channel: string; channelId: string }
+  : T extends IntegrationType.Command
+  ? { serviceTeamId: string }
+  :
+      | { url: string }
+      | { url: string; channel: string; channelId: string }
+      | { serviceTeamId: string }
+      | { measurementId: string }
+      | undefined;
 
 export enum UserPreference {
   /** Whether reopening the app should redirect to the last viewed document. */
@@ -138,7 +138,7 @@ export enum UserPreference {
 export type UserPreferences = { [key in UserPreference]?: boolean };
 
 export type SourceMetadata = {
-  /** The original source document name. */
+  /** The original source file name. */
   fileName?: string;
   /** The original source mime type. */
   mimeType?: string;
@@ -205,6 +205,52 @@ export type CollectionSort = {
   field: string;
   direction: "asc" | "desc";
 };
+
+export enum NotificationEventType {
+  PublishDocument = "documents.publish",
+  UpdateDocument = "documents.update",
+  AddUserToDocument = "documents.add_user",
+  AddUserToCollection = "collections.add_user",
+  CreateRevision = "revisions.create",
+  CreateCollection = "collections.create",
+  CreateComment = "comments.create",
+  MentionedInDocument = "documents.mentioned",
+  MentionedInComment = "comments.mentioned",
+  InviteAccepted = "emails.invite_accepted",
+  Onboarding = "emails.onboarding",
+  Features = "emails.features",
+  ExportCompleted = "emails.export_completed",
+}
+
+export enum NotificationChannelType {
+  App = "app",
+  Email = "email",
+  Chat = "chat",
+}
+
+export type NotificationSettings = {
+  [key in NotificationEventType]?:
+    | {
+        [key in NotificationChannelType]?: boolean;
+      }
+    | boolean;
+};
+
+export const NotificationEventDefaults = {
+  [NotificationEventType.PublishDocument]: false,
+  [NotificationEventType.UpdateDocument]: true,
+  [NotificationEventType.CreateCollection]: false,
+  [NotificationEventType.CreateComment]: true,
+  [NotificationEventType.MentionedInDocument]: true,
+  [NotificationEventType.MentionedInComment]: true,
+  [NotificationEventType.InviteAccepted]: true,
+  [NotificationEventType.Onboarding]: true,
+  [NotificationEventType.Features]: true,
+  [NotificationEventType.ExportCompleted]: true,
+  [NotificationEventType.AddUserToDocument]: true,
+  [NotificationEventType.AddUserToCollection]: true,
+};
+
 export enum UnfurlType {
   Mention = "mention",
   Document = "document",

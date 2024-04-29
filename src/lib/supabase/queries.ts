@@ -2,7 +2,7 @@
 import { validate } from 'uuid';
 import db from './db';
 import { Document, Collection, Subscription, User, Workspace } from './supabase.types';
-import { and, eq, ilike, notExists } from 'drizzle-orm';
+import { and, eq, ilike, isNotNull, notExists } from 'drizzle-orm';
 import { collaborators, collections, documents, users, workspaces } from './schema';
 import { revalidatePath } from 'next/cache';
 
@@ -229,6 +229,21 @@ export const getDocumentByWorkspaceId = async (workspaceId: string) => {
     return { data: null, error: 'Error' };
   }
 };
+
+export const getDocumentsIntrash = async (workspaceId: string) => {
+  const isValid = validate(workspaceId);
+  if (!isValid) return { data: null, error: 'Error' };
+  try {
+    const results = await db.query.documents.findMany({
+      where: (doc, { and, eq, isNotNull }) =>
+        and(eq(doc.workspaceId, workspaceId), isNotNull(doc.inTrash)),
+    });
+    return { data: results, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: 'Error' };
+  }
+}
 
 export const addCollaborators = async (users: User[], workspaceId: string) => {
   const response = users.forEach(async (user: User) => {

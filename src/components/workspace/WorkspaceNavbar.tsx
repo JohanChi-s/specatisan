@@ -1,19 +1,9 @@
 "use client";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import Link from "next/link";
-import { Separator } from "../ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "../ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/router";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type WorkspaceNavbarProps = {
   workspaceId?: string;

@@ -208,7 +208,6 @@ export type Database = {
           archived_at: string | null;
           banner_url: string | null;
           collaborator_ids: string[] | null;
-          collection_id: string;
           content: Json | null;
           created_at: string;
           created_by_id: string;
@@ -235,7 +234,6 @@ export type Database = {
           archived_at?: string | null;
           banner_url?: string | null;
           collaborator_ids?: string[] | null;
-          collection_id: string;
           content?: Json | null;
           created_at?: string;
           created_by_id: string;
@@ -262,7 +260,6 @@ export type Database = {
           archived_at?: string | null;
           banner_url?: string | null;
           collaborator_ids?: string[] | null;
-          collection_id?: string;
           content?: Json | null;
           created_at?: string;
           created_by_id?: string;
