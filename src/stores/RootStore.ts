@@ -1,3 +1,4 @@
+"use client"
 import invariant from "invariant";
 import lowerFirst from "lodash/lowerFirst";
 import pluralize from "pluralize";

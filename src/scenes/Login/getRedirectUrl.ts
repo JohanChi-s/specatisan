@@ -1,7 +1,6 @@
 import { Client } from "@/shared/types";
 import { parseDomain } from "@/shared/utils/domains";
-import env from "@/app/env";
-import Desktop from "@/utils/Desktop";
+import {env} from "@/app/env";
 
 /**
  * If we're on a custom domain or a subdomain then the auth must point to the
@@ -16,9 +15,6 @@ export function getRedirectUrl(authUrl: string) {
 
   if (custom || teamSubdomain) {
     url.searchParams.set("host", host);
-  }
-  if (Desktop.isElectron()) {
-    url.searchParams.set("client", Client.Desktop);
   }
 
   return url.toString();

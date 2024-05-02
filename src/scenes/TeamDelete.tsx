@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 import Flex from "@/components/Flex";
 import Input from "@/components/Input";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useCurrentTeam from "@/hooks/useCurrentTeam";
 import useStores from "@/hooks/useStores";
 

@@ -9,7 +9,7 @@ import * as Y from "yjs";
 import { supportsPassiveListener } from "@/shared/utils/browser";
 import Editor, { Props as EditorProps } from "@/components/Editor";
 import MultiplayerExtension from "@/editor/extensions/Multiplayer";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useIdle from "@/hooks/useIdle";
 import useIsMounted from "@/hooks/useIsMounted";

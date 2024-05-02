@@ -16,7 +16,7 @@ import InputSearch from "@/components/InputSearch";
 import Modal from "@/components/Modal";
 import Scene from "@/components/Scene";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useBoolean from "@/hooks/useBoolean";
 import useCurrentTeam from "@/hooks/useCurrentTeam";
 import usePolicy from "@/hooks/usePolicy";

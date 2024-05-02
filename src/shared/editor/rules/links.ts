@@ -1,6 +1,6 @@
 import MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token";
-import env from "../../env";
+import { env } from "../../env";
 
 function isParagraph(token: Token) {
   return token.type === "paragraph_open";

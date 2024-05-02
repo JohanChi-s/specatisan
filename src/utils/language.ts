@@ -1,6 +1,5 @@
 import { i18n } from "i18next";
 import { unicodeCLDRtoBCP47 } from "@/shared/utils/date";
-import Desktop from "./Desktop";
 
 /**
  * Detects the user's language based on the browser's language settings.
@@ -30,6 +29,5 @@ export async function changeLanguage(
 
   if (localeBCP && i18n.languages?.[0] !== localeBCP) {
     await i18n.changeLanguage(localeBCP);
-    await Desktop.bridge?.setSpellCheckerLanguages(["en-US", localeBCP]);
   }
 }

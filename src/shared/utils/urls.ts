@@ -1,5 +1,5 @@
 import escapeRegExp from "lodash/escapeRegExp";
-import env from "../env";
+import { env } from "../env";
 import { RESERVED_SUBDOMAINS, getBaseDomain, parseDomain } from "./domains";
 
 /**

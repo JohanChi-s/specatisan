@@ -1,3 +1,5 @@
+"use client";
+
 import { action, autorun, computed, observable } from "mobx";
 import { light as defaultTheme } from "@/shared/styles/theme";
 import Storage from "@/shared/utils/Storage";
@@ -7,8 +9,11 @@ import type { ConnectionStatus } from "@/scenes/Document/components/MultiplayerE
 const UI_STORE = "UI_STORE";
 
 // Whether the window launched with sidebar force hidden
-let sidebarHidden = window.location.search.includes("sidebarHidden=true");
+let sidebarHidden = false;
 
+if (typeof window !== 'undefined') {
+  sidebarHidden = window.location.search.includes("sidebarHidden=true");
+}
 export enum Theme {
   Light = "light",
   Dark = "dark",

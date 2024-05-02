@@ -4,17 +4,15 @@ import {
   ArchiveIcon,
   TrashIcon,
   EditIcon,
-  OpenIcon,
+  ExternalLink,
   SettingsIcon,
   KeyboardIcon,
-  EmailIcon,
-  LogoutIcon,
-  ProfileIcon,
-  BrowserIcon,
+  Mail,
+  LogOutIcon,
+  User2,
   ShapesIcon,
 } from "lucide-react";
 import * as React from "react";
-import { isMac } from "@/shared/utils/browser";
 import {
   developersUrl,
   changelogUrl,
@@ -26,8 +24,7 @@ import SearchQuery from "@/models/SearchQuery";
 import KeyboardShortcuts from "@/scenes/KeyboardShortcuts";
 import { createAction } from "@/actions";
 import { NavigationSection, RecentSearchesSection } from "@/actions/sections";
-import env from "@/app/env";
-import Desktop from "@/utils/Desktop";
+import { env } from "@/app/env";
 import history from "@/utils/history";
 import isCloudHosted from "@/utils/isCloudHosted";
 import {
@@ -102,7 +99,7 @@ export const navigateToProfileSettings = createAction({
   analyticsName: "Navigate to profile settings",
   section: NavigationSection,
   iconInContextMenu: false,
-  icon: <ProfileIcon />,
+  icon: <User2 />,
   perform: () => history.push(settingsPath()),
 });
 
@@ -120,7 +117,7 @@ export const navigateToNotificationSettings = createAction({
   analyticsName: "Navigate to notification settings",
   section: NavigationSection,
   iconInContextMenu: false,
-  icon: <EmailIcon />,
+  icon: <Mail />,
   perform: () => history.push(settingsPath("notifications")),
 });
 
@@ -138,7 +135,7 @@ export const openAPIDocumentation = createAction({
   analyticsName: "Open API documentation",
   section: NavigationSection,
   iconInContextMenu: false,
-  icon: <OpenIcon />,
+  icon: <ExternalLink />,
   perform: () => window.open(developersUrl()),
 });
 
@@ -155,7 +152,7 @@ export const openFeedbackUrl = createAction({
   analyticsName: "Open feedback",
   section: NavigationSection,
   iconInContextMenu: false,
-  icon: <EmailIcon />,
+  icon: <Mail />,
   perform: () => window.open(feedbackUrl()),
 });
 
@@ -171,7 +168,7 @@ export const openChangelog = createAction({
   analyticsName: "Open changelog",
   section: NavigationSection,
   iconInContextMenu: false,
-  icon: <OpenIcon />,
+  icon: <ExternalLink />,
   perform: () => window.open(changelogUrl()),
 });
 
@@ -190,26 +187,11 @@ export const openKeyboardShortcuts = createAction({
   },
 });
 
-export const downloadApp = createAction({
-  name: ({ t }) =>
-    t("Download {{ platform }} app", {
-      platform: isMac() ? "macOS" : "Windows",
-    }),
-  analyticsName: "Download app",
-  section: NavigationSection,
-  iconInContextMenu: false,
-  icon: <BrowserIcon />,
-  visible: () => !Desktop.isElectron() && isMac() && isCloudHosted,
-  perform: () => {
-    window.open("https://desktop.getoutline.com");
-  },
-});
-
 export const logout = createAction({
   name: ({ t }) => t("Log out"),
   analyticsName: "Log out",
   section: NavigationSection,
-  icon: <LogoutIcon />,
+  icon: <LogOutIcon />,
   perform: () => {
     void stores.auth.logout();
     if (env.OIDC_LOGOUT_URI) {
@@ -223,7 +205,6 @@ export const rootNavigationActions = [
   navigateToDrafts,
   navigateToArchive,
   navigateToTrash,
-  downloadApp,
   openAPIDocumentation,
   openFeedbackUrl,
   openBugReportUrl,

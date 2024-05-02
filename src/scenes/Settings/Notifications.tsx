@@ -23,7 +23,7 @@ import Notice from "@/components/Notice";
 import Scene from "@/components/Scene";
 import Switch from "@/components/Switch";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import isCloudHosted from "@/utils/isCloudHosted";
 import SettingRow from "./components/SettingRow";

@@ -13,7 +13,7 @@ import Item from "@/components/List/Item";
 import PaginatedList from "@/components/PaginatedList";
 import Scene from "@/components/Scene";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useStores from "@/hooks/useStores";
 import FileOperationListItem from "./components/FileOperationListItem";
 import ImportJSONDialog from "./components/ImportJSONDialog";

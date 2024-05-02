@@ -31,16 +31,16 @@ type FetchPageParams = PaginationParams & Record<string, any>;
 export const PAGINATION_SYMBOL: symbol = Symbol.for("pagination");
 
 export default abstract class Store<T extends Model> {
-  @observable
+  // @observable
   data: Map<string, T> = new Map();
 
-  @observable
+  // @observable
   isFetching = false;
 
-  @observable
+  // @observable
   isSaving = false;
 
-  @observable
+  // @observable
   isLoaded = false;
 
   model: typeof Model;
@@ -69,7 +69,7 @@ export default abstract class Store<T extends Model> {
     }
   }
 
-  @action
+  // @action
   clear() {
     this.data.clear();
   }
@@ -78,7 +78,7 @@ export default abstract class Store<T extends Model> {
     policies?.forEach((policy) => this.rootStore.policies.add(policy));
   };
 
-  @action
+  // @action
   add = (item: PartialWithId<T> | T): T => {
     const ModelClass = this.model;
 
@@ -100,7 +100,7 @@ export default abstract class Store<T extends Model> {
     return item;
   };
 
-  @action
+  // @action
   remove(id: string): void {
     const inverseRelations = getInverseRelationsForModelClass(this.model);
 
@@ -157,7 +157,7 @@ export default abstract class Store<T extends Model> {
     return this.data.get(id);
   }
 
-  @action
+  // @action
   async create(params: Properties<T>, options?: JSONObject): Promise<T> {
     if (!this.actions.includes(RPCAction.Create)) {
       throw new Error(`Cannot create ${this.modelName}`);
@@ -181,7 +181,7 @@ export default abstract class Store<T extends Model> {
     }
   }
 
-  @action
+  // @action
   async update(params: Properties<T>, options?: JSONObject): Promise<T> {
     if (!this.actions.includes(RPCAction.Update)) {
       throw new Error(`Cannot update ${this.modelName}`);
@@ -205,7 +205,7 @@ export default abstract class Store<T extends Model> {
     }
   }
 
-  @action
+  // @action
   async delete(item: T, options: JSONObject = {}) {
     if (!this.actions.includes(RPCAction.Delete)) {
       throw new Error(`Cannot delete ${this.modelName}`);
@@ -228,7 +228,7 @@ export default abstract class Store<T extends Model> {
     }
   }
 
-  @action
+  // @action
   async fetch(id: string, options: JSONObject = {}): Promise<T> {
     if (!this.actions.includes(RPCAction.Info)) {
       throw new Error(`Cannot fetch ${this.modelName}`);
@@ -261,7 +261,7 @@ export default abstract class Store<T extends Model> {
     }
   }
 
-  @action
+  // @action
   fetchPage = async (params: FetchPageParams | undefined): Promise<T[]> => {
     if (!this.actions.includes(RPCAction.List)) {
       throw new Error(`Cannot list ${this.modelName}`);
@@ -288,7 +288,7 @@ export default abstract class Store<T extends Model> {
     }
   };
 
-  @action
+  // @action
   fetchAll = async (): Promise<T[]> => {
     const limit = Pagination.defaultLimit;
     const response = await this.fetchPage({ limit });
@@ -302,7 +302,7 @@ export default abstract class Store<T extends Model> {
     return flatten(results);
   };
 
-  @computed
+  // @computed
   get orderedData(): T[] {
     return orderBy(Array.from(this.data.values()), "createdAt", "desc");
   }

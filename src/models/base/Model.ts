@@ -9,19 +9,19 @@ import { getRelationsForModelClass } from "../decorators/Relation";
 export default abstract class Model {
   static modelName: string;
 
-  @observable
+  // @observable
   id: string;
 
-  @observable
+  // @observable
   isSaving: boolean;
 
-  @observable
+  // @observable
   isNew: boolean;
 
-  @observable
+  // @observable
   createdAt: string;
 
-  @observable
+  // @observable
   updatedAt: string;
 
   store: Store<Model>;

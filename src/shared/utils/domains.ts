@@ -1,5 +1,5 @@
 import trim from "lodash/trim";
-import env from "../env";
+import { env } from "@/app/env";
 
 type Domain = {
   teamSubdomain: string;

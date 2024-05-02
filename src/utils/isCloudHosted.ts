@@ -1,4 +1,4 @@
-import env from "@/app/env";
+import { env } from "@/app/env";
 
 /**
  * True if the current installation is the cloud hosted version at getoutline.com

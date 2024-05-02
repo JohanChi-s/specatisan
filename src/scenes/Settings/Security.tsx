@@ -15,7 +15,7 @@ import PluginIcon from "@/components/PluginIcon";
 import Scene from "@/components/Scene";
 import Switch from "@/components/Switch";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useCurrentTeam from "@/hooks/useCurrentTeam";
 import useRequest from "@/hooks/useRequest";
 import useStores from "@/hooks/useStores";

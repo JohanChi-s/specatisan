@@ -20,7 +20,7 @@ import RegisterKeyDown from "@/components/RegisterKeyDown";
 import Scene from "@/components/Scene";
 import Switch from "@/components/Switch";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import usePaginatedRequest from "@/hooks/usePaginatedRequest";
 import useQuery from "@/hooks/useQuery";
 import useStores from "@/hooks/useStores";

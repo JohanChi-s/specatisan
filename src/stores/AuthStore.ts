@@ -9,10 +9,9 @@ import RootStore from "@/stores/RootStore";
 import Policy from "@/models/Policy";
 import Team from "@/models/Team";
 import User from "@/models/User";
-// import env from "@/app/env";
+// import { env } from "@/app/env";
 import { PartialWithId } from "@/app/types";
 import { client } from "@/utils/ApiClient";
-import Desktop from "@/utils/Desktop";
 import Logger from "@/utils/Logger";
 import isCloudHosted from "@/utils/isCloudHosted";
 import Store from "./base/Store";
@@ -350,7 +349,6 @@ export default class AuthStore extends Store<Team> {
     this.collaborationToken = null;
 
     // Tell the host application we logged out, if any – allows window cleanup.
-    void Desktop.bridge?.onLogout?.();
     this.rootStore.clear();
   };
 }

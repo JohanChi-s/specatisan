@@ -1,47 +1,34 @@
 import copy from "copy-to-clipboard";
-import invariant from "invariant";
 import {
   DownloadIcon,
-  DuplicateIcon,
-  StarredIcon,
-  PrintIcon,
-  UnstarredIcon,
-  DocumentIcon,
-  NewDocumentIcon,
-  ShapesIcon,
-  ImportIcon,
-  PinIcon,
+  Star,
+  StarOff,
+  FileText,
+  FilePlus2,
   SearchIcon,
-  UnsubscribeIcon,
-  SubscribeIcon,
-  MoveIcon,
+  BellMinus,
+  Bell,
   TrashIcon,
   CrossIcon,
   ArchiveIcon,
-  ShuffleIcon,
   HistoryIcon,
-  GraphIcon,
-  UnpublishIcon,
-  PublishIcon,
-  CommentIcon,
+  Waypoints,
+  ScreenShareOff,
+  ScreenShare,
+  MessageCircle,
   GlobeIcon,
   CopyIcon,
 } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 import { ExportContentType, TeamPreference } from "@/shared/types";
-import MarkdownHelper from "@/shared/utils/MarkdownHelper";
-import { getEventFiles } from "@/shared/utils/files";
 import DocumentDelete from "@/scenes/DocumentDelete";
-import DocumentMove from "@/scenes/DocumentMove";
 import DocumentPermanentDelete from "@/scenes/DocumentPermanentDelete";
 import DocumentPublish from "@/scenes/DocumentPublish";
-import DocumentTemplatizeDialog from "@/components/DocumentTemplatizeDialog";
-import DuplicateDialog from "@/components/DuplicateDialog";
 import SharePopover from "@/components/Sharing";
 import { createAction } from "@/actions";
 import { DocumentSection } from "@/actions/sections";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import history from "@/utils/history";
 import {
   documentInsightsPath,
@@ -59,7 +46,7 @@ export const openDocument = createAction({
   section: DocumentSection,
   shortcut: ["o", "d"],
   keywords: "go to",
-  icon: <DocumentIcon />,
+  icon: <FileText />,
   children: ({ stores }) => {
     const paths = stores.collections.pathsToDocuments;
 
@@ -71,9 +58,7 @@ export const openDocument = createAction({
         id: path.url,
         name: path.title,
         icon: function _Icon() {
-          return stores.documents.get(path.id)?.isStarred ? (
-            <StarredIcon />
-          ) : null;
+          return stores.documents.get(path.id)?.isStarred ? <Star /> : null;
         },
         section: DocumentSection,
         perform: () => history.push(path.url),
@@ -85,7 +70,7 @@ export const createDocument = createAction({
   name: ({ t }) => t("New document"),
   analyticsName: "New document",
   section: DocumentSection,
-  icon: <NewDocumentIcon />,
+  icon: <FilePlus2 />,
   keywords: "create",
   visible: ({ currentTeamId, stores }) =>
     !!currentTeamId && stores.policies.abilities(currentTeamId).createDocument,
@@ -95,31 +80,11 @@ export const createDocument = createAction({
     }),
 });
 
-export const createDocumentFromTemplate = createAction({
-  name: ({ t }) => t("New from template"),
-  analyticsName: "New document",
-  section: DocumentSection,
-  icon: <NewDocumentIcon />,
-  keywords: "create",
-  visible: ({ currentTeamId, activeDocumentId, stores }) =>
-    !!currentTeamId &&
-    !!activeDocumentId &&
-    !!stores.documents.get(activeDocumentId)?.template &&
-    stores.policies.abilities(currentTeamId).createDocument,
-  perform: ({ activeCollectionId, activeDocumentId, inStarredSection }) =>
-    history.push(
-      newDocumentPath(activeCollectionId, { templateId: activeDocumentId }),
-      {
-        starred: inStarredSection,
-      }
-    ),
-});
-
 export const createNestedDocument = createAction({
   name: ({ t }) => t("New nested document"),
   analyticsName: "New document",
   section: DocumentSection,
-  icon: <NewDocumentIcon />,
+  icon: <FilePlus2 />,
   keywords: "create",
   visible: ({ currentTeamId, activeDocumentId, stores }) =>
     !!currentTeamId &&
@@ -141,7 +106,7 @@ export const starDocument = createAction({
   name: ({ t }) => t("Star"),
   analyticsName: "Star document",
   section: DocumentSection,
-  icon: <StarredIcon />,
+  icon: <Star />,
   keywords: "favorite bookmark",
   visible: ({ activeDocumentId, stores }) => {
     if (!activeDocumentId) {
@@ -166,7 +131,7 @@ export const unstarDocument = createAction({
   name: ({ t }) => t("Unstar"),
   analyticsName: "Unstar document",
   section: DocumentSection,
-  icon: <UnstarredIcon />,
+  icon: <StarOff />,
   keywords: "unfavorite unbookmark",
   visible: ({ activeDocumentId, stores }) => {
     if (!activeDocumentId) {
@@ -192,7 +157,7 @@ export const publishDocument = createAction({
   name: ({ t }) => t("Publish"),
   analyticsName: "Publish document",
   section: DocumentSection,
-  icon: <PublishIcon />,
+  icon: <ScreenShare />,
   visible: ({ activeDocumentId, stores }) => {
     if (!activeDocumentId) {
       return false;
@@ -234,7 +199,7 @@ export const unpublishDocument = createAction({
   name: ({ t }) => t("Unpublish"),
   analyticsName: "Unpublish document",
   section: DocumentSection,
-  icon: <UnpublishIcon />,
+  icon: <ScreenShareOff />,
   visible: ({ activeDocumentId, stores }) => {
     if (!activeDocumentId) {
       return false;
@@ -265,7 +230,7 @@ export const subscribeDocument = createAction({
   name: ({ t }) => t("Subscribe"),
   analyticsName: "Subscribe to document",
   section: DocumentSection,
-  icon: <SubscribeIcon />,
+  icon: <Bell />,
   visible: ({ activeDocumentId, stores }) => {
     if (!activeDocumentId) {
       return false;
@@ -293,7 +258,7 @@ export const unsubscribeDocument = createAction({
   name: ({ t }) => t("Unsubscribe"),
   analyticsName: "Unsubscribe from document",
   section: DocumentSection,
-  icon: <UnsubscribeIcon />,
+  icon: <BellMinus />,
   visible: ({ activeDocumentId, stores }) => {
     if (!activeDocumentId) {
       return false;
@@ -351,25 +316,6 @@ export const shareDocument = createAction({
   },
 });
 
-export const downloadDocumentAsHTML = createAction({
-  name: ({ t }) => t("HTML"),
-  analyticsName: "Download document as HTML",
-  section: DocumentSection,
-  keywords: "html export",
-  icon: <DownloadIcon />,
-  iconInContextMenu: false,
-  visible: ({ activeDocumentId, stores }) =>
-    !!activeDocumentId && stores.policies.abilities(activeDocumentId).download,
-  perform: async ({ activeDocumentId, stores }) => {
-    if (!activeDocumentId) {
-      return;
-    }
-
-    const document = stores.documents.get(activeDocumentId);
-    await document?.download(ExportContentType.Html);
-  },
-});
-
 export const downloadDocumentAsPDF = createAction({
   name: ({ t }) => t("PDF"),
   analyticsName: "Download document as PDF",
@@ -420,27 +366,7 @@ export const downloadDocument = createAction({
   section: DocumentSection,
   icon: <DownloadIcon />,
   keywords: "export",
-  children: [
-    downloadDocumentAsHTML,
-    downloadDocumentAsPDF,
-    downloadDocumentAsMarkdown,
-  ],
-});
-
-export const copyDocumentAsMarkdown = createAction({
-  name: ({ t }) => t("Copy as Markdown"),
-  section: DocumentSection,
-  keywords: "clipboard",
-  visible: ({ activeDocumentId }) => !!activeDocumentId,
-  perform: ({ stores, activeDocumentId, t }) => {
-    const document = activeDocumentId
-      ? stores.documents.get(activeDocumentId)
-      : undefined;
-    if (document) {
-      copy(MarkdownHelper.toMarkdown(document));
-      toast.success(t("Markdown copied to clipboard"));
-    }
-  },
+  children: [downloadDocumentAsPDF, downloadDocumentAsMarkdown],
 });
 
 export const copyDocumentLink = createAction({
@@ -465,233 +391,7 @@ export const copyDocument = createAction({
   section: DocumentSection,
   icon: <CopyIcon />,
   keywords: "clipboard",
-  children: [copyDocumentLink, copyDocumentAsMarkdown],
-});
-
-export const duplicateDocument = createAction({
-  name: ({ t, isContextMenu }) =>
-    isContextMenu ? t("Duplicate") : t("Duplicate document"),
-  analyticsName: "Duplicate document",
-  section: DocumentSection,
-  icon: <DuplicateIcon />,
-  keywords: "copy",
-  visible: ({ activeDocumentId, stores }) =>
-    !!activeDocumentId && stores.policies.abilities(activeDocumentId).duplicate,
-  perform: async ({ activeDocumentId, t, stores }) => {
-    if (!activeDocumentId) {
-      return;
-    }
-
-    const document = stores.documents.get(activeDocumentId);
-    invariant(document, "Document must exist");
-
-    stores.dialogs.openModal({
-      title: t("Copy document"),
-      content: (
-        <DuplicateDialog
-          document={document}
-          onSubmit={(response) => {
-            stores.dialogs.closeAllModals();
-            history.push(documentPath(response[0]));
-          }}
-        />
-      ),
-    });
-  },
-});
-
-/**
- * Pin a document to a collection. Pinned documents will be displayed at the top
- * of the collection for all collection members to see.
- */
-export const pinDocumentToCollection = createAction({
-  name: ({ activeDocumentId = "", t, stores }) => {
-    const selectedDocument = stores.documents.get(activeDocumentId);
-    const collectionName = selectedDocument
-      ? stores.documents.getCollectionForDocument(selectedDocument)?.name
-      : t("collection");
-
-    return t("Pin to {{collectionName}}", {
-      collectionName,
-    });
-  },
-  analyticsName: "Pin document to collection",
-  section: DocumentSection,
-  icon: <PinIcon />,
-  iconInContextMenu: false,
-  visible: ({ activeCollectionId, activeDocumentId, stores }) => {
-    if (!activeDocumentId || !activeCollectionId) {
-      return false;
-    }
-
-    const document = stores.documents.get(activeDocumentId);
-    return (
-      !!stores.policies.abilities(activeDocumentId).pin && !document?.pinned
-    );
-  },
-  perform: async ({ activeDocumentId, activeCollectionId, t, stores }) => {
-    if (!activeDocumentId || !activeCollectionId) {
-      return;
-    }
-
-    const document = stores.documents.get(activeDocumentId);
-    await document?.pin(document.collectionId);
-
-    const collection = stores.collections.get(activeCollectionId);
-
-    if (!collection || !location.pathname.startsWith(collection?.url)) {
-      toast.success(t("Pinned to collection"));
-    }
-  },
-});
-
-/**
- * Pin a document to team home. Pinned documents will be displayed at the top
- * of the home screen for all team members to see.
- */
-export const pinDocumentToHome = createAction({
-  name: ({ t }) => t("Pin to home"),
-  analyticsName: "Pin document to home",
-  section: DocumentSection,
-  icon: <PinIcon />,
-  iconInContextMenu: false,
-  visible: ({ activeDocumentId, currentTeamId, stores }) => {
-    if (!currentTeamId || !activeDocumentId) {
-      return false;
-    }
-
-    const document = stores.documents.get(activeDocumentId);
-
-    return (
-      !!stores.policies.abilities(activeDocumentId).pinToHome &&
-      !document?.pinnedToHome
-    );
-  },
-  perform: async ({ activeDocumentId, location, t, stores }) => {
-    if (!activeDocumentId) {
-      return;
-    }
-    const document = stores.documents.get(activeDocumentId);
-
-    await document?.pin();
-
-    if (location.pathname !== homePath()) {
-      toast.success(t("Pinned to home"));
-    }
-  },
-});
-
-export const pinDocument = createAction({
-  name: ({ t }) => t("Pin"),
-  analyticsName: "Pin document",
-  section: DocumentSection,
-  icon: <PinIcon />,
-  children: [pinDocumentToCollection, pinDocumentToHome],
-});
-
-export const printDocument = createAction({
-  name: ({ t, isContextMenu }) =>
-    isContextMenu ? t("Print") : t("Print document"),
-  analyticsName: "Print document",
-  section: DocumentSection,
-  icon: <PrintIcon />,
-  visible: ({ activeDocumentId }) => !!(activeDocumentId && window.print),
-  perform: async () => {
-    queueMicrotask(window.print);
-  },
-});
-
-export const importDocument = createAction({
-  name: ({ t }) => t("Import document"),
-  analyticsName: "Import document",
-  section: DocumentSection,
-  icon: <ImportIcon />,
-  keywords: "upload",
-  visible: ({ activeCollectionId, activeDocumentId, stores }) => {
-    if (activeDocumentId) {
-      return !!stores.policies.abilities(activeDocumentId).createChildDocument;
-    }
-
-    if (activeCollectionId) {
-      return !!stores.policies.abilities(activeCollectionId).update;
-    }
-
-    return false;
-  },
-  perform: ({ activeCollectionId, activeDocumentId, stores }) => {
-    const { documents } = stores;
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = documents.importFileTypes.join(", ");
-
-    input.onchange = async (ev) => {
-      const files = getEventFiles(ev);
-
-      const file = files[0];
-      const document = await documents.import(
-        file,
-        activeDocumentId,
-        activeCollectionId,
-        {
-          publish: true,
-        }
-      );
-      history.push(document.url);
-    };
-
-    input.click();
-  },
-});
-
-export const createTemplate = createAction({
-  name: ({ t }) => t("Templatize"),
-  analyticsName: "Templatize document",
-  section: DocumentSection,
-  icon: <ShapesIcon />,
-  keywords: "new create template",
-  visible: ({ activeCollectionId, activeDocumentId, stores }) => {
-    if (!activeDocumentId) {
-      return false;
-    }
-    const document = stores.documents.get(activeDocumentId);
-    return !!(
-      !!activeCollectionId &&
-      stores.policies.abilities(activeCollectionId).update &&
-      !document?.isTemplate &&
-      !document?.isDeleted
-    );
-  },
-  perform: ({ activeDocumentId, stores, t, event }) => {
-    if (!activeDocumentId) {
-      return;
-    }
-    event?.preventDefault();
-    event?.stopPropagation();
-
-    stores.dialogs.openModal({
-      title: t("Create template"),
-      content: <DocumentTemplatizeDialog documentId={activeDocumentId} />,
-    });
-  },
-});
-
-export const openRandomDocument = createAction({
-  id: "random",
-  name: ({ t }) => t(`Open random document`),
-  analyticsName: "Open random document",
-  section: DocumentSection,
-  icon: <ShuffleIcon />,
-  perform: ({ stores, activeDocumentId }) => {
-    const documentPaths = stores.collections.pathsToDocuments.filter(
-      (path) => path.type === "document" && path.id !== activeDocumentId
-    );
-    const documentPath =
-      documentPaths[Math.round(Math.random() * documentPaths.length)];
-
-    if (documentPath) {
-      history.push(documentPath.url);
-    }
-  },
+  children: [copyDocumentLink],
 });
 
 export const searchDocumentsForQuery = (searchQuery: string) =>
@@ -705,34 +405,6 @@ export const searchDocumentsForQuery = (searchQuery: string) =>
     perform: () => history.push(searchPath(searchQuery)),
     visible: ({ location }) => location.pathname !== searchPath(),
   });
-
-export const moveDocument = createAction({
-  name: ({ t }) => t("Move"),
-  analyticsName: "Move document",
-  section: DocumentSection,
-  icon: <MoveIcon />,
-  visible: ({ activeDocumentId, stores }) => {
-    if (!activeDocumentId) {
-      return false;
-    }
-    return !!stores.policies.abilities(activeDocumentId).move;
-  },
-  perform: ({ activeDocumentId, stores, t }) => {
-    if (activeDocumentId) {
-      const document = stores.documents.get(activeDocumentId);
-      if (!document) {
-        return;
-      }
-
-      stores.dialogs.openModal({
-        title: t("Move {{ documentType }}", {
-          documentType: document.noun,
-        }),
-        content: <DocumentMove document={document} />,
-      });
-    }
-  },
-});
 
 export const archiveDocument = createAction({
   name: ({ t }) => t("Archive"),
@@ -830,7 +502,7 @@ export const openDocumentComments = createAction({
   name: ({ t }) => t("Comments"),
   analyticsName: "Open comments",
   section: DocumentSection,
-  icon: <CommentIcon />,
+  icon: <MessageCircle />,
   visible: ({ activeDocumentId, stores }) => {
     const can = stores.policies.abilities(activeDocumentId ?? "");
     return (
@@ -873,7 +545,7 @@ export const openDocumentInsights = createAction({
   name: ({ t }) => t("Insights"),
   analyticsName: "Open document insights",
   section: DocumentSection,
-  icon: <GraphIcon />,
+  icon: <Waypoints />,
   visible: ({ activeDocumentId, stores }) => {
     const can = stores.policies.abilities(activeDocumentId ?? "");
     const document = activeDocumentId
@@ -903,25 +575,16 @@ export const rootDocumentActions = [
   openDocument,
   archiveDocument,
   createDocument,
-  createTemplate,
   deleteDocument,
-  importDocument,
   downloadDocument,
   copyDocumentLink,
-  copyDocumentAsMarkdown,
   starDocument,
   unstarDocument,
   publishDocument,
   unpublishDocument,
   subscribeDocument,
   unsubscribeDocument,
-  duplicateDocument,
-  moveDocument,
-  openRandomDocument,
   permanentlyDeleteDocument,
-  printDocument,
-  pinDocumentToCollection,
-  pinDocumentToHome,
   openDocumentComments,
   openDocumentHistory,
   openDocumentInsights,

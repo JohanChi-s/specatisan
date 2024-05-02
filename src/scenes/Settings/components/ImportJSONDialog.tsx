@@ -3,7 +3,7 @@ import { Trans } from "react-i18next";
 import { FileOperationFormat } from "@/shared/types";
 import Flex from "@/components/Flex";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useStores from "@/hooks/useStores";
 import DropToImport from "./DropToImport";
 import HelpDisclosure from "./HelpDisclosure";

@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { WarningIcon } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import * as React from "react";
 import { Trans } from "react-i18next";
 import Notice from "@/components/Notice";
@@ -14,7 +14,7 @@ export default function Notices() {
   }
 
   return (
-    <Notice icon={<WarningIcon color="currentcolor" />}>
+    <Notice icon={<ShieldAlert color="currentcolor" />}>
       {notice === "domain-not-allowed" && (
         <Trans>
           The domain associated with your email address has not been allowed for

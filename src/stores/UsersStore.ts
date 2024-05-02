@@ -153,7 +153,7 @@ export default class UsersStore extends Store<User> {
       invites,
     });
     invariant(res?.data, "Data should be available");
-    runInAction(`invite`, () => {
+    runInAction(() => {
       res.data.users.forEach(this.add);
       this.counts.invited += res.data.sent.length;
       this.counts.all += res.data.sent.length;
@@ -190,7 +190,7 @@ export default class UsersStore extends Store<User> {
       const res = await client.post("/documents.users", params);
       invariant(res?.data, "User list not available");
       let response: User[] = [];
-      runInAction("DocumentsStore#fetchUsers", () => {
+      runInAction(() => {
         response = res.data.map(this.add);
         this.addPolicies(res.policies);
       });
@@ -324,7 +324,7 @@ export default class UsersStore extends Store<User> {
       to,
     });
     invariant(res?.data, "Data should be available");
-    runInAction(`UsersStore#${action}`, () => {
+    runInAction(() => {
       this.addPolicies(res.policies);
       this.add(res.data);
     });

@@ -1,11 +1,9 @@
-import { BackIcon } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 import { parseDomain } from "@/shared/utils/domains";
 import { Config } from "@/stores/AuthStore";
-import env from "@/app/env";
-import Desktop from "@/utils/Desktop";
+import { env } from "@/app/env";
 import isCloudHosted from "@/utils/isCloudHosted";
 
 type Props = {
@@ -20,32 +18,16 @@ export default function BackButton({ config }: Props) {
     return null;
   }
 
-  if (Desktop.isElectron() && !isSubdomain) {
-    return null;
-  }
-
   return (
-    <Link href={isSubdomain ? env.URL : "https://www.getoutline.com"}>
-      <BackIcon /> {Desktop.isElectron() ? t("Back") : t("Back to home")}
-    </Link>
+    <a
+      href={isSubdomain ? env.URL : "https://www.getoutline.com"}
+      className="flex items-center text-gray-700 font-semibold transition-transform duration-100 ease-in-out hover:text-gray-800 hover:translate-x-1 absolute"
+      style={{
+        padding: "32px",
+      }}
+    >
+      <ChevronLeft className="mr-1" />
+      {t("Back to home")}
+    </a>
   );
 }
-
-const Link = styled.a`
-  display: flex;
-  align-items: center;
-  color: inherit;
-  padding: ${Desktop.isElectron() ? "48px 32px" : "32px"};
-  font-weight: 500;
-  position: absolute;
-
-  svg {
-    transition: transform 100ms ease-in-out;
-  }
-
-  &:hover {
-    svg {
-      transform: translateX(-4px);
-    }
-  }
-`;

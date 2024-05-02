@@ -1,5 +1,6 @@
+"use client"
 import RootStore from "@/stores/RootStore";
-import env from "@/app/env";
+import { env } from "@/app/env";
 
 const stores = new RootStore();
 

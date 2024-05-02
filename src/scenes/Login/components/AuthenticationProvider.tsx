@@ -1,13 +1,11 @@
-import { EmailIcon } from "lucide-react";
 import * as React from "react";
+import { Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import ButtonLarge from "@/components/ButtonLarge";
-import InputLarge from "@/components/InputLarge";
-import PluginIcon from "@/components/PluginIcon";
+// import PluginIcon from "@/components/PluginIcon";
 import { client } from "@/utils/ApiClient";
-import Desktop from "@/utils/Desktop";
 import { getRedirectUrl } from "../getRedirectUrl";
+import { Button } from "@/components/ui/button";
+import Input from "@/components/Input";
 
 type Props = {
   id: string;
@@ -39,7 +37,7 @@ function AuthenticationProvider(props: Props) {
       try {
         const response = await client.post(event.currentTarget.action, {
           email,
-          client: Desktop.isElectron() ? "desktop" : undefined,
+          undefined,
         });
 
         if (response.redirect) {
@@ -63,11 +61,16 @@ function AuthenticationProvider(props: Props) {
     }
 
     return (
-      <Wrapper>
-        <Form method="POST" action="/auth/email" onSubmit={handleSubmitEmail}>
+      <div className="w-full">
+        <form
+          className="w-full flex justify-between"
+          method="POST"
+          action="/auth/email"
+          onSubmit={handleSubmitEmail}
+        >
           {showEmailSignin ? (
             <>
-              <InputLarge
+              <Input
                 type="email"
                 name="email"
                 placeholder="me@domain.com"
@@ -78,43 +81,31 @@ function AuthenticationProvider(props: Props) {
                 required
                 short
               />
-              <ButtonLarge type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting}>
                 {t("Sign In")} →
-              </ButtonLarge>
+              </Button>
             </>
           ) : (
-            <ButtonLarge type="submit" icon={<EmailIcon />} fullwidth>
+            <Button type="submit">
+              <Mail size={24} />
               {t("Continue with Email")}
-            </ButtonLarge>
+            </Button>
           )}
-        </Form>
-      </Wrapper>
+        </form>
+      </div>
     );
   }
 
   return (
-    <Wrapper>
-      <ButtonLarge
-        onClick={() => (window.location.href = href)}
-        icon={<PluginIcon id={id} />}
-        fullwidth
-      >
+    <div className="w-full">
+      <Button onClick={() => (window.location.href = href)}>
+        {/* <PluginIcon type={id} /> */}
         {t("Continue with {{ authProviderName }}", {
           authProviderName: name,
         })}
-      </ButtonLarge>
-    </Wrapper>
+      </Button>
+    </div>
   );
 }
-
-const Wrapper = styled.div`
-  width: 100%;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-`;
 
 export default AuthenticationProvider;

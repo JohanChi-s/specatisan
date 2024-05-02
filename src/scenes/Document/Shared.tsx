@@ -16,7 +16,7 @@ import Layout from "@/components/Layout";
 import Sidebar from "@/components/Sidebar/Shared";
 import { TeamContext } from "@/components/TeamContext";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useBuildTheme from "@/hooks/useBuildTheme";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useStores from "@/hooks/useStores";

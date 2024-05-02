@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Redirect } from "react-router-dom";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useStores from "@/hooks/useStores";
 
 const Logout = () => {

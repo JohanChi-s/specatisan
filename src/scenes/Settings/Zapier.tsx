@@ -5,7 +5,7 @@ import Heading from "@/components/Heading";
 import ZapierIcon from "@/components/Icons/ZapierIcon";
 import Scene from "@/components/Scene";
 import Text from "@/components/Text";
-import env from "@/app/env";
+import { env } from "@/app/env";
 import useStores from "@/hooks/useStores";
 
 function Zapier() {

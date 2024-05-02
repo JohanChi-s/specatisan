@@ -1,7 +1,7 @@
 import { BrowserTracing } from "@sentry/browser";
 import * as Sentry from "@sentry/react";
 import { History } from "history";
-import env from "@/app/env";
+import { env } from "@/app/env";
 
 export function initSentry(history: History) {
   Sentry.init({

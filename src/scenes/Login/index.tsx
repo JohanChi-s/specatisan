@@ -1,48 +1,40 @@
+"use client";
+
 import find from "lodash/find";
 import { observer } from "mobx-react";
-import { EmailIcon } from "lucide-react";
+import { Mail } from "lucide-react";
 import * as React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useLocation, Link, Redirect } from "react-router-dom";
-import styled from "styled-components";
+// import { useLocation, Link, Redirect } from "react-router-dom";
+import { usePathname, redirect } from "next/navigation";
 import { getCookie, setCookie } from "tiny-cookie";
-import { s } from "@/shared/styles";
 import { UserPreference } from "@/shared/types";
 import { parseDomain } from "@/shared/utils/domains";
 import { Config } from "@/stores/AuthStore";
-import ButtonLarge from "@/components/ButtonLarge";
 import ChangeLanguage from "@/components/ChangeLanguage";
-import Fade from "@/components/Fade";
-import Flex from "@/components/Flex";
-import Heading from "@/components/Heading";
 import OutlineIcon from "@/components/Icons/OutlineIcon";
-import Input from "@/components/Input";
 import LoadingIndicator from "@/components/LoadingIndicator";
-import PageTitle from "@/components/PageTitle";
-import TeamLogo from "@/components/TeamLogo";
-import Text from "@/components/Text";
-import env from "@/app/env";
+// import TeamLogo from "@/components/TeamLogo";
+import { env } from "@/app/env";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useLastVisitedPath from "@/hooks/useLastVisitedPath";
 import useQuery from "@/hooks/useQuery";
 import useStores from "@/hooks/useStores";
-import { draggableOnDesktop } from "@/styles";
-import Desktop from "@/utils/Desktop";
 import isCloudHosted from "@/utils/isCloudHosted";
 import { detectLanguage } from "@/utils/language";
 import AuthenticationProvider from "./components/AuthenticationProvider";
 import BackButton from "./components/BackButton";
 import Notices from "./components/Notices";
 import { getRedirectUrl } from "./getRedirectUrl";
+import Link from "next/link";
 
 type Props = {
   children?: (config?: Config) => React.ReactNode;
 };
 
 function Login({ children }: Props) {
-  const location = useLocation();
+  const pathname = usePathname();
   const query = useQuery();
-  const notice = query.get("notice");
 
   const { t } = useTranslation();
   const user = useCurrentUser({ rejectOnEmpty: false });
@@ -50,7 +42,7 @@ function Login({ children }: Props) {
   const { config } = auth;
   const [error, setError] = React.useState(null);
   const [emailLinkSentTo, setEmailLinkSentTo] = React.useState("");
-  const isCreate = location.pathname === "/create";
+  const isCreate = pathname === "/create";
   const rememberLastPath = !!user?.getPreference(
     UserPreference.RememberLastPath
   );
@@ -63,62 +55,43 @@ function Login({ children }: Props) {
     setEmailLinkSentTo(email);
   }, []);
 
-  const handleGoSubdomain = React.useCallback(async (event) => {
-    event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.target));
-    const normalizedSubdomain = data.subdomain
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/^https?:\/\//, "");
-    const host = `https://${normalizedSubdomain}.getoutline.com`;
-    await Desktop.bridge.addCustomHost(host);
-
-    setTimeout(() => {
-      window.location.href = host;
-    }, 500);
-  }, []);
-
   React.useEffect(() => {
     auth.fetchConfig().catch(setError);
   }, [auth]);
 
-  React.useEffect(() => {
-    const entries = Object.fromEntries(query.entries());
-    const existing = getCookie("signupQueryParams");
+  // React.useEffect(() => {
+  //   const entries = Object.fromEntries(query.entries());
+  //   const existing = getCookie("signupQueryParams");
 
-    // We don't want to set this cookie if we're viewing an error notice via
-    // query string(notice =), if there are no query params, or it's already set
-    if (Object.keys(entries).length && !query.get("notice") && !existing) {
-      setCookie("signupQueryParams", JSON.stringify(entries));
-    }
-  }, [query]);
+  //   if (Object.keys(entries).length && !query.get("notice") && !existing) {
+  //     setCookie("signupQueryParams", JSON.stringify(entries));
+  //   }
+  // }, [query]);
 
   if (
     auth.authenticated &&
     rememberLastPath &&
     lastVisitedPath !== location.pathname
   ) {
-    return <Redirect to={lastVisitedPath} />;
+    return redirect(lastVisitedPath);
   }
 
   if (auth.authenticated && auth.team?.defaultCollectionId) {
-    return <Redirect to={`/collection/${auth.team?.defaultCollectionId}`} />;
+    return redirect(`/collection/${auth.team?.defaultCollectionId}`);
   }
 
   if (auth.authenticated) {
-    return <Redirect to="/home" />;
+    return redirect("/home");
   }
 
   if (error) {
     return (
-      <Background>
+      <div className="w-screen h-screen bg-background flex items-center justify-center">
         <BackButton />
         <ChangeLanguage locale={detectLanguage()} />
-        <Centered align="center" justify="center" column auto>
-          <PageTitle title={t("Login")} />
-          <Heading centered>{t("Error")}</Heading>
-          <Note>
+        <div className="text-center">
+          <h2>{t("Error")}</h2>
+          <span>
             {t("Failed to load configuration.")}
             {!isCloudHosted && (
               <p>
@@ -127,74 +100,32 @@ function Login({ children }: Props) {
                 )}
               </p>
             )}
-          </Note>
-        </Centered>
-      </Background>
+          </span>
+        </div>
+      </div>
     );
   }
 
-  // we're counting on the config request being fast, so just a simple loading
-  // indicator here that's delayed by 250ms
   if (!config) {
     return <LoadingIndicator />;
   }
 
   const isCustomDomain = parseDomain(window.location.origin).custom;
 
-  // Unmapped custom domain
   if (isCloudHosted && isCustomDomain && !config.name) {
     return (
-      <Background>
+      <div className="w-screen h-screen bg-background flex items-center justify-center">
         <BackButton config={config} />
         <ChangeLanguage locale={detectLanguage()} />
-        <Centered align="center" justify="center" column auto>
-          <PageTitle title={t("Custom domain setup")} />
-          <Heading centered>{t("Almost there")}…</Heading>
-          <Note>
+        <div className="text-center">
+          <h2>{t("Almost there")}…</h2>
+          <span>
             {t(
               "Your custom domain is successfully pointing at Outline. To complete the setup process please contact support."
             )}
-          </Note>
-        </Centered>
-      </Background>
-    );
-  }
-
-  if (Desktop.isElectron() && notice === "domain-required") {
-    return (
-      <Background>
-        <BackButton config={config} />
-        <ChangeLanguage locale={detectLanguage()} />
-
-        <Centered
-          as="form"
-          onSubmit={handleGoSubdomain}
-          align="center"
-          justify="center"
-          column
-          auto
-        >
-          <Heading centered>{t("Choose workspace")}</Heading>
-          <Note>
-            {t(
-              "This login method requires choosing your workspace to continue"
-            )}
-            …
-          </Note>
-          <Flex>
-            <Input
-              name="subdomain"
-              style={{ textAlign: "right" }}
-              placeholder={t("subdomain")}
-            >
-              <Domain>.getoutline.com</Domain>
-            </Input>
-          </Flex>
-          <ButtonLarge type="submit" fullwidth>
-            {t("Continue")}
-          </ButtonLarge>
-        </Centered>
-      </Background>
+          </span>
+        </div>
+      </div>
     );
   }
 
@@ -206,79 +137,72 @@ function Login({ children }: Props) {
 
   if (emailLinkSentTo) {
     return (
-      <Background>
+      <div className="w-screen h-screen bg-background flex items-center justify-center">
         <BackButton config={config} />
-        <Centered align="center" justify="center" column auto>
-          <PageTitle title={t("Check your email")} />
-          <CheckEmailIcon size={38} />
-          <Heading centered>{t("Check your email")}</Heading>
-          <Note>
+        <div className="text-center">
+          <Mail className="text-primary" size={38} />
+          <h2>{t("Check your email")}</h2>
+          <span>
             <Trans
               defaults="A magic sign-in link has been sent to the email <em>{{ emailLinkSentTo }}</em> if an account exists."
               values={{ emailLinkSentTo }}
               components={{ em: <em /> }}
             />
-          </Note>
-          <br />
-          <ButtonLarge onClick={handleReset} fullwidth neutral>
+          </span>
+          <button className="btn" onClick={handleReset}>
             {t("Back to login")}
-          </ButtonLarge>
-        </Centered>
-      </Background>
+          </button>
+        </div>
+      </div>
     );
   }
 
-  // If there is only one provider and it's OIDC, redirect immediately.
-  if (
-    config.providers.length === 1 &&
-    config.providers[0].id === "oidc" &&
-    !env.OIDC_DISABLE_REDIRECT &&
-    !query.get("notice")
-  ) {
-    window.location.href = getRedirectUrl(config.providers[0].authUrl);
-    return null;
-  }
+  // if (
+  //   config.providers.length === 1 &&
+  //   config.providers[0].id === "oidc" &&
+  //   !env.OIDC_DISABLE_REDIRECT &&
+  //   !query.get("notice")
+  // ) {
+  //   window.location.href = getRedirectUrl(config.providers[0].authUrl);
+  //   return null;
+  // }
 
   return (
-    <Background>
+    <div className="w-screen h-screen bg-background flex items-center justify-center">
       <BackButton config={config} />
       <ChangeLanguage locale={detectLanguage()} />
-
-      <Centered align="center" justify="center" gap={12} column auto>
-        <PageTitle
-          title={config.name ? `${config.name} – ${t("Login")}` : t("Login")}
-        />
-        <Logo>
+      <div className="text-center space-y-12">
+        <div className="mb-4">
           {config.logo && !isCreate ? (
-            <TeamLogo size={48} src={config.logo} />
+            <image href={config.logo} />
           ) : (
             <OutlineIcon size={48} />
           )}
-        </Logo>
+        </div>
         {isCreate ? (
           <>
-            <StyledHeading as="h2" centered>
+            <h2 className="text-2xl font-semibold">
               {t("Create a workspace")}
-            </StyledHeading>
-            <Content>
+            </h2>
+            <span>
               {t(
                 "Get started by choosing a sign-in method for your new workspace below…"
               )}
-            </Content>
+            </span>
           </>
         ) : (
           <>
-            <StyledHeading as="h2" centered>
+            <h2 className="text-2xl font-semibold">
               {t("Login to {{ authProviderName }}", {
                 authProviderName: config.name || env.APP_NAME,
               })}
-            </StyledHeading>
+            </h2>
             {children?.(config)}
           </>
         )}
         <Notices />
         {defaultProvider && (
-          <React.Fragment key={defaultProvider.id}>
+          <>
             <AuthenticationProvider
               isCreate={isCreate}
               onEmailSuccess={handleEmailSuccess}
@@ -286,21 +210,20 @@ function Login({ children }: Props) {
             />
             {hasMultipleProviders && (
               <>
-                <Note>
+                <span>
                   {t("You signed in with {{ authProviderName }} last time.", {
                     authProviderName: defaultProvider.name,
                   })}
-                </Note>
-                <Or data-text={t("Or")} />
+                </span>
+                <hr className="my-4" />
               </>
             )}
-          </React.Fragment>
+          </>
         )}
         {config.providers.map((provider) => {
           if (defaultProvider && provider.id === defaultProvider.id) {
             return null;
           }
-
           return (
             <AuthenticationProvider
               key={provider.id}
@@ -311,86 +234,15 @@ function Login({ children }: Props) {
           );
         })}
         {isCreate && (
-          <Note>
+          <span>
             <Trans>
-              Already have an account? Go to <Link to="/">login</Link>.
+              Already have an account? Go to <Link href="/login">login</Link>.
             </Trans>
-          </Note>
+          </span>
         )}
-      </Centered>
-    </Background>
+      </div>
+    </div>
   );
 }
-
-const StyledHeading = styled(Heading)`
-  margin: 0;
-`;
-
-const Domain = styled.div`
-  color: ${s("textSecondary")};
-  padding: 0 8px 0 0;
-`;
-
-const CheckEmailIcon = styled(EmailIcon)`
-  margin-bottom: -1.5em;
-`;
-
-const Background = styled(Fade)`
-  width: 100vw;
-  height: 100%;
-  background: ${s("background")};
-  display: flex;
-  ${draggableOnDesktop()}
-`;
-
-const Logo = styled.div`
-  margin-bottom: -4px;
-`;
-
-const Content = styled(Text)`
-  color: ${s("textSecondary")};
-  text-align: center;
-  margin-top: -8px;
-`;
-
-const Note = styled(Text)`
-  color: ${s("textTertiary")};
-  text-align: center;
-  font-size: 14px;
-  margin-top: 8px;
-
-  em {
-    font-style: normal;
-    font-weight: 500;
-  }
-`;
-
-const Or = styled.hr`
-  margin: 1em 0;
-  position: relative;
-  width: 100%;
-
-  &:after {
-    content: attr(data-text);
-    display: block;
-    position: absolute;
-    left: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    text-transform: uppercase;
-    font-size: 11px;
-    color: ${s("textSecondary")};
-    background: ${s("background")};
-    border-radius: 2px;
-    padding: 0 4px;
-  }
-`;
-
-const Centered = styled(Flex)`
-  user-select: none;
-  width: 90vw;
-  height: 100%;
-  max-width: 320px;
-  margin: 0 auto;
-`;
 
 export default observer(Login);

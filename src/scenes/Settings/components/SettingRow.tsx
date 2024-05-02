@@ -1,9 +1,4 @@
-import { transparentize } from "polished";
 import * as React from "react";
-import styled from "styled-components";
-import breakpoint from "styled-components-breakpoint";
-import Flex from "@/components/Flex";
-import Text from "@/components/Text";
 
 type Props = {
   children?: React.ReactNode;
@@ -13,49 +8,6 @@ type Props = {
   visible?: boolean;
   border?: boolean;
 };
-
-const Row = styled(Flex)<{ $border?: boolean }>`
-  display: block;
-  padding: 22px 0;
-  border-bottom: 1px solid
-    ${(props) =>
-      props.$border === false
-        ? "transparent"
-        : transparentize(0.5, props.theme.divider)};
-
-  ${breakpoint("tablet")`
-    display: flex;
-  `};
-
-  &:last-child {
-    border-bottom: 0;
-  }
-`;
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-
-  &:first-child {
-    min-width: 70%;
-  }
-
-  &:last-child {
-    min-width: 0;
-  }
-
-  ${breakpoint("tablet")`
-    p {
-      margin-bottom: 0;
-    }
-  `};
-`;
-
-const Label = styled(Text)`
-  margin-bottom: 4px;
-`;
 
 const SettingRow: React.FC<Props> = ({
   visible,
@@ -69,19 +21,26 @@ const SettingRow: React.FC<Props> = ({
     return null;
   }
   return (
-    <Row gap={32} $border={border}>
-      <Column>
-        <Label as="h3">
-          <label htmlFor={name}>{label}</label>
-        </Label>
-        {description && (
-          <Text as="p" type="secondary">
-            {description}
-          </Text>
-        )}
-      </Column>
-      <Column>{children}</Column>
-    </Row>
+    <div
+      className={`flex flex-col border-b ${border ? "border-gray-300" : ""}`}
+    >
+      <div className="py-5 md:flex md:items-center md:justify-between">
+        <div className="md:flex-1">
+          <label
+            htmlFor={name}
+            className="block text-lg font-medium text-gray-700"
+          >
+            {label}
+          </label>
+          {description && (
+            <p className="mt-1 text-sm text-gray-500">{description}</p>
+          )}
+        </div>
+        <div className="mt-4 md:mt-0 md:ml-6 md:flex md:items-center">
+          {children}
+        </div>
+      </div>
+    </div>
   );
 };
 
