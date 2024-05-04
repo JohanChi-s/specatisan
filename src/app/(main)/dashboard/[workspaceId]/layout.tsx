@@ -1,16 +1,13 @@
-'use client';
-import Sidebar from '@/components/sidebar/sidebar';
+"use client";
+import Sidebar from "@/components/sidebar/sidebar";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@/components/ui/resizable';
-import { TooltipProvider } from '@radix-ui/react-tooltip';
-import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search } from 'lucide-react';
+} from "@/components/ui/resizable";
+import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import React, { useState } from "react";
 interface LayoutProps {
   children: React.ReactNode;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -26,7 +23,7 @@ const defaultProps = {
 const Layout: React.FC<LayoutProps> = ({ children, params }) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultProps.defaultCollapsed);
   return (
-    <div className="flex w-full h-main-container-height bg-zinc-50">
+    <div className="flex w-full h-screen bg-background font-sans antialiased">
       <TooltipProvider delayDuration={0}>
         <ResizablePanelGroup
           direction="horizontal"
@@ -42,7 +39,14 @@ const Layout: React.FC<LayoutProps> = ({ children, params }) => {
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle className="h-full" />
-          <ResizablePanel defaultSize={defaultProps.defaultLayout[1]}>
+          <ResizablePanel
+            className={cn(
+              "bg-background font-sans antialiased",
+              "[&_.slate-selected]:!bg-primary/20 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-primary [&_.slate-selection-area]:bg-primary/10"
+            )}
+            suppressHydrationWarning
+            defaultSize={defaultProps.defaultLayout[1]}
+          >
             <div className="flex h-full justify-center p-2 m-2 rounded-sm bg-white shadow-2xl">
               {children}
             </div>

@@ -1,6 +1,8 @@
 export const dynamic = "force-dynamic";
 
-import QuillEditor from "@/components/quill-editor/quill-editor";
+import { Room } from "@/app/Room";
+import PlateEditor from "@/components/editor/Editor";
+
 import { getWorkspaceDetails } from "@/lib/supabase/queries";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -12,22 +14,11 @@ const Workspace = async ({ params }: { params: { workspaceId: string } }) => {
     redirect("/login");
   }
   return (
-    <div className="relative">
-      {/* <QuillEditor
-				dirType="workspace"
-				fileId={params.workspaceId}
-				dirDetails={data[0] || {}}
-			/> */}
-      Workspace
-      {/* <EditorProvider>
-				<div className="app">
-					<Sidebar />
-					<div className="main-content">
-						<TopBar />
-						<EditorContainer />
-					</div>
-				</div>
-			</EditorProvider> */}
+    // <Room>
+    //   <CollaborativeEditor />
+    // </Room>
+    <div className="max-w-[1336px] w-full rounded-lg border bg-background shadow over">
+      <PlateEditor />
     </div>
   );
 };

@@ -21,7 +21,7 @@ const CollectionsPage: React.FC = () => {
       setCollections(data || []);
     };
     fetchCollections();
-  });
+  }, [workspaceId]);
 
   if (!workspaceId) redirect("/dashboard");
   return (
