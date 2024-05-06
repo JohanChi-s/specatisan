@@ -1,5 +1,6 @@
 "use client";
 import {
+  createDocument,
   getCollaboratingWorkspaces,
   getCollections,
   getPrivateWorkspaces,
@@ -13,13 +14,22 @@ import { useEffect, useState } from "react";
 import Settings from "../settings/settings";
 import WorkspaceSwitcher from "./WorkspaceSwitcher";
 
-import type { Collection, Workspace } from "@/lib/supabase/supabase.types";
+import type {
+  Collection,
+  Document,
+  Workspace,
+} from "@/lib/supabase/supabase.types";
 import { Download, FolderIcon, Plus, Settings2, Trash2 } from "lucide-react";
 import { Button, buttonVariants } from "../ui/button";
 import { Separator } from "../ui/separator";
 import AccountInfo from "./AccountInfo";
 import SearchCommandPalette from "./SearchCommandPalette";
 import CollectionsDropdownList from "./collections-dropdown-list";
+import { v4 } from "uuid";
+import { toast } from "../ui/use-toast";
+import { useAppState } from "@/lib/providers/state-provider";
+import { UUID } from "crypto";
+import { AuthUser } from "@supabase/supabase-js";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -40,6 +50,10 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
     Workspace | any
   >([]);
   const [sharedWorkspaces, setSharedWorkspaces] = useState<Workspace | any>([]);
+
+  const { dispatch } = useAppState();
+  const [user, setUser] = useState<AuthUser | null>(null);
+
   useEffect(() => {
     const supabase = createClientComponentClient();
 
@@ -53,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           return;
         }
 
-        // setUser(user);
+        setUser(user);
 
         const { data: workspaceCollectionData, error: collectionsError } =
           await getCollections(params.workspaceId);
@@ -79,6 +93,52 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
 
     fetchData();
   }, [params.workspaceId, router]);
+
+  const handleCreateNewDoc = async () => {
+    if (!params.workspaceId || !user) return;
+    const newDocument: Document = {
+      createdAt: new Date().toISOString(),
+      inTrash: null,
+      title: "Untitled",
+      workspaceId: params.workspaceId as UUID,
+      data: null,
+      bannerUrl: null,
+      summary: null,
+      fullwidth: null,
+      emoji: "📄",
+      text: null,
+      contenct: undefined,
+      revisionCount: null,
+      createdById: user?.id,
+      archivedAt: null,
+      publishedAt: null,
+      template: null,
+      sourceMetadata: undefined,
+      parentDocumentId: null,
+      lastModifiedById: null,
+      collaboratorIds: null,
+      collectionId: null,
+      id: v4(),
+    };
+    dispatch({
+      type: "ADD_FILE",
+      payload: { document: newDocument, workspaceId: params.workspaceId },
+    });
+    const { error } = await createDocument(newDocument);
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Could not create a document",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Document created.",
+      });
+      router.push(`/dashboard/${params.workspaceId}/${newDocument.id}`);
+    }
+  };
 
   return (
     <aside
@@ -189,7 +249,11 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         </ul>
       </div>
 
-      <Button className="mt-auto p-4 flex items-center" variant="default">
+      <Button
+        className="mt-auto p-4 flex items-center"
+        variant="default"
+        onClick={handleCreateNewDoc}
+      >
         <Plus size={24} className="mr-2" />
         Create Docs
       </Button>

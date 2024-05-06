@@ -8,12 +8,12 @@ import React, {
   useMemo,
   useReducer,
 } from "react";
-import { Document, Collection, workspace } from "../supabase/supabase.types";
+import { Document, Collection, Workspace } from "../supabase/supabase.types";
 import { usePathname } from "next/navigation";
 import { getDocuments } from "@/lib/supabase/queries";
 
 export type appCollectionsType = Collection & { documents: Document[] | [] };
-export type appWorkspacesType = workspace & {
+export type appWorkspacesType = Workspace & {
   collections: appCollectionsType[] | [];
 };
 
@@ -45,7 +45,6 @@ type Action =
       payload: {
         workspaceId: string;
         document: Document;
-        collectionId: string;
       };
     }
   | {
@@ -215,20 +214,17 @@ const appReducer = (
             return {
               ...workspace,
               collections: workspace.collections.map((collection) => {
-                if (collection.id === action.payload.collectionId) {
-                  return {
-                    ...collection,
-                    documents: [
-                      ...collection.documents,
-                      action.payload.document,
-                    ].sort(
-                      (a, b) =>
-                        new Date(a.createdAt).getTime() -
-                        new Date(b.createdAt).getTime()
-                    ),
-                  };
-                }
-                return collection;
+                return {
+                  ...collection,
+                  documents: [
+                    ...collection.documents,
+                    action.payload.document,
+                  ].sort(
+                    (a, b) =>
+                      new Date(a.createdAt).getTime() -
+                      new Date(b.createdAt).getTime()
+                  ),
+                };
               }),
             };
           }

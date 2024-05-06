@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPlateUI } from "@/lib/plate/create-plate-ui";
 import { CommentsProvider } from "@/lib/plate/comments/CommentsProvider";
 import { editableProps } from "@/lib/plate/editableProps";
@@ -53,7 +59,11 @@ import { createCommentsPlugin } from "@udecode/plate-comments";
 import {
   createPlugins,
   Plate,
+  PlateController,
+  PlateEditor,
   PlatePluginComponent,
+  useEditorRef,
+  useEditorSelector,
   Value,
 } from "@udecode/plate-common";
 import { createDndPlugin } from "@udecode/plate-dnd";
@@ -131,6 +141,11 @@ import {
 } from "@/components/plate-ui/indent-todo-marker-component";
 import { MentionCombobox } from "@/components/plate-ui/mention-combobox";
 import { SlashCombobox } from "@/components/plate-ui/slash-combobox";
+import { getDocumentDetails, updateDocument } from "@/lib/supabase/queries";
+import { useAppState } from "@/lib/providers/state-provider";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
+import { deserialize } from "v8";
 
 export const usePlaygroundPlugins = ({
   id,
@@ -367,12 +382,17 @@ export const useInitialValueVersion = (initialValue: Value) => {
   return version;
 };
 
-export default function PlateEditor({ id }: { id?: ValueId }) {
+export default function MainEditor({
+  id,
+  documentId,
+}: {
+  id?: ValueId;
+  documentId: string;
+}) {
+  if (!documentId) redirect("/dashboard");
   const containerRef = useRef(null);
   const enabled = settingsStore.use.checkedComponents();
-  const initialValue = usePlaygroundValue(id);
-  const key = useInitialValueVersion(initialValue);
-
+  const editorRef = useRef<PlateEditor | null>(null);
   const plugins = usePlaygroundPlugins({
     id,
     components: createPlateUI(
@@ -383,75 +403,138 @@ export default function PlateEditor({ id }: { id?: ValueId }) {
       }
     ),
   });
+  var initialValue = usePlaygroundValue(id);
+  // Initialize initialValue state with an empty array
+  const key = documentId;
+  // Fetch the document details when documentId changes
+  useEffect(() => {
+    const fetchDocument = async () => {
+      try {
+        const { data, error } = await getDocumentDetails(documentId);
+        if (error) {
+          console.error("Error fetching document details:", error);
+          return redirect("/dashboard");
+        } else {
+          const value = data?.text;
+          console.log("Fetched document content:", value);
+          if (value) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
+            initialValue = JSON.parse(value) || [];
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching document details:", error);
+        return redirect("/dashboard");
+      }
+    };
+    fetchDocument();
+  }, [documentId]);
+
+  const handleAutoSave = useCallback(async () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    // Handle the case where editor is null
+    const isAstChange = editor.history.undos.length;
+    const value = editor.value;
+    if (isAstChange) {
+      // Save the value to Local Storage.
+      console.log("Auto Save", value);
+      // const content = JSON.stringify(value);
+
+      // console.log("type:", typeof content);
+      const { error } = await updateDocument({ content: value }, documentId);
+      if (error) {
+        toast.error("Failed to save the document");
+      } else {
+        toast.success("Document saved");
+      }
+    }
+  }, [documentId]);
+
+  // const CustomEffect = () => {
+  //   const editor = useEditorRef();
+
+  //   useEffect(() => {
+  //     console.log(editor);
+  //   }, [editor]);
+
+  //   return null;
+  // };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="relative h-screen">
-        <Plate
-          key={key}
-          initialValue={initialValue}
-          plugins={plugins}
-          normalizeInitialValue
-        >
-          <CommentsProvider>
-            {enabled["fixed-toolbar"] && (
-              <FixedToolbar>
-                {enabled["fixed-toolbar-buttons"] && (
-                  <FixedToolbarButtons id={id} />
-                )}
-              </FixedToolbar>
-            )}
-
-            <div className="flex w-full h-full">
-              <div
-                ref={containerRef}
-                className={cn(
-                  "relative flex w-full overflow-x-auto overflow-y-auto min-h-screen",
-                  "[&_.slate-start-area-top]:!h-4",
-                  "[&_.slate-start-area-left]:!w-3 [&_.slate-start-area-right]:!w-3",
-                  !id &&
-                    "md:[&_.slate-start-area-left]:!w-[64px] md:[&_.slate-start-area-right]:!w-[64px]"
-                )}
-              >
-                <Editor
-                  {...editableProps}
-                  placeholder=""
-                  variant="ghost"
-                  size="md"
-                  focusRing={false}
-                  className={cn(
-                    editableProps.className,
-                    "px-8",
-                    !id && "min-h-[860px] pb-[20vh] pt-4 md:px-[96px]",
-                    id && "pb-8 pt-2"
+        <PlateController>
+          <Plate
+            key={key}
+            editorRef={editorRef}
+            initialValue={initialValue}
+            plugins={plugins}
+            normalizeInitialValue
+          >
+            {/* <CustomEffect /> */}
+            <CommentsProvider>
+              {enabled["fixed-toolbar"] && (
+                <FixedToolbar>
+                  {enabled["fixed-toolbar-buttons"] && (
+                    <FixedToolbarButtons id={id} />
                   )}
-                />
+                </FixedToolbar>
+              )}
 
-                {enabled["floating-toolbar"] && (
-                  <FloatingToolbar>
-                    {enabled["floating-toolbar-buttons"] && (
-                      <FloatingToolbarButtons id={id} />
+              <div className="flex w-full h-full">
+                <div
+                  ref={containerRef}
+                  className={cn(
+                    "relative flex w-full overflow-x-auto overflow-y-auto min-h-screen",
+                    "[&_.slate-start-area-top]:!h-4",
+                    "[&_.slate-start-area-left]:!w-3 [&_.slate-start-area-right]:!w-3",
+                    !id &&
+                      "md:[&_.slate-start-area-left]:!w-[64px] md:[&_.slate-start-area-right]:!w-[64px]"
+                  )}
+                >
+                  <Editor
+                    {...editableProps}
+                    placeholder=""
+                    variant="ghost"
+                    size="md"
+                    focusRing={false}
+                    onBlur={handleAutoSave}
+                    className={cn(
+                      editableProps.className,
+                      "px-8",
+                      !id && "min-h-[860px] pb-[20vh] pt-4 md:px-[96px]",
+                      id && "pb-8 pt-2"
                     )}
-                  </FloatingToolbar>
-                )}
+                  />
 
-                {isEnabled("mention", id, enabled["mention-combobox"]) && (
-                  <MentionCombobox items={MENTIONABLES} />
-                )}
+                  {enabled["floating-toolbar"] && (
+                    <FloatingToolbar>
+                      {enabled["floating-toolbar-buttons"] && (
+                        <FloatingToolbarButtons id={id} />
+                      )}
+                    </FloatingToolbar>
+                  )}
 
-                <SlashCombobox items={SLASH_RULES} />
+                  {isEnabled("mention", id, enabled["mention-combobox"]) && (
+                    <MentionCombobox items={MENTIONABLES} />
+                  )}
 
-                {isEnabled("cursoroverlay", id) && (
-                  <CursorOverlay containerRef={containerRef} />
+                  <SlashCombobox items={SLASH_RULES} />
+
+                  {isEnabled("cursoroverlay", id) && (
+                    <CursorOverlay containerRef={containerRef} />
+                  )}
+                </div>
+
+                {isEnabled("comment", id, enabled["comments-popover"]) && (
+                  <CommentsPopover />
                 )}
               </div>
-
-              {isEnabled("comment", id, enabled["comments-popover"]) && (
-                <CommentsPopover />
-              )}
-            </div>
-          </CommentsProvider>
-        </Plate>
+            </CommentsProvider>
+          </Plate>
+        </PlateController>
       </div>
     </DndProvider>
   );

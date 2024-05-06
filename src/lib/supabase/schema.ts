@@ -95,8 +95,6 @@ export const ActivityEvent = pgEnum("activity_event", [
 ]);
 
 export const AuditEvent = pgEnum("audit_event", [
-  "api_keys.create",
-  "api_keys.delete",
   "authenticationProviders.update",
   "collections.create",
   "collections.update",
@@ -179,7 +177,7 @@ export const documents = pgTable("documents", {
   fullwidth: boolean("fullwidth").default(false),
   emoji: text("emoji"),
   text: text("text"),
-  contenct: jsonb("content"),
+  content: jsonb("content"),
   revisionCount: integer("revision_count").default(0),
   archivedAt: timestamp("archived_at", { withTimezone: true, mode: "string" }),
   publishedAt: timestamp("published_at", { withTimezone: true, mode: "string" }),
@@ -190,8 +188,6 @@ export const documents = pgTable("documents", {
   createdById: uuid("created_by_id")
     .notNull()
     .references(() => users.id),
-  // templateId: uuid("template_id").references(() => documents.id),
-  iconId: text("icon_id").notNull(),
   data: text("data"),
   collaboratorIds: text("collaborator_ids").array(),
   inTrash: text("in_trash").default(sql`ARRAY[]::text[]`),
@@ -200,25 +196,6 @@ export const documents = pgTable("documents", {
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
   collectionId: uuid("collection_id")
-    .notNull()
-    .references(() => collections.id, { onDelete: "cascade" }),
-});
-
-export const views = pgTable("views", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  count: integer("count").default(0),
-  lastEditingAt: timestamp("last_editing_at", { withTimezone: true, mode: "string" }).default(
-    sql`now()`,
-  ),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .default(sql`now()`)
-    .notNull(),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id, { onDelete: "cascade" }),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
 });
 
 export const stars = pgTable("stars", {
@@ -444,7 +421,7 @@ export const comments = pgTable("comments", {
     .defaultNow()
     .notNull(),
   content: jsonb("content").notNull(),
-  createById: uuid("created_by_id")
+  createdById: uuid("created_by_id")
     .notNull()
     .references(() => users.id, {}),
   resolvedById: uuid("resolved_by_id").references(() => users.id, {}),

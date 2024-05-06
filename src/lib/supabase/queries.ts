@@ -80,19 +80,14 @@ export const getWorkspaceDetails = async (workspaceId: string) => {
 export const getDocumentDetails = async (fileId: string) => {
   const isValid = validate(fileId);
   if (!isValid) {
-    data: [];
-    error: 'Error';
+    return { data: null, error: 'Error' };
   }
   try {
-    const response = (await db
-      .select()
-      .from(documents)
-      .where(eq(documents.id, fileId))
-      .limit(1)) as Document[];
-    return { data: response, error: null };
+    const response = await db.query.documents.findFirst({ where: (d, { eq }) => eq(d.id, fileId)})
+    return { data: response as Document, error: null };
   } catch (error) {
     console.log('🔴Error', error);
-    return { data: [], error: 'Error' };
+    return { data: null, error: 'Error' };
   }
 };
 
@@ -323,7 +318,7 @@ export const updateCollection = async (
 
 export const updateDocument = async (document: Partial<Document>, fileId: string) => {
   try {
-    const response = await db
+    await db
       .update(documents)
       .set(document)
       .where(eq(documents.id, fileId));

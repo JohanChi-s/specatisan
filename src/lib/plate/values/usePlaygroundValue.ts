@@ -99,37 +99,5 @@ export const usePlaygroundValue = (id?: ValueId) => {
     if (enabled.excalidraw) value.push(...excalidrawValue);
 
     return mapNodeId(value) as Value;
-  }, [
-    enabled.a,
-    enabled.action_item,
-    enabled.align,
-    enabled.autoformat,
-    enabled.backgroundColor,
-    enabled.color,
-    enabled.comment,
-    enabled.deserializeCsv,
-    enabled.deserializeDocx,
-    enabled.deserializeMd,
-    enabled.dragOverCursor,
-    enabled.emoji,
-    enabled.excalidraw,
-    enabled.exitBreak,
-    enabled.highlight,
-    enabled.hr,
-    enabled.img,
-    enabled.indent,
-    enabled.kbd,
-    enabled.lineHeight,
-    enabled.list,
-    enabled.listStyleType,
-    enabled.media_embed,
-    enabled.mention,
-    enabled.softBreak,
-    enabled.tabbable,
-    enabled.table,
-    enabled.toggle,
-    enabled.trailingBlock,
-    enabled.column,
-    valueId,
-  ]);
+  }, [enabled.a, enabled.action_item, enabled.align, enabled.autoformat, enabled.backgroundColor, enabled.color, enabled.comment, enabled.deserializeCsv, enabled.deserializeDocx, enabled.deserializeMd, enabled.dragOverCursor, enabled.emoji, enabled.excalidraw, enabled.exitBreak, enabled.highlight, enabled.hr, enabled.img, enabled.indent, enabled.kbd, enabled.lineHeight, enabled.list, enabled.listStyleType, enabled.media_embed, enabled.mention, enabled.softBreak, enabled.tabbable, enabled.table, enabled.toggle, enabled.trailingBlock, valueId]);
 };
