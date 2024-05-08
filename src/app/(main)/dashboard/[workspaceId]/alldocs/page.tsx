@@ -39,7 +39,7 @@ const AllDocsPage = () => {
   return (
     <div className="container mx-auto px-5">
       {/* Workspace Navbar */}
-      {/* <WorkspaceNavbar workspaceId={workspaceId} /> */}
+      <WorkspaceNavbar />
 
       {/* Workspace Breadcrumb (if needed) */}
       <WorkspaceBreadcumb />

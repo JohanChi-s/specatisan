@@ -111,6 +111,7 @@
     "@udecode/plate-test-utils": "^30.5.3",
     "@udecode/plate-toggle": "^32.0.0",
     "@udecode/plate-trailing-block": "^32.0.0",
+    "@udecode/plate-yjs": "^32.0.0",
     "@udecode/slate-react": "^32.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",

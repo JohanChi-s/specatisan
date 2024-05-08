@@ -31,6 +31,7 @@ import { usePlaygroundValue } from "@/lib/plate/values/usePlaygroundValue";
 import { cn } from "@udecode/cn";
 import { createAlignPlugin } from "@udecode/plate-alignment";
 import { createAutoformatPlugin } from "@udecode/plate-autoformat";
+import { createYjsPlugin } from "@udecode/plate-yjs";
 import {
   createBoldPlugin,
   createCodePlugin,
@@ -393,6 +394,8 @@ export default function MainEditor({
   const containerRef = useRef(null);
   const enabled = settingsStore.use.checkedComponents();
   const editorRef = useRef<PlateEditor | null>(null);
+  var initialValue = usePlaygroundValue(id);
+  const [value, setValue] = useState(initialValue);
   const plugins = usePlaygroundPlugins({
     id,
     components: createPlateUI(
@@ -403,7 +406,6 @@ export default function MainEditor({
       }
     ),
   });
-  var initialValue = usePlaygroundValue(id);
   // Initialize initialValue state with an empty array
   const key = documentId;
   // Fetch the document details when documentId changes
@@ -419,7 +421,7 @@ export default function MainEditor({
           console.log("Fetched document content:", value);
           if (value) {
             // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
-            initialValue = JSON.parse(value) || [];
+            setValue(JSON.parse(value));
           }
         }
       } catch (error) {
@@ -469,7 +471,7 @@ export default function MainEditor({
           <Plate
             key={key}
             editorRef={editorRef}
-            initialValue={initialValue}
+            value={value}
             plugins={plugins}
             normalizeInitialValue
           >

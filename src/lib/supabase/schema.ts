@@ -228,7 +228,7 @@ export const collections = pgTable("collections", {
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .default(sql`now()`)
     .notNull(),
-  urlId: text("url_id").notNull().unique(),
+  urlId: text("url_id").unique(),
   name: text("name").notNull(),
   description: text("description"),
   icon: text("icon"),
@@ -240,7 +240,7 @@ export const collections = pgTable("collections", {
   sharing: boolean("sharing").default(true),
   inTrash: text("in_trash"),
   importId: uuid("import_id"),
-  createdById: uuid("created_by_id").notNull(),
+  createdById: uuid("created_by_id"),
   bannerUrl: text("banner_url"),
   // Define foreign key constraint
   workspaceId: uuid("workspace_id")

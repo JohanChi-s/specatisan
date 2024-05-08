@@ -10,11 +10,11 @@ import React, {
 } from "react";
 import { Document, Collection, Workspace } from "../supabase/supabase.types";
 import { usePathname } from "next/navigation";
-import { getDocuments } from "@/lib/supabase/queries";
+import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
 
-export type appCollectionsType = Collection & { documents: Document[] | [] };
 export type appWorkspacesType = Workspace & {
-  collections: appCollectionsType[] | [];
+  collections: Collection[] | [];
+  documents: Document[] | [];
 };
 
 interface AppState {
@@ -34,11 +34,11 @@ type Action =
     }
   | {
       type: "SET_FOLDERS";
-      payload: { workspaceId: string; collections: [] | appCollectionsType[] };
+      payload: { workspaceId: string; collections: Collection[] };
     }
   | {
       type: "ADD_FOLDER";
-      payload: { workspaceId: string; collection: appCollectionsType };
+      payload: { workspaceId: string; collection: Collection };
     }
   | {
       type: "ADD_FILE";
@@ -60,13 +60,12 @@ type Action =
       payload: {
         workspaceId: string;
         documents: Document[];
-        collectionId: string;
       };
     }
   | {
       type: "UPDATE_FOLDER";
       payload: {
-        collection: Partial<appCollectionsType>;
+        collection: Partial<Collection>;
         workspaceId: string;
         collectionId: string;
       };
@@ -75,7 +74,6 @@ type Action =
       type: "UPDATE_FILE";
       payload: {
         document: Partial<Document>;
-        collectionId: string;
         workspaceId: string;
         fileId: string;
       };
@@ -125,11 +123,7 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              collections: action.payload.collections.sort(
-                (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
-              ),
+              collections: action.payload.collections,
             };
           }
           return workspace;
@@ -192,15 +186,12 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              collections: workspace.collections.map((collection) => {
-                if (collection.id === action.payload.collectionId) {
-                  return {
-                    ...collection,
-                    documents: action.payload.documents,
-                  };
-                }
-                return collection;
-              }),
+              ...workspace.collections,
+              documents: action.payload.documents.sort(
+                (a, b) =>
+                  new Date(a.createdAt).getTime() -
+                  new Date(b.createdAt).getTime()
+              ),
             };
           }
           return workspace;
@@ -216,14 +207,6 @@ const appReducer = (
               collections: workspace.collections.map((collection) => {
                 return {
                   ...collection,
-                  documents: [
-                    ...collection.documents,
-                    action.payload.document,
-                  ].sort(
-                    (a, b) =>
-                      new Date(a.createdAt).getTime() -
-                      new Date(b.createdAt).getTime()
-                  ),
                 };
               }),
             };
@@ -242,9 +225,6 @@ const appReducer = (
                 if (collection.id === action.payload.collectionId) {
                   return {
                     ...collection,
-                    documents: collection.documents.filter(
-                      (document) => document.id !== action.payload.fileId
-                    ),
                   };
                 }
                 return collection;
@@ -261,22 +241,15 @@ const appReducer = (
           if (workspace.id === action.payload.workspaceId) {
             return {
               ...workspace,
-              collections: workspace.collections.map((collection) => {
-                if (collection.id === action.payload.collectionId) {
+              ...workspace.collections,
+              documents: workspace.documents.map((document) => {
+                if (document.id === action.payload.fileId) {
                   return {
-                    ...collection,
-                    documents: collection.documents.map((document) => {
-                      if (document.id === action.payload.fileId) {
-                        return {
-                          ...document,
-                          ...action.payload.document,
-                        };
-                      }
-                      return document;
-                    }),
+                    ...document,
+                    ...action.payload.document,
                   };
                 }
-                return collection;
+                return document;
               }),
             };
           }
@@ -330,22 +303,6 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
         return urlSegments[3];
       }
   }, [pathname]);
-
-  useEffect(() => {
-    if (!collectionId || !workspaceId) return;
-    const fetchDocuments = async () => {
-      const { error: filesError, data } = await getDocuments(collectionId);
-      if (filesError) {
-        console.log(filesError);
-      }
-      if (!data) return;
-      dispatch({
-        type: "SET_FILES",
-        payload: { workspaceId, documents: data, collectionId },
-      });
-    };
-    fetchDocuments();
-  }, [collectionId, workspaceId]);
 
   useEffect(() => {
     console.log("App State Changed", state);

@@ -73,6 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           await getCollections(params.workspaceId);
         if (workspaceCollectionData)
           setWorkspaceCollectionData(workspaceCollectionData);
+
         if (collectionsError) {
           router.push(`/dashboard/${params.workspaceId}`); // Redirect to dashboard on collections error
           return;
@@ -107,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
       fullwidth: null,
       emoji: "📄",
       text: null,
-      contenct: undefined,
+      content: undefined,
       revisionCount: null,
       createdById: user?.id,
       archivedAt: null,

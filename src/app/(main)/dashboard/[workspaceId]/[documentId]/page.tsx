@@ -1,11 +1,9 @@
 export const dynamic = "force-dynamic";
 
-import React from "react";
+import MainEditor from "@/components/editor/Editor";
+import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 import { getDocumentDetails } from "@/lib/supabase/queries";
 import { redirect } from "next/navigation";
-import { Room } from "@/app/Room";
-import MainEditor from "@/components/editor/Editor";
-import { ValueId } from "@/config/customizer-plugins";
 
 export default async function DocumentDetailPage({
   params,
@@ -19,6 +17,11 @@ export default async function DocumentDetailPage({
   }
   return (
     <div className="max-w-[1336px] w-full rounded-lg border bg-background shadow over">
+      <WorkspaceNavbar
+        documentId={data?.id}
+        title={data.title}
+        isShowTabs={false}
+      />
       <MainEditor documentId={data?.id} />
     </div>
   );

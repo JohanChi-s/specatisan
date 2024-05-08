@@ -10,8 +10,6 @@ import AppStateProvider from "@/lib/providers/state-provider";
 import { SupabaseUserProvider } from "@/lib/providers/supabase-user-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { SocketProvider } from "@/lib/providers/socket-provider";
-import db from "@/lib/supabase/db";
-
 const inter = DM_Sans({
   subsets: ["latin"],
   weight: "400",

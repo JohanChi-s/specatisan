@@ -43,12 +43,12 @@ export const getCollections = async (workspaceId: string) => {
     };
 
   try {
-    const results: Collection[] | [] = await db
+    const results: Collection[] = await db
       .select()
       .from(collections)
       .orderBy(collections.createdAt)
       .where(eq(collections.workspaceId, workspaceId));
-    return { data: results, error: null };
+    return { data: results as Collection[], error: null };
   } catch (error) {
     console.log("err: ", error);
     
@@ -289,7 +289,7 @@ export const createCollection = async (collection: Collection) => {
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: error };
   }
 };
 
