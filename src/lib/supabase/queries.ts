@@ -218,7 +218,7 @@ export const getDocumentByWorkspaceId = async (workspaceId: string) => {
       .from(documents)
       .orderBy(documents.createdAt)
       .where(eq(documents.workspaceId, workspaceId))) as Document[] | [];
-    return { data: results, error: null };
+    return { data: results as Collection[], error: null };
   } catch (error) {
     console.log(error);
     return { data: null, error: 'Error' };

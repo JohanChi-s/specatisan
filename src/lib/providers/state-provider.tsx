@@ -30,11 +30,11 @@ type Action =
     }
   | {
       type: "SET_WORKSPACES";
-      payload: { workspaces: appWorkspacesType[] | [] };
+      payload: { workspaces: appWorkspacesType[] };
     }
   | {
       type: "SET_FOLDERS";
-      payload: { workspaceId: string; collections: Collection[] };
+      payload: { workspaceId: string; collections: Collection[] | [] };
     }
   | {
       type: "ADD_FOLDER";
@@ -121,6 +121,7 @@ const appReducer = (
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
+            // console.log("workspace", workspace, action.payload.collections);
             return {
               ...workspace,
               collections: action.payload.collections,

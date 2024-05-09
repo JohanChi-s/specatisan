@@ -36,11 +36,20 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
         type: "SET_FOLDERS",
         payload: {
           workspaceId,
-          collections: workspaceCollections.map((collection) => collection),
+          collections: workspaceCollections,
         },
       });
     }
   }, [dispatch, workspaceCollections, workspaceId]);
+
+  useEffect(() => {
+    console.log("state", state);
+
+    setCollections(
+      state.workspaces.find((workspace) => workspace.id === workspaceId)
+        ?.collections || []
+    );
+  }, [state, workspaceId]);
 
   //add collection
   const addCollectionHandler = async () => {
@@ -122,13 +131,15 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
         </TooltipComponent>
       </div>
       <ul className="flex flex-col w-full items-start flex-1">
-        {workspaceCollections.map((collection) => (
-          <CollectionItem
-            key={collection.id}
-            workspaceId={workspaceId}
-            collection={collection}
-          />
-        ))}
+        {collections
+          .filter((collection) => !collection.inTrash)
+          .map((collection) => (
+            <CollectionItem
+              key={collection.id}
+              collection={collection}
+              workspaceId={collection.workspaceId}
+            />
+          ))}
       </ul>
     </>
   );

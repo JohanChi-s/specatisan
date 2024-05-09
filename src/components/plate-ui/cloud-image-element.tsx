@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { cn } from '@udecode/cn';
+import React from "react";
+import { cn } from "@udecode/cn";
 import {
   TCloudImageElement,
   useCloudImageElementState,
-} from '@udecode/plate-cloud';
-import { PlateElement, PlateElementProps, Value } from '@udecode/plate-common';
+} from "@udecode/plate-cloud";
+import { PlateElement, PlateElementProps, Value } from "@udecode/plate-common";
 
-import { ResizeControls } from './cloud-resize-controls';
-import { StatusBar } from './cloud-status-bar';
+import { ResizeControls } from "./cloud-resize-controls";
+import { StatusBar } from "./cloud-status-bar";
 
 export interface CloudImageElementProps
   extends PlateElementProps<Value, TCloudImageElement> {}
@@ -25,7 +25,7 @@ export function CloudImageElement({
 
   return (
     <PlateElement
-      className={cn('relative my-4', className)}
+      className={cn("relative my-4", className)}
       draggable
       {...props}
     >
@@ -37,8 +37,8 @@ export function CloudImageElement({
            * This code pretty much needs to be this way or things stop working
            * so this cannot be overrided in the `.styles.ts` file.
            */
-          position: 'relative',
-          display: 'inline-block',
+          position: "relative",
+          display: "inline-block",
           /**
            * This is required so that we don't get an extra gap at the bottom.
            * When display is 'inline-block' we get some extra space at the bottom
@@ -53,30 +53,30 @@ export function CloudImageElement({
            *
            * Also, make sure that <img> on the inside is display: 'block'.
            */
-          verticalAlign: 'top',
+          verticalAlign: "top",
           /**
            * Disable user select. We use our own selection display.
            */
-          userSelect: 'none',
+          userSelect: "none",
         }}
       >
-        {src === '' ? (
+        {src === "" ? (
           <div
             className={cn(
-              'block rounded-lg',
-              focused && selected && 'shadow-[0_0_1px_3px_#60a5fa]'
+              "block rounded-lg",
+              focused && selected && "shadow-[0_0_1px_3px_#60a5fa]"
             )}
             style={{
               width: size.width,
               height: size.height,
-              background: '#e0e0e0',
+              background: "#e0e0e0",
             }}
           />
         ) : (
           <img
             className={cn(
-              'block rounded-lg',
-              focused && selected && 'shadow-[0_0_1px_3px_#60a5fa]'
+              "block rounded-lg",
+              focused && selected && "shadow-[0_0_1px_3px_#60a5fa]"
             )}
             src={src}
             srcSet={srcSet}
