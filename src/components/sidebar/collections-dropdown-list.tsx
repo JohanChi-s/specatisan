@@ -1,17 +1,16 @@
 "use client";
-import { useAppState } from "@/lib/providers/state-provider";
-import { Collection } from "@/lib/supabase/supabase.types";
-import React, { useEffect, useState } from "react";
-import TooltipComponent from "../global/tooltip-component";
-import { PlusIcon } from "lucide-react";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { v4 } from "uuid";
-import { createCollection } from "@/lib/supabase/queries";
-import { useToast } from "../ui/use-toast";
-import { Accordion } from "../ui/accordion";
-import Dropdown from "./Dropdown";
 import useSupabaseRealtime from "@/lib/hooks/useSupabaseRealtime";
+import { useAppState } from "@/lib/providers/state-provider";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { createCollection } from "@/lib/supabase/queries";
+import { Collection } from "@/lib/supabase/supabase.types";
+import { PlusIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { v4 } from "uuid";
+import TooltipComponent from "../global/tooltip-component";
+import { useToast } from "../ui/use-toast";
+import CollectionItem from "./CollectionItem";
 
 interface CollectionsDropdownListProps {
   workspaceCollections: Collection[];
@@ -24,38 +23,33 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
 }) => {
   useSupabaseRealtime();
   const { state, dispatch, collectionId } = useAppState();
+  const { user } = useSupabaseUser();
   const { open, setOpen } = useSubscriptionModal();
   const { toast } = useToast();
   const [collections, setCollections] = useState(workspaceCollections);
+
   const { subscription } = useSupabaseUser();
 
-  //effec set nitial satte server app state
   useEffect(() => {
     if (workspaceCollections.length > 0) {
       dispatch({
         type: "SET_FOLDERS",
         payload: {
           workspaceId,
-          collections: workspaceCollections.map((collection) => ({
-            ...collection,
-            documents:
-              state.workspaces
-                .find((workspace) => workspace.id === workspaceId)
-                ?.collections.find((f: Collection) => f.id === collection.id)
-                ?.documents || [],
-          })),
+          collections: workspaceCollections,
         },
       });
     }
-  }, [workspaceCollections, workspaceId]);
-  //state
+  }, [dispatch, workspaceCollections, workspaceId]);
 
   useEffect(() => {
+    console.log("state", state);
+
     setCollections(
       state.workspaces.find((workspace) => workspace.id === workspaceId)
         ?.collections || []
     );
-  }, [state]);
+  }, [state, workspaceId]);
 
   //add collection
   const addCollectionHandler = async () => {
@@ -64,25 +58,34 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
       return;
     }
     const newCollection: Collection = {
-      data: null,
       id: v4(),
       createdAt: new Date().toISOString(),
-      title: "Untitled",
-      iconId: "📄",
+      name: "Untitled",
+      icon: "📄",
       inTrash: null,
       workspaceId,
       bannerUrl: "",
+      urlId: null,
+      description: null,
+      color: null,
+      index: null,
+      permission: null,
+      maintainerApprovalRequired: null,
+      documentStructure: undefined,
+      sharing: null,
+      importId: null,
+      createdById: user?.id || null,
     };
     dispatch({
       type: "ADD_FOLDER",
-      payload: { workspaceId, collection: { ...newCollection, documents: [] } },
+      payload: { workspaceId, collection: { ...newCollection } },
     });
     const { data, error } = await createCollection(newCollection);
     if (error) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Could not create the collection",
+        description: "Could not create the collection" + error.toString(),
       });
     } else {
       toast({
@@ -127,23 +130,17 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
           />
         </TooltipComponent>
       </div>
-      <Accordion
-        type="multiple"
-        defaultValue={[collectionId || ""]}
-        className="pb-20"
-      >
+      <ul className="flex flex-col w-full items-start flex-1">
         {collections
           .filter((collection) => !collection.inTrash)
           .map((collection) => (
-            <Dropdown
+            <CollectionItem
               key={collection.id}
-              title={collection.name}
-              listType="collection"
-              id={collection.id}
-              iconId={collection.icon || "📄"}
+              collection={collection}
+              workspaceId={collection.workspaceId}
             />
           ))}
-      </Accordion>
+      </ul>
     </>
   );
 };

@@ -37,14 +37,27 @@ const useSupabaseRealtime = () => {
                 collectionId: payload.new.collection_id,
                 createdAt: payload.new.created_at,
                 title: payload.new.title,
-                iconId: payload.new.icon_id,
                 data: payload.new.data,
                 inTrash: payload.new.in_trash,
                 bannerUrl: payload.new.banner_url,
+                createdById: "",
+                summary: null,
+                fullwidth: null,
+                emoji: null,
+                text: null,
+                contenct: undefined,
+                revisionCount: null,
+                archivedAt: null,
+                publishedAt: null,
+                template: null,
+                sourceMetadata: undefined,
+                parentDocumentId: null,
+                lastModifiedById: null,
+                collaboratorIds: null,
               };
               dispatch({
                 type: "ADD_FILE",
-                payload: { document: newDocument, collectionId, workspaceId },
+                payload: { document: newDocument, workspaceId },
               });
             }
           } else if (payload.eventType === "DELETE") {
@@ -83,7 +96,6 @@ const useSupabaseRealtime = () => {
                         fileId: payload.new.id,
                         document: {
                           title: payload.new.title,
-                          iconId: payload.new.icon_id,
                           inTrash: payload.new.in_trash,
                         },
                       },
@@ -101,7 +113,7 @@ const useSupabaseRealtime = () => {
     return () => {
       channel.unsubscribe();
     };
-  }, [supabase, state, selectedWorskpace]);
+  }, [supabase, state, selectedWorskpace, dispatch, router]);
 
   return null;
 };

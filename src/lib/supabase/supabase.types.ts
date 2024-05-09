@@ -14,7 +14,6 @@ import type {
   stars,
   subscriptions,
   users,
-  views,
   workspaces,
 } from "@/lib/supabase/schema";
 import type { InferSelectModel } from "drizzle-orm";
@@ -214,9 +213,8 @@ export type Database = {
           created_by_id: string;
           data: string | null;
           emoji: string | null;
-          collection_id: string;
           fullwidth: boolean | null;
-          icon_id: string;
+          createdById: string;
           id: string;
           in_trash: string | null;
           last_modified_by_id: string | null;
@@ -241,9 +239,8 @@ export type Database = {
           created_by_id: string;
           data?: string | null;
           emoji?: string | null;
-          collection_id: string;
           fullwidth?: boolean | null;
-          icon_id: string;
+          createdById: string;
           id?: string;
           in_trash?: string | null;
           last_modified_by_id?: string | null;
@@ -268,9 +265,7 @@ export type Database = {
           created_by_id?: string;
           data?: string | null;
           emoji?: string | null;
-          collection_id?: string;
           fullwidth?: boolean | null;
-          icon_id?: string;
           id?: string;
           in_trash?: string | null;
           last_modified_by_id?: string | null;
@@ -1271,7 +1266,6 @@ export type Document = InferSelectModel<typeof documents>;
 export type User = InferSelectModel<typeof users>;
 export type Comment = InferSelectModel<typeof comments>;
 export type Revision = InferSelectModel<typeof revisions>;
-export type View = InferSelectModel<typeof views>;
 export type Share = InferSelectModel<typeof shares>;
 export type Star = InferSelectModel<typeof stars>;
 export type Notification = InferSelectModel<typeof notifications>;

@@ -43,12 +43,12 @@ export const getCollections = async (workspaceId: string) => {
     };
 
   try {
-    const results: Collection[] | [] = await db
+    const results: Collection[] = await db
       .select()
       .from(collections)
       .orderBy(collections.createdAt)
       .where(eq(collections.workspaceId, workspaceId));
-    return { data: results, error: null };
+    return { data: results as Collection[], error: null };
   } catch (error) {
     console.log("err: ", error);
     
@@ -80,19 +80,14 @@ export const getWorkspaceDetails = async (workspaceId: string) => {
 export const getDocumentDetails = async (fileId: string) => {
   const isValid = validate(fileId);
   if (!isValid) {
-    data: [];
-    error: 'Error';
+    return { data: null, error: 'Error' };
   }
   try {
-    const response = (await db
-      .select()
-      .from(documents)
-      .where(eq(documents.id, fileId))
-      .limit(1)) as Document[];
-    return { data: response, error: null };
+    const response = await db.query.documents.findFirst({ where: (d, { eq }) => eq(d.id, fileId)})
+    return { data: response as Document, error: null };
   } catch (error) {
     console.log('🔴Error', error);
-    return { data: [], error: 'Error' };
+    return { data: null, error: 'Error' };
   }
 };
 
@@ -223,7 +218,7 @@ export const getDocumentByWorkspaceId = async (workspaceId: string) => {
       .from(documents)
       .orderBy(documents.createdAt)
       .where(eq(documents.workspaceId, workspaceId))) as Document[] | [];
-    return { data: results, error: null };
+    return { data: results as Collection[], error: null };
   } catch (error) {
     console.log(error);
     return { data: null, error: 'Error' };
@@ -294,7 +289,7 @@ export const createCollection = async (collection: Collection) => {
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: error };
   }
 };
 
@@ -323,7 +318,7 @@ export const updateCollection = async (
 
 export const updateDocument = async (document: Partial<Document>, fileId: string) => {
   try {
-    const response = await db
+    await db
       .update(documents)
       .set(document)
       .where(eq(documents.id, fileId));

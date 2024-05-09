@@ -4,7 +4,6 @@ import { useAppState } from "@/lib/providers/state-provider";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { createCollection } from "@/lib/supabase/queries";
-import type { Collection } from "@/shared/supabase.types";
 import { PlusIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -13,6 +12,7 @@ import TooltipComponent from "../global/tooltip-component";
 import { Accordion } from "../ui/accordion";
 import { useToast } from "../ui/use-toast";
 import Dropdown from "./Dropdown";
+import { Collection } from "@/lib/supabase/supabase.types";
 
 interface FavoritesDropdownListProps {
   workspaceCollections: Collection[];
@@ -35,7 +35,7 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
   useEffect(() => {
     if (workspaceCollections.length > 0) {
       dispatch({
-        type: "SET_COLLECTIONS",
+        type: "SET_FOLDERS",
         payload: {
           workspaceId,
           collections: workspaceCollections.map((collection) => ({
@@ -68,14 +68,14 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
     }
     const newCollection: Collection = {
       documentStructure: null,
-      createAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
       name: "Untitled",
       icon: "📄",
       inTrash: null,
       workspaceId,
       bannerUrl: "",
       id: v4(),
-      urlId: "",
+      urlId: v4(),
       description: null,
       color: null,
       index: null,
@@ -86,7 +86,7 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
       createdById: "",
     };
     dispatch({
-      type: "ADD_COLLECTION",
+      type: "ADD_FOLDER",
       payload: { workspaceId, collection: { ...newCollection, documents: [] } },
     });
     const { data, error } = await createCollection(newCollection);
@@ -153,7 +153,7 @@ const FavoritesDropdownList: React.FC<FavoritesDropdownListProps> = ({
               title={collection.name}
               listType="collection"
               id={collection.id}
-              iconId={collection.icon}
+              iconId={collection.icon || "📄"}
             />
           ))}
       </Accordion>
