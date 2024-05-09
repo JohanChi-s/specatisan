@@ -3,12 +3,10 @@ import { updateCollection } from "@/lib/supabase/queries";
 import { Collection } from "@/lib/supabase/supabase.types";
 import { cn } from "@/lib/utils";
 import {
-  CircleEllipsis,
   Delete,
   Edit2,
   Keyboard,
   Mail,
-  Plus,
   PlusCircle,
   Settings,
   UserPlus,
@@ -17,9 +15,7 @@ import {
 import Link from "next/link";
 import React from "react";
 import EmojiPicker from "../global/emoji-picker";
-import TooltipComponent from "../global/tooltip-component";
 import { Button } from "../ui/button";
-import { toast } from "../ui/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,12 +30,19 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Dialog, DialogTrigger } from "../ui/dialog";
-import { DialogContent } from "@radix-ui/react-dialog";
-import CustomDialogTrigger from "../global/custom-dialog-trigger";
+import { Label } from "../ui/label";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { toast } from "../ui/use-toast";
 
 type Props = {
   collection: Collection;
@@ -48,7 +51,32 @@ type Props = {
 
 const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
   const { dispatch } = useAppState();
-  const [isRename, setIsRename] = React.useState(false);
+  const [name, setName] = React.useState(collection.name);
+
+  const handleSaveChange = async () => {
+    if (!workspaceId) return;
+    dispatch({
+      type: "UPDATE_FOLDER",
+      payload: {
+        workspaceId,
+        collectionId: collection.id,
+        collection: { name },
+      },
+    });
+    const { data, error } = await updateCollection({ name }, collection.id);
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Could not update the name for this collection",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Update name for the collection",
+      });
+    }
+  };
   const onChangeEmoji = async (selectedEmoji: string) => {
     if (!workspaceId) return;
     dispatch({
@@ -86,7 +114,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
       >
         {collection.name}
       </Link>
-      <TooltipComponent message="Edit collection">
+      <Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"ghost"} onClick={() => {}}>
@@ -117,23 +145,12 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
                 <span>Settings</span>
                 <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
               </DropdownMenuItem>
-              <CustomDialogTrigger
-                content={
-                  <div className="flex items-center absolute w-12 h-4">
-                    <Label htmlFor="width">Name</Label>
-                    <Input
-                      id="width"
-                      defaultValue={collection.name}
-                      className="flex-1 ml-2"
-                    />
-                  </div>
-                }
-              >
+              <SheetTrigger asChild>
                 <DropdownMenuItem>
                   <Edit2 className="mr-2 h-4 w-4" />
                   <span>Rename</span>
                 </DropdownMenuItem>
-              </CustomDialogTrigger>
+              </SheetTrigger>
               <DropdownMenuItem>
                 <Keyboard className="mr-2 h-4 w-4" />
                 <span>Keyboard shortcuts</span>
@@ -175,7 +192,35 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </TooltipComponent>
+        <SheetContent side={"left"}>
+          <SheetHeader>
+            <SheetTitle>Edit collection</SheetTitle>
+            <SheetDescription>
+              Make changes to your collection here
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={name}
+                className="col-span-3"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+          </div>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button type="submit" onClick={handleSaveChange}>
+                Save changes
+              </Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </li>
   );
 };

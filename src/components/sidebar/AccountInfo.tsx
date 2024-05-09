@@ -1,8 +1,8 @@
-import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Button } from '../ui/button';
-import { Popover, PopoverTrigger } from '@radix-ui/react-popover';
-import { PopoverContent } from '../ui/popover';
+import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Popover, PopoverTrigger } from "@radix-ui/react-popover";
+import { PopoverContent } from "../ui/popover";
 
 import {
   Command,
@@ -12,8 +12,10 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '../ui/command';
-import { LogOut, Settings2 } from 'lucide-react';
+} from "../ui/command";
+import { LogOut, Settings2 } from "lucide-react";
+import LogoutButton from "../global/logout-button";
+import ModeToggle from "../global/mode-toggle";
 type Props = {};
 
 const AccountInfo: React.FC = () => {
@@ -36,10 +38,18 @@ const AccountInfo: React.FC = () => {
               <Settings2 size={20} className="mr-2" />
               Account Settings
             </CommandItem>
+            <CommandItem className="flex flex-1 items-center justify-between">
+              <p>Togle mode</p>
+              <ModeToggle />
+            </CommandItem>
             <CommandSeparator />
-            <CommandItem>
-              <LogOut size={20} className="mr-2" />
-              Logout
+            <CommandItem className="justify-center">
+              <LogoutButton>
+                <p className="flex items-center px-2">
+                  Logout
+                  <LogOut />
+                </p>
+              </LogoutButton>
             </CommandItem>
           </CommandList>
         </Command>

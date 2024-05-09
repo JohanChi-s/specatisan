@@ -1,17 +1,15 @@
 "use client";
-import { useAppState } from "@/lib/providers/state-provider";
-import { Collection } from "@/lib/supabase/supabase.types";
-import React, { useEffect, useState } from "react";
-import TooltipComponent from "../global/tooltip-component";
-import { PlusIcon } from "lucide-react";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { v4 } from "uuid";
-import { createCollection } from "@/lib/supabase/queries";
-import { useToast } from "../ui/use-toast";
-import { Accordion } from "../ui/accordion";
-import Dropdown from "./Dropdown";
 import useSupabaseRealtime from "@/lib/hooks/useSupabaseRealtime";
+import { useAppState } from "@/lib/providers/state-provider";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { createCollection } from "@/lib/supabase/queries";
+import { Collection } from "@/lib/supabase/supabase.types";
+import { PlusIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { v4 } from "uuid";
+import TooltipComponent from "../global/tooltip-component";
+import { useToast } from "../ui/use-toast";
 import CollectionItem from "./CollectionItem";
 
 interface CollectionsDropdownListProps {

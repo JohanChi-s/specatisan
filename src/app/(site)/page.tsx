@@ -1,389 +1,185 @@
-import TitleSection from "@/components/landing-page/title-section";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import React from "react";
-import Banner from "../../../public/appBanner.png";
-import Cal from "../../../public/cal.png";
-import Diamond from "../../../public/icons/diamond.svg";
-import CheckIcon from "../../../public/icons/check.svg";
-import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from "@/lib/constants";
-import { randomUUID } from "crypto";
-import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
-import CustomCard from "@/components/landing-page/custom-card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
-const HomePage = () => {
-	return (
-		<>
-			<section
-				className=" overflow-hidden
-      px-4
-      sm:px-6
-      mt-10
-      sm:flex
-      sm:flex-col
-      gap-4
-      md:justify-center
-      md:items-center"
-			>
-				<TitleSection
-					pill="✨ Your Workspace, Perfected"
-					title="All-In-One Collaboration and Productivity Platform"
-				/>
-				<div
-					className="bg-white
-          p-[2px]
-          mt-6
-          rounded-xl
-          bg-gradient-to-r
-          from-primary
-          to-brand-primaryBlue
-          sm:w-[300px]
-        "
-				>
-					<Button
-						variant="btn-secondary"
-						className=" w-full
-            rounded-[10px]
-            p-6
-            text-2xl
-            bg-background
-          "
-					>
-						Get Specatisan Free
-					</Button>
-				</div>
-				<div
-					className="md:mt-[-90px]
-          sm:w-full
-          w-[750px]
-          flex
-          justify-center
-          items-center
-          mt-[-40px]
-          relative
-          sm:ml-0
-          ml-[-50px]
-        "
-				>
-					<Image src={Banner} alt="Application Banner" />
-					<div
-						className="bottom-0
-            top-[50%]
-            bg-gradient-to-t
-            dark:from-background
-            left-0
-            right-0
-            absolute
-            z-10
-          "
-					/>
-				</div>
-			</section>
-			<section className="relative">
-				<div
-					className="overflow-hidden
-          flex
-          after:content['']
-          after:dark:from-brand-dark
-          after:to-transparent
-          after:from-background
-          after:bg-gradient-to-l
-          after:right-0
-          after:bottom-0
-          after:top-0
-          after:w-20
-          after:z-10
-          after:absolute
+export default function Component() {
+  return (
+    <div className="flex flex-col min-h-[100dvh]">
+      <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+        <div className="container px-4 md:px-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  Streamline Your Document Management
+                </h1>
+                <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                  Securely store, organize, and access your documents from
+                  anywhere. Our powerful document management system makes it
+                  easy to stay on top of your files.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <Link
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                  href="#"
+                >
+                  Get Started
+                </Link>
+                <Link
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                  href="#"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+            <img
+              alt="Hero"
+              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
+              height="310"
+              src="/placeholder.svg"
+              width="550"
+            />
+          </div>
+        </div>
+      </section>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container space-y-12 px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Powerful Features for Your Business
+              </h2>
+              <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+                Our document management system offers a suite of features to
+                streamline your workflow and keep your files secure.
+              </p>
+            </div>
+          </div>
+          <div className="mx-auto grid items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-5xl lg:grid-cols-3">
+            <div className="grid gap-1">
+              <div className="flex items-center gap-2">
+                <UploadIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                <h3 className="text-lg font-bold">Secure Storage</h3>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Store your documents securely in the cloud with robust
+                encryption and access controls.
+              </p>
+            </div>
+            <div className="grid gap-1">
+              <div className="flex items-center gap-2">
+                <SearchIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                <h3 className="text-lg font-bold">Powerful Search</h3>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Quickly find the files you need with advanced search
+                capabilities and smart tagging.
+              </p>
+            </div>
+            <div className="grid gap-1">
+              <div className="flex items-center gap-2">
+                <PaperclipIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                <h3 className="text-lg font-bold">Seamless Collaboration</h3>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Easily share and collaborate on documents with your team,
+                clients, and partners.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
+          <div className="space-y-3">
+            <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+              Get Started with Document Management
+            </h2>
+            <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
+              Sign up today to experience the power of our document management
+              system.
+            </p>
+          </div>
+          <div className="mx-auto w-full max-w-sm space-y-2">
+            <form className="flex space-x-2">
+              <Input
+                className="max-w-lg flex-1"
+                placeholder="Enter your email"
+                type="email"
+              />
+              <Button type="submit">Sign Up</Button>
+            </form>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              By signing up, you agree to our
+              <Link className="underline underline-offset-2" href="#">
+                Terms & Conditions
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
 
-          before:content['']
-          before:dark:from-brand-dark
-          before:to-transparent
-          before:from-background
-          before:bg-gradient-to-r
-          before:left-0
-          before:top-0
-          before:bottom-0
-          before:w-20
-          before:z-10
-          before:absolute
-        "
-				>
-					{[...Array(2)].map((arr) => (
-						<div
-							key={arr}
-							className="flex
-                flex-nowrap
-                animate-slide
-          "
-						>
-							{CLIENTS.map((client) => (
-								<div
-									key={client.alt}
-									className=" relative
-                    w-[200px]
-                    m-20
-                    shrink-0
-                    flex
-                    items-center
-                  "
-								>
-									<Image
-										src={client.logo}
-										alt={client.alt}
-										width={200}
-										className="object-contain max-w-none"
-									/>
-								</div>
-							))}
-						</div>
-					))}
-				</div>
-			</section>
-			<section
-				className="px-4
-        sm:px-6
-        flex
-        justify-center
-        items-center
-        flex-col
-        relative
-      "
-			>
-				<div
-					className="w-[30%]
-          blur-[120px]
-          rounded-full
-          h-32
-          absolute
-          bg-brand-primaryPurple/50
-          -z-10
-          top-22
-        "
-				/>
-				<TitleSection
-					title="Keep track of your meetings all in one place"
-					subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."
-					pill="Features"
-				/>
-				<div
-					className="mt-10
-          max-w-[450px]
-          flex
-          justify-center
-          items-center
-          relative
-          sm:ml-0
-          rounded-2xl
-          border-8
-          border-washed-purple-300 
-          border-opacity-10
-        "
-				>
-					<Image src={Cal} alt="Banner" className="rounded-2xl" />
-				</div>
-			</section>
-			<section className="relative">
-				<div
-					className="w-full
-          blur-[120px]
-          rounded-full
-          h-32
-          absolute
-          bg-brand-primaryPurple/50
-          -z-100
-          top-56
-        "
-				/>
-				<div
-					className="mt-20
-          px-4
-          sm:px-6 
-          flex
-          flex-col
-          overflow-x-hidden
-          overflow-visible
-        "
-				>
-					<TitleSection
-						title="Trusted by all"
-						subheading="Join thousands of satisfied users who rely on our platform for their 
-            personal and professional productivity needs."
-						pill="Testimonials"
-					/>
-					{[...Array(2)].map((arr, index) => (
-						<div
-							key={randomUUID()}
-							className={twMerge(
-								clsx("mt-10 flex flex-nowrap gap-6 self-start", {
-									"flex-row-reverse": index === 1,
-									"animate-[slide_250s_linear_infinite]": true,
-									"animate-[slide_250s_linear_infinite_reverse]": index === 1,
-									"ml-[100vw]": index === 1,
-								}),
-								"hover:paused",
-							)}
-						>
-							{USERS.map((testimonial, index) => (
-								<CustomCard
-									key={testimonial.name}
-									className="w-[500px]
-                  shrink-0s
-                  rounded-xl
-                  dark:bg-gradient-to-t
-                  dark:from-border dark:to-background
-                "
-									cardHeader={
-										<div
-											className="flex
-                      items-center
-                      gap-4
-                  "
-										>
-											<Avatar>
-												<AvatarImage src={`/avatars/${index + 1}.png`} />
-												<AvatarFallback>AV</AvatarFallback>
-											</Avatar>
-											<div>
-												<CardTitle className="text-foreground">
-													{testimonial.name}
-												</CardTitle>
-												<CardDescription className="dark:text-washed-purple-800">
-													{testimonial.name.toLocaleLowerCase()}
-												</CardDescription>
-											</div>
-										</div>
-									}
-									cardContent={
-										<p className="dark:text-washed-purple-800">
-											{testimonial.message}
-										</p>
-									}
-								/>
-							))}
-						</div>
-					))}
-				</div>
-			</section>
-			<section
-				className="mt-20
-        px-4
-        sm:px-6
-      "
-			>
-				<TitleSection
-					title="The Perfect Plan For You"
-					subheading="Experience all the benefits of our platform. Select a plan that suits your needs and take your productivity to new heights."
-					pill="Pricing"
-				/>
-				<div
-					className="flex 
-        flex-col-reverse
-        sm:flex-row
-        gap-4
-        justify-center
-        sm:items-stretch
-        items-center
-        mt-10
-        "
-				>
-					{PRICING_CARDS.map((card) => (
-						<CustomCard
-							key={card.planType}
-							className={clsx(
-								"w-[300px] rounded-2xl dark:bg-black/40 background-blur-3xl relative",
-								{
-									"border-brand-primaryPurple/70":
-										card.planType === PRICING_PLANS.proplan,
-								},
-							)}
-							cardHeader={
-								<CardTitle
-									className="text-2xl
-                  font-semibold
-              "
-								>
-									{card.planType === PRICING_PLANS.proplan && (
-										<>
-											<div
-												className="hidden dark:block w-full blur-[120px] rounded-full h-32
-                        absolute
-                        bg-brand-primaryPurple/80
-                        -z-10
-                        top-0
-                      "
-											/>
-											<Image
-												src={Diamond}
-												alt="Pro Plan Icon"
-												className="absolute top-6 right-6"
-											/>
-										</>
-									)}
-									{card.planType}
-								</CardTitle>
-							}
-							cardContent={
-								<CardContent className="p-0">
-									<span
-										className="font-normal 
-                    text-2xl
-                "
-									>
-										${card.price}
-									</span>
-									{+card.price > 0 ? (
-										<span className="dark:text-washed-purple-800 ml-1">
-											/mo
-										</span>
-									) : (
-										""
-									)}
-									<p className="dark:text-washed-purple-800">
-										{card.description}
-									</p>
-									<Button
-										variant="btn-primary"
-										className="whitespace-nowrap w-full mt-4"
-									>
-										{card.planType === PRICING_PLANS.proplan
-											? "Go Pro"
-											: "Get Started"}
-									</Button>
-								</CardContent>
-							}
-							cardFooter={
-								<ul
-									className="font-normal
-                  flex
-                  mb-2
-                  flex-col
-                  gap-4
-                "
-								>
-									<small>{card.highlightFeature}</small>
-									{card.freatures.map((feature) => (
-										<li
-											key={feature}
-											className="flex
-                      items-center
-                      gap-2
-                    "
-										>
-											<Image src={CheckIcon} alt="Check Icon" />
-											{feature}
-										</li>
-									))}
-								</ul>
-							}
-						/>
-					))}
-				</div>
-			</section>
-		</>
-	);
-};
+function PaperclipIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+    </svg>
+  );
+}
 
-export default HomePage;
+function SearchIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
+
+function UploadIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" x2="12" y1="3" y2="15" />
+    </svg>
+  );
+}

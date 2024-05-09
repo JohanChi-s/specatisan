@@ -30,6 +30,7 @@ import { toast } from "../ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
 import { UUID } from "crypto";
 import { AuthUser } from "@supabase/supabase-js";
+import UserCard from "./user-card";
 
 interface SidebarProps {
   params: { workspaceId: string };
