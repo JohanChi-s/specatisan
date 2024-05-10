@@ -1,17 +1,9 @@
 import { useAppState } from "@/lib/providers/state-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { updateCollection } from "@/lib/supabase/queries";
 import { Collection } from "@/lib/supabase/supabase.types";
 import { cn } from "@/lib/utils";
-import {
-  Delete,
-  Edit2,
-  Keyboard,
-  Mail,
-  PlusCircle,
-  Settings,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { Delete, Edit2, Settings } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import EmojiPicker from "../global/emoji-picker";
@@ -22,12 +14,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Input } from "../ui/input";
@@ -52,6 +40,7 @@ type Props = {
 const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
   const { dispatch } = useAppState();
   const [name, setName] = React.useState(collection.name);
+  const { user } = useSupabaseUser();
 
   const handleSaveChange = async () => {
     if (!workspaceId) return;
@@ -105,6 +94,33 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
     }
   };
 
+  const handleDeleteCollection = async (collectionId: string) => {
+    dispatch({
+      type: "UPDATE_FOLDER",
+      payload: {
+        collection: { inTrash: `Deleted by ${user?.email}` },
+        collectionId: collectionId,
+        workspaceId,
+      },
+    });
+    const { error } = await updateCollection(
+      { inTrash: `Deleted by ${user?.email}` },
+      collectionId
+    );
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Could not move the collection to trash",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Moved collection to trash",
+      });
+    }
+  };
+
   return (
     <li className="flex flex-1 w-full px-2 py-1 rounded-md dark:bg-muted hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
       <EmojiPicker getValue={onChangeEmoji}>{collection.icon}</EmojiPicker>
@@ -148,44 +164,14 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
               <SheetTrigger asChild>
                 <DropdownMenuItem>
                   <Edit2 className="mr-2 h-4 w-4" />
-                  <span>Rename</span>
+                  <span>Edit</span>
                 </DropdownMenuItem>
               </SheetTrigger>
-              <DropdownMenuItem>
-                <Keyboard className="mr-2 h-4 w-4" />
-                <span>Keyboard shortcuts</span>
-                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Users className="mr-2 h-4 w-4" />
-                <span>Team</span>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  <span>Invite users</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem>
-                      <Mail className="mr-2 h-4 w-4" />
-                      <span>Email</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      <span>More...</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleDeleteCollection(collection.id)}
+            >
               <Delete className="mr-2 h-4 w-4" />
               <span>Delete</span>
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

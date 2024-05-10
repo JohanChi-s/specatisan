@@ -21,7 +21,7 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
   workspaceCollections,
   workspaceId,
 }) => {
-  useSupabaseRealtime();
+  // useSupabaseRealtime();
   const { state, dispatch, collectionId } = useAppState();
   const { user } = useSupabaseUser();
   const { open, setOpen } = useSubscriptionModal();
@@ -32,6 +32,8 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
 
   useEffect(() => {
     if (workspaceCollections.length > 0) {
+      console.log("workspaceCollections", workspaceCollections);
+
       dispatch({
         type: "SET_FOLDERS",
         payload: {
@@ -43,8 +45,6 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
   }, [dispatch, workspaceCollections, workspaceId]);
 
   useEffect(() => {
-    console.log("state", state);
-
     setCollections(
       state.workspaces.find((workspace) => workspace.id === workspaceId)
         ?.collections || []

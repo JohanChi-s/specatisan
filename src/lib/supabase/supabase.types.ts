@@ -9,7 +9,6 @@ import type {
   notifications,
   policies,
   prices,
-  revisions,
   shares,
   stars,
   subscriptions,
@@ -17,8 +16,13 @@ import type {
   workspaces,
 } from "@/lib/supabase/schema";
 import type { InferSelectModel } from "drizzle-orm";
-
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
   public: {
@@ -49,14 +53,15 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       collections: {
         Row: {
+          banner_url: string | null;
           color: string | null;
           created_at: string;
-          created_by_id: string;
+          created_by_id: string | null;
           description: string | null;
           document_structure: Json | null;
           icon: string | null;
@@ -68,14 +73,14 @@ export type Database = {
           name: string;
           permission: string | null;
           sharing: boolean | null;
-          team_id: string;
-          url_id: string;
+          url_id: string | null;
           workspace_id: string;
         };
         Insert: {
+          banner_url?: string | null;
           color?: string | null;
           created_at?: string;
-          created_by_id: string;
+          created_by_id?: string | null;
           description?: string | null;
           document_structure?: Json | null;
           icon?: string | null;
@@ -87,14 +92,14 @@ export type Database = {
           name: string;
           permission?: string | null;
           sharing?: boolean | null;
-          team_id: string;
-          url_id: string;
+          url_id?: string | null;
           workspace_id: string;
         };
         Update: {
+          banner_url?: string | null;
           color?: string | null;
           created_at?: string;
-          created_by_id?: string;
+          created_by_id?: string | null;
           description?: string | null;
           document_structure?: Json | null;
           icon?: string | null;
@@ -106,8 +111,7 @@ export type Database = {
           name?: string;
           permission?: string | null;
           sharing?: boolean | null;
-          team_id?: string;
-          url_id?: string;
+          url_id?: string | null;
           workspace_id?: string;
         };
         Relationships: [
@@ -117,40 +121,37 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       comments: {
         Row: {
           content: Json;
-          created_by_id: string;
           created_at: string;
+          created_by_id: string;
           document_id: string;
           id: string;
-          parent_comment_id: string | null;
           resolved_by_id: string | null;
         };
         Insert: {
           content: Json;
-          created_by_id: string;
           created_at?: string;
+          created_by_id: string;
           document_id: string;
           id?: string;
-          parent_comment_id?: string | null;
           resolved_by_id?: string | null;
         };
         Update: {
           content?: Json;
-          created_by_id?: string;
           created_at?: string;
+          created_by_id?: string;
           document_id?: string;
           id?: string;
-          parent_comment_id?: string | null;
           resolved_by_id?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: "comments_create_by_id_users_id_fk";
+            foreignKeyName: "comments_created_by_id_users_id_fk";
             columns: ["created_by_id"];
             isOneToOne: false;
             referencedRelation: "users";
@@ -164,19 +165,12 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "comments_parrent_comment_id_comments_id_fk";
-            columns: ["parent_comment_id"];
-            isOneToOne: false;
-            referencedRelation: "comments";
-            referencedColumns: ["id"];
-          },
-          {
             foreignKeyName: "comments_resolved_by_id_users_id_fk";
             columns: ["resolved_by_id"];
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       customers: {
@@ -199,7 +193,7 @@ export type Database = {
             isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       documents: {
@@ -207,24 +201,21 @@ export type Database = {
           archived_at: string | null;
           banner_url: string | null;
           collaborator_ids: string[] | null;
-          collection_id: string;
+          collection_id: string | null;
           content: Json | null;
           created_at: string;
           created_by_id: string;
           data: string | null;
           emoji: string | null;
           fullwidth: boolean | null;
-          createdById: string;
           id: string;
           in_trash: string | null;
           last_modified_by_id: string | null;
           parent_document_id: string | null;
           published_at: string | null;
-          revision_count: number | null;
           source_metadata: Json | null;
           summary: string | null;
           template: boolean | null;
-          template_id: string | null;
           text: string | null;
           title: string;
           workspace_id: string;
@@ -233,24 +224,21 @@ export type Database = {
           archived_at?: string | null;
           banner_url?: string | null;
           collaborator_ids?: string[] | null;
-          collection_id: string;
+          collection_id?: string | null;
           content?: Json | null;
           created_at?: string;
           created_by_id: string;
           data?: string | null;
           emoji?: string | null;
           fullwidth?: boolean | null;
-          createdById: string;
           id?: string;
           in_trash?: string | null;
           last_modified_by_id?: string | null;
           parent_document_id?: string | null;
           published_at?: string | null;
-          revision_count?: number | null;
           source_metadata?: Json | null;
           summary?: string | null;
           template?: boolean | null;
-          template_id?: string | null;
           text?: string | null;
           title: string;
           workspace_id: string;
@@ -259,7 +247,7 @@ export type Database = {
           archived_at?: string | null;
           banner_url?: string | null;
           collaborator_ids?: string[] | null;
-          collection_id?: string;
+          collection_id?: string | null;
           content?: Json | null;
           created_at?: string;
           created_by_id?: string;
@@ -271,35 +259,19 @@ export type Database = {
           last_modified_by_id?: string | null;
           parent_document_id?: string | null;
           published_at?: string | null;
-          revision_count?: number | null;
           source_metadata?: Json | null;
           summary?: string | null;
           template?: boolean | null;
-          template_id?: string | null;
           text?: string | null;
           title?: string;
           workspace_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "documents_collection_id_collections_id_fk";
-            columns: ["collection_id"];
-            isOneToOne: false;
-            referencedRelation: "collections";
-            referencedColumns: ["id"];
-          },
-          {
             foreignKeyName: "documents_created_by_id_users_id_fk";
             columns: ["created_by_id"];
             isOneToOne: false;
             referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "documents_collection_id_collections_id_fk";
-            columns: ["collection_id"];
-            isOneToOne: false;
-            referencedRelation: "collections";
             referencedColumns: ["id"];
           },
           {
@@ -310,19 +282,12 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "documents_template_id_documents_id_fk";
-            columns: ["template_id"];
-            isOneToOne: false;
-            referencedRelation: "documents";
-            referencedColumns: ["id"];
-          },
-          {
             foreignKeyName: "documents_workspace_id_workspaces_id_fk";
             columns: ["workspace_id"];
             isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       events: {
@@ -396,7 +361,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       file_operations: {
@@ -460,7 +425,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       notifications: {
@@ -541,7 +506,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       policies: {
@@ -576,7 +541,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       prices: {
@@ -598,7 +563,9 @@ export type Database = {
           currency?: string | null;
           description?: string | null;
           id: string;
-          interval?: Database["public"]["Enums"]["pricing_plan_interval"] | null;
+          interval?:
+            | Database["public"]["Enums"]["pricing_plan_interval"]
+            | null;
           interval_count?: number | null;
           metadata?: Json | null;
           product_id?: string | null;
@@ -611,7 +578,9 @@ export type Database = {
           currency?: string | null;
           description?: string | null;
           id?: string;
-          interval?: Database["public"]["Enums"]["pricing_plan_interval"] | null;
+          interval?:
+            | Database["public"]["Enums"]["pricing_plan_interval"]
+            | null;
           interval_count?: number | null;
           metadata?: Json | null;
           product_id?: string | null;
@@ -633,7 +602,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "products";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       products: {
@@ -662,51 +631,6 @@ export type Database = {
           name?: string | null;
         };
         Relationships: [];
-      };
-      revisions: {
-        Row: {
-          created_at: string;
-          document_id: string;
-          emoji: string | null;
-          id: string;
-          text: string;
-          title: string;
-          user_id: string | null;
-        };
-        Insert: {
-          created_at?: string;
-          document_id: string;
-          emoji?: string | null;
-          id?: string;
-          text: string;
-          title: string;
-          user_id?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          document_id?: string;
-          emoji?: string | null;
-          id?: string;
-          text?: string;
-          title?: string;
-          user_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "revisions_document_id_documents_id_fk";
-            columns: ["document_id"];
-            isOneToOne: false;
-            referencedRelation: "documents";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "revisions_user_id_users_id_fk";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       shares: {
         Row: {
@@ -765,12 +689,11 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       stars: {
         Row: {
-          collection_id: string | null;
           created_at: string;
           document_id: string | null;
           id: string;
@@ -778,7 +701,6 @@ export type Database = {
           user_id: string | null;
         };
         Insert: {
-          collection_id?: string | null;
           created_at?: string;
           document_id?: string | null;
           id?: string;
@@ -786,7 +708,6 @@ export type Database = {
           user_id?: string | null;
         };
         Update: {
-          collection_id?: string | null;
           created_at?: string;
           document_id?: string | null;
           id?: string;
@@ -794,13 +715,6 @@ export type Database = {
           user_id?: string | null;
         };
         Relationships: [
-          {
-            foreignKeyName: "stars_collection_id_collections_id_fk";
-            columns: ["collection_id"];
-            isOneToOne: false;
-            referencedRelation: "collections";
-            referencedColumns: ["id"];
-          },
           {
             foreignKeyName: "stars_document_id_documents_id_fk";
             columns: ["document_id"];
@@ -814,7 +728,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       subscriptions: {
@@ -890,7 +804,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       user_permissions: {
@@ -929,7 +843,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "workspaces";
             referencedColumns: ["id"];
-          },
+          }
         ];
       };
       users: {
@@ -967,49 +881,7 @@ export type Database = {
             isOneToOne: true;
             referencedRelation: "users";
             referencedColumns: ["id"];
-          },
-        ];
-      };
-      views: {
-        Row: {
-          count: number | null;
-          created_at: string;
-          document_id: string;
-          id: string;
-          last_editing_at: string | null;
-          user_id: string;
-        };
-        Insert: {
-          count?: number | null;
-          created_at?: string;
-          document_id: string;
-          id?: string;
-          last_editing_at?: string | null;
-          user_id: string;
-        };
-        Update: {
-          count?: number | null;
-          created_at?: string;
-          document_id?: string;
-          id?: string;
-          last_editing_at?: string | null;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "views_document_id_documents_id_fk";
-            columns: ["document_id"];
-            isOneToOne: false;
-            referencedRelation: "documents";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "views_user_id_users_id_fk";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
+          }
         ];
       };
       workspaces: {
@@ -1172,7 +1044,12 @@ export type Database = {
         | "incomplete_expired"
         | "past_due"
         | "unpaid";
-      user_flags: "inviteSent" | "inviteReminderSent" | "desktop" | "desktopWeb" | "mobileWeb";
+      user_flags:
+        | "inviteSent"
+        | "inviteReminderSent"
+        | "desktop"
+        | "desktopWeb"
+        | "mobileWeb";
       user_preferences:
         | "rememberLastPath"
         | "useCursorPointer"
@@ -1195,7 +1072,7 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -1203,19 +1080,23 @@ export type Tables<
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] & PublicSchema["Views"])
-    ? (PublicSchema["Tables"] & PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R;
-      }
-      ? R
-      : never
-    : never;
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+      PublicSchema["Views"])
+  ? (PublicSchema["Tables"] &
+      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : never;
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends keyof PublicSchema["Tables"] | { schema: keyof Database },
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
@@ -1223,18 +1104,20 @@ export type TablesInsert<
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I;
-      }
-      ? I
-      : never
-    : never;
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : never;
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends keyof PublicSchema["Tables"] | { schema: keyof Database },
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
@@ -1242,30 +1125,31 @@ export type TablesUpdate<
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U;
-      }
-      ? U
-      : never
-    : never;
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : never;
 
 export type Enums<
-  PublicEnumNameOrOptions extends keyof PublicSchema["Enums"] | { schema: keyof Database },
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never = never
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never;
+  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+  : never;
 
 export type Workspace = InferSelectModel<typeof workspaces>;
 export type Collection = InferSelectModel<typeof collections>;
 export type Document = InferSelectModel<typeof documents>;
 export type User = InferSelectModel<typeof users>;
 export type Comment = InferSelectModel<typeof comments>;
-export type Revision = InferSelectModel<typeof revisions>;
 export type Share = InferSelectModel<typeof shares>;
 export type Star = InferSelectModel<typeof stars>;
 export type Notification = InferSelectModel<typeof notifications>;

@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import React, {
   Dispatch,
   createContext,
@@ -8,9 +9,9 @@ import React, {
   useMemo,
   useReducer,
 } from "react";
-import { Document, Collection, Workspace } from "../supabase/supabase.types";
-import { usePathname } from "next/navigation";
-import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
+import { Collection, Document, Workspace } from "../supabase/supabase.types";
+import { getAllWorkspaces, getSharedWorkspaces } from "../supabase/queries";
+import { useSupabaseUser } from "./supabase-user-provider";
 
 export type appWorkspacesType = Workspace & {
   collections: Collection[] | [];
@@ -19,6 +20,7 @@ export type appWorkspacesType = Workspace & {
 
 interface AppState {
   workspaces: appWorkspacesType[] | [];
+  currentWorkspace: appWorkspacesType | null;
 }
 
 type Action =
@@ -31,6 +33,10 @@ type Action =
   | {
       type: "SET_WORKSPACES";
       payload: { workspaces: appWorkspacesType[] };
+    }
+  | {
+      type: "SET_CURRENT_WORKSPACES";
+      payload: { workspace: appWorkspacesType };
     }
   | {
       type: "SET_FOLDERS";
@@ -46,10 +52,6 @@ type Action =
         workspaceId: string;
         document: Document;
       };
-    }
-  | {
-      type: "DELETE_FILE";
-      payload: { workspaceId: string; collectionId: string; fileId: string };
     }
   | {
       type: "DELETE_FOLDER";
@@ -79,7 +81,7 @@ type Action =
       };
     };
 
-const initialState: AppState = { workspaces: [] };
+const initialState: AppState = { workspaces: [], currentWorkspace: null };
 
 const appReducer = (
   state: AppState = initialState,
@@ -116,12 +118,18 @@ const appReducer = (
         ...state,
         workspaces: action.payload.workspaces,
       };
+    case "SET_CURRENT_WORKSPACES":
+      return {
+        ...state,
+        currentWorkspace: action.payload.workspace,
+      };
     case "SET_FOLDERS":
+      console.log("workspace ===", state.workspaces.length);
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
-            // console.log("workspace", workspace, action.payload.collections);
+            console.log("workspace111", workspace, action.payload.collections);
             return {
               ...workspace,
               collections: action.payload.collections,
@@ -215,26 +223,6 @@ const appReducer = (
           return workspace;
         }),
       };
-    case "DELETE_FILE":
-      return {
-        ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              collection: workspace.collections.map((collection) => {
-                if (collection.id === action.payload.collectionId) {
-                  return {
-                    ...collection,
-                  };
-                }
-                return collection;
-              }),
-            };
-          }
-          return workspace;
-        }),
-      };
     case "UPDATE_FILE":
       return {
         ...state,
@@ -280,6 +268,7 @@ interface AppStateProviderProps {
 const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const pathname = usePathname();
+  const { user } = useSupabaseUser();
 
   const workspaceId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);
@@ -304,6 +293,36 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
         return urlSegments[3];
       }
   }, [pathname]);
+
+  useEffect(() => {
+    if (!workspaceId || !user?.id) return;
+    const fetchWorkspaces = async () => {
+      const { data, error } = await getAllWorkspaces(user.id);
+      if (error || !data) {
+        return;
+      } else {
+        const transformedData = data.map((workspace) => ({
+          ...workspace,
+          collections: [],
+          documents: [],
+        }));
+        const currentWorkspace = transformedData.find(
+          (w) => w.id === workspaceId
+        );
+        if (currentWorkspace) {
+          dispatch({
+            type: "SET_CURRENT_WORKSPACES",
+            payload: { workspace: currentWorkspace },
+          });
+        }
+        dispatch({
+          type: "SET_WORKSPACES",
+          payload: { workspaces: transformedData },
+        });
+      }
+    };
+    fetchWorkspaces();
+  }, [user?.id, workspaceId]);
 
   useEffect(() => {
     console.log("App State Changed", state);

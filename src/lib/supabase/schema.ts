@@ -178,7 +178,6 @@ export const documents = pgTable("documents", {
   emoji: text("emoji"),
   text: text("text"),
   content: jsonb("content"),
-  revisionCount: integer("revision_count").default(0),
   archivedAt: timestamp("archived_at", { withTimezone: true, mode: "string" }),
   publishedAt: timestamp("published_at", { withTimezone: true, mode: "string" }),
   template: boolean("template").default(false),
@@ -206,7 +205,6 @@ export const stars = pgTable("stars", {
     .notNull(),
   documentId: uuid("document_id").references(() => documents.id, { onDelete: "cascade" }),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-  collectionId: uuid("collection_id").references(() => collections.id, { onDelete: "cascade" }),
 });
 
 export const memberShip = pgTable("user_permissions", {
@@ -430,9 +428,6 @@ export const comments = pgTable("comments", {
     .references(() => collections.id, {
       onDelete: "cascade",
     }),
-  // parrentCommentId: uuid("parent_comment_id").references(() => comments.id, {
-  //   onDelete: "cascade",
-  // }),
 });
 
 export const policies = pgTable("policies", {
@@ -448,20 +443,6 @@ export const policies = pgTable("policies", {
   workspaceId: uuid("workspace_id")
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
-});
-
-export const revisions = pgTable("revisions", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .default(sql`now()`)
-    .notNull(),
-  title: text("title").notNull(),
-  text: text("text").notNull(),
-  emoji: text("emoji"),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id, { onDelete: "cascade" }),
-  userId: uuid("user_id").references(() => users.id),
 });
 
 export const shares = pgTable("shares", {

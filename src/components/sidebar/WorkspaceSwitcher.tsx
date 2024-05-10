@@ -4,7 +4,7 @@ import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import * as React from "react";
 
 import { useAppState } from "@/lib/providers/state-provider";
-import { workspace } from "@/lib/supabase/supabase.types";
+import { Workspace } from "@/lib/supabase/supabase.types";
 import { cn } from "@/lib/utils";
 import { Cloud } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -36,10 +36,10 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 >;
 
 interface WorkspaceSwitcherProps extends PopoverTriggerProps {
-  privateWorkspaces: workspace[] | [];
-  sharedWorkspaces: workspace[] | [];
-  collaboratingWorkspaces: workspace[] | [];
-  defaultWorkspace: workspace | undefined;
+  privateWorkspaces: Workspace[] | [];
+  sharedWorkspaces: Workspace[] | [];
+  collaboratingWorkspaces: Workspace[] | [];
+  defaultWorkspace: Workspace | undefined;
 }
 
 export default function WorkspaceSwitcher({
@@ -53,26 +53,11 @@ export default function WorkspaceSwitcher({
   const [showNewWorkspaceDialog, setShowNewWorkspaceDialog] =
     React.useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = React.useState<
-    workspace | undefined
+    Workspace | undefined
   >(defaultWorkspace);
-  const { state, dispatch } = useAppState();
+  const { state } = useAppState();
 
-  React.useEffect(() => {
-    if (!state.workspaces.length) {
-      dispatch({
-        type: "SET_WORKSPACES",
-        payload: {
-          workspaces: [
-            ...privateWorkspaces,
-            ...sharedWorkspaces,
-            ...collaboratingWorkspaces,
-          ].map((workspace) => ({ ...workspace, collections: [] })),
-        },
-      });
-    }
-  }, [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces]);
-
-  const handleSelect = (option: workspace) => {
+  const handleSelect = (option: Workspace) => {
     setSelectedWorkspace(option);
     setOpen(false);
   };

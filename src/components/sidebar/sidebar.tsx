@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
   >([]);
   const [sharedWorkspaces, setSharedWorkspaces] = useState<Workspace | any>([]);
 
-  const { dispatch } = useAppState();
+  const { dispatch, state } = useAppState();
   const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
@@ -96,6 +96,31 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
     fetchData();
   }, [params.workspaceId, router]);
 
+  // useEffect(() => {
+  //   if (!state.workspaces.length) {
+  //     dispatch({
+  //       type: "SET_WORKSPACES",
+  //       payload: {
+  //         workspaces: [
+  //           ...privateWorkspaces,
+  //           ...sharedWorkspaces,
+  //           ...collaboratingWorkspaces,
+  //         ].map((workspace) => ({
+  //           ...workspace,
+  //           collections: [],
+  //           documents: [],
+  //         })),
+  //       },
+  //     });
+  //   }
+  // }, [
+  //   privateWorkspaces,
+  //   collaboratingWorkspaces,
+  //   sharedWorkspaces,
+  //   state.workspaces.length,
+  //   dispatch,
+  // ]);
+
   const handleCreateNewDoc = async () => {
     if (!params.workspaceId || !user) return;
     const newDocument: Document = {
@@ -110,7 +135,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
       emoji: "📄",
       text: null,
       content: undefined,
-      revisionCount: null,
       createdById: user?.id,
       archivedAt: null,
       publishedAt: null,

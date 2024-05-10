@@ -11,15 +11,18 @@ import TooltipComponent from "../global/tooltip-component";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { toast } from "../ui/use-toast";
+import WorkspaceBreadcumb, { BreadcrumbItemProps } from "./WorkspaceBreadcumb";
 
 type WorkspaceNavbarProps = {
   title?: string;
   documentId?: string;
+  items?: BreadcrumbItemProps[];
   isShowTabs?: boolean;
 };
 
 const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
   documentId,
+  items,
   title,
   isShowTabs = true,
 }) => {
@@ -73,6 +76,7 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
         <Button variant={"ghost"} onClick={() => {}}>
           <ChevronLeft size={24} />
         </Button>
+        <WorkspaceBreadcumb items={items} />
         {/* Breadcumb here */}
         {title && (
           <TooltipComponent message="Change title">

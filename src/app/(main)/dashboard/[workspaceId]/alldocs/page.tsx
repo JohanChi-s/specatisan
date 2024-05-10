@@ -1,13 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
+import { columns } from "@/components/files-table/column";
+import { DataTable } from "@/components/files-table/data-table";
+import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 import { useAppState } from "@/lib/providers/state-provider";
 import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
-import WorkspaceBreadcumb from "@/components/workspace/WorkspaceBreadcumb";
-import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
-import { DataTable } from "@/components/files-table/data-table";
-import { columns } from "@/components/files-table/column";
 import type { Document } from "@/lib/supabase/supabase.types";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const AllDocsPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -40,9 +39,6 @@ const AllDocsPage = () => {
     <div className="container mx-auto px-5">
       {/* Workspace Navbar */}
       <WorkspaceNavbar />
-
-      {/* Workspace Breadcrumb (if needed) */}
-      <WorkspaceBreadcumb />
 
       {/* Data Table */}
       <DataTable columns={columns} data={documents} />
