@@ -1,7 +1,7 @@
 "use client";
 
-import { collectionColumns } from "@/components/files-table/collection-column";
-import { DataTable } from "@/components/files-table/data-table";
+import { CollectionColumns } from "@/components/collections/column";
+import { CollectionDataTable } from "@/components/collections/data-table";
 import { Separator } from "@/components/ui/separator";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 import { useAppState } from "@/lib/providers/state-provider";
@@ -29,7 +29,7 @@ const CollectionsPage: React.FC = () => {
     <div className="container mx-auto">
       <WorkspaceNavbar />
       <Separator className="my-2" />
-      <DataTable columns={collectionColumns} data={collections} />
+      <CollectionDataTable columns={CollectionColumns} data={collections} />
     </div>
   );
 };

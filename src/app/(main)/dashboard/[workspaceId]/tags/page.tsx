@@ -1,6 +1,7 @@
 "use client";
 import { DataTable } from "@/components/files-table/data-table";
 import { TagColumn } from "@/components/tags/TagColumn";
+import { TagDataTable } from "@/components/tags/TagDataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,7 +127,7 @@ const TagsPage = () => {
       </div>
 
       {/* Data Table */}
-      <DataTable columns={TagColumn} data={tags} />
+      <TagDataTable columns={TagColumn} data={tags} />
     </div>
   );
 };

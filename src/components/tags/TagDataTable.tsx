@@ -24,15 +24,14 @@ import {
 } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import { DataTablePagination } from "./DataTablePagination";
-import { DataTableToolbar } from "./DataTableToolbar";
+import { DataTablePagination } from "../files-table/DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function TagDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -68,7 +67,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
       <div className="">
         <Table>
           <TableHeader>
