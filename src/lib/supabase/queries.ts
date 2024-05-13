@@ -55,7 +55,7 @@ export const getCollections = async (workspaceId: string) => {
   if (!isValid)
     return {
       data: null,
-      error: "Error",
+      error: "Invalid workspace ID provided",
     };
 
   try {
