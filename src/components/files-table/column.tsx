@@ -9,12 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Document } from "@/lib/supabase/supabase.types";
+import type { DocumentWithTags } from "@/lib/supabase/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { File as FileIcon, FileText, MoreHorizontal } from "lucide-react";
+import { FileText, MoreHorizontal } from "lucide-react";
+import AssignTag from "../tags/AssignTag";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
 
-export const columns: ColumnDef<Document>[] = [
+export const columns: ColumnDef<DocumentWithTags>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -42,10 +43,17 @@ export const columns: ColumnDef<Document>[] = [
       const document = row.original;
       return (
         <div className="flex items-center">
-          <FileIcon className="h-4 w-4 mr-2" />
-          <span className="font-bold">{document.title}</span>
+          <FileText className="h-4 w-4 mr-2" />
+          <span className="font-semibold text-xl">{document.title}</span>
         </div>
       );
+    },
+  },
+  {
+    header: "Tags",
+    cell: ({ row }) => {
+      const document = row.original;
+      return <AssignTag document={document} />;
     },
   },
   {

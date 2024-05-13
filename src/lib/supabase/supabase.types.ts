@@ -14,6 +14,7 @@ import type {
   subscriptions,
   users,
   workspaces,
+  tags,
 } from "@/lib/supabase/schema";
 import type { InferSelectModel } from "drizzle-orm";
 export type Json =
@@ -807,6 +808,68 @@ export type Database = {
           }
         ];
       };
+      tags: {
+        Row: {
+          color: string | null;
+          created_at: string;
+          id: string;
+          name: string;
+          workspace_id: string;
+        };
+        Insert: {
+          color?: string | null;
+          created_at?: string;
+          id?: string;
+          name: string;
+          workspace_id: string;
+        };
+        Update: {
+          color?: string | null;
+          created_at?: string;
+          id?: string;
+          name?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tags_workspace_id_workspaces_id_fk";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      tags_to_documents: {
+        Row: {
+          document_id: string;
+          tag_id: string;
+        };
+        Insert: {
+          document_id: string;
+          tag_id: string;
+        };
+        Update: {
+          document_id?: string;
+          tag_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "tags_to_documents_document_id_documents_id_fk";
+            columns: ["document_id"];
+            isOneToOne: false;
+            referencedRelation: "documents";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tags_to_documents_tag_id_tags_id_fk";
+            columns: ["tag_id"];
+            isOneToOne: false;
+            referencedRelation: "tags";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       user_permissions: {
         Row: {
           created_at: string;
@@ -1160,6 +1223,13 @@ export type Policy = InferSelectModel<typeof policies>;
 export type Customer = InferSelectModel<typeof customers>;
 export type Collaborator = InferSelectModel<typeof collaborators>;
 export type Product = InferSelectModel<typeof products>;
+export type Tag = InferSelectModel<typeof tags>;
+export type DocumentWithTags = Document & {
+  tags: Tag[] | [];
+};
+export type TagWithDocuments = Tag & {
+  documents?: Document[];
+};
 export type ProductWirhPrice = Product & {
   prices?: Price[];
 };

@@ -9,18 +9,29 @@ import React, {
   useMemo,
   useReducer,
 } from "react";
-import { Collection, Document, Workspace } from "../supabase/supabase.types";
-import { getAllWorkspaces, getSharedWorkspaces } from "../supabase/queries";
+import {
+  Collection,
+  Document,
+  DocumentWithTags,
+  Tag,
+  Workspace,
+} from "../supabase/supabase.types";
+import {
+  getAllWorkspaces,
+  getSharedWorkspaces,
+  getTags,
+} from "../supabase/queries";
 import { useSupabaseUser } from "./supabase-user-provider";
 
 export type appWorkspacesType = Workspace & {
   collections: Collection[] | [];
-  documents: Document[] | [];
+  documents: DocumentWithTags[] | [];
 };
 
 interface AppState {
   workspaces: appWorkspacesType[] | [];
   currentWorkspace: appWorkspacesType | null;
+  tags: Tag[] | [];
 }
 
 type Action =
@@ -61,7 +72,7 @@ type Action =
       type: "SET_FILES";
       payload: {
         workspaceId: string;
-        documents: Document[];
+        documents: DocumentWithTags[];
       };
     }
   | {
@@ -75,13 +86,46 @@ type Action =
   | {
       type: "UPDATE_FILE";
       payload: {
-        document: Partial<Document>;
+        document: Partial<DocumentWithTags>;
         workspaceId: string;
         fileId: string;
       };
+    }
+  | {
+      type: "CREATE_TAG";
+      payload: {
+        tag: Tag;
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "SET_TAGS";
+      payload: {
+        tags: Tag[];
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "UPDATE_TAG";
+      payload: {
+        tag: Partial<Tag>;
+        tagId: string;
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "DELETE_TAG";
+      payload: {
+        tagId: string;
+        workspaceId: string;
+      };
     };
 
-const initialState: AppState = { workspaces: [], currentWorkspace: null };
+const initialState: AppState = {
+  workspaces: [],
+  currentWorkspace: null,
+  tags: [],
+};
 
 const appReducer = (
   state: AppState = initialState,
@@ -196,11 +240,7 @@ const appReducer = (
             return {
               ...workspace,
               ...workspace.collections,
-              documents: action.payload.documents.sort(
-                (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
-              ),
+              documents: action.payload.documents,
             };
           }
           return workspace;
@@ -244,6 +284,34 @@ const appReducer = (
           }
           return workspace;
         }),
+      };
+    case "SET_TAGS":
+      return {
+        ...state,
+        tags: action.payload.tags,
+      };
+    case "CREATE_TAG":
+      return {
+        ...state,
+        tags: [...state.tags, action.payload.tag],
+      };
+    case "UPDATE_TAG":
+      return {
+        ...state,
+        tags: state.tags.map((tag) => {
+          if (tag.id === action.payload.tagId) {
+            return {
+              ...tag,
+              ...action.payload.tag,
+            };
+          }
+          return tag;
+        }),
+      };
+    case "DELETE_TAG":
+      return {
+        ...state,
+        tags: state.tags.filter((tag) => tag.id !== action.payload.tagId),
       };
     default:
       return initialState;
@@ -322,6 +390,23 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
     };
     fetchWorkspaces();
+  }, [user?.id, workspaceId]);
+
+  // fetch tags
+  useEffect(() => {
+    if (!workspaceId || !user?.id) return;
+    const fetchTags = async () => {
+      const { data, error } = await getTags(workspaceId);
+      if (error || !data) {
+        return;
+      } else {
+        dispatch({
+          type: "SET_TAGS",
+          payload: { tags: data, workspaceId },
+        });
+      }
+    };
+    fetchTags();
   }, [user?.id, workspaceId]);
 
   useEffect(() => {

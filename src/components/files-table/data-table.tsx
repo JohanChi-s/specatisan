@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      {/* <DataTableToolbar table={table} /> */}
       <div className="">
         <Table>
           <TableHeader>
@@ -97,13 +97,13 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   className="cursor-pointer hover:bg-gray-100"
                   key={row.id}
-                  onClick={() => {
-                    console.log("row", row);
-                    const data = row.original as Document;
-                    return router.push(
-                      `/dashboard/${data.workspaceId}/${data.id}`
-                    );
-                  }}
+                  // onClick={() => {
+                  //   console.log("row", row);
+                  //   const data = row.original as Document;
+                  //   return router.push(
+                  //     `/dashboard/${data.workspaceId}/${data.id}`
+                  //   );
+                  // }}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

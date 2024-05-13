@@ -4,26 +4,24 @@ import { DataTable } from "@/components/files-table/data-table";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 import { useAppState } from "@/lib/providers/state-provider";
 import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
-import type { Document } from "@/lib/supabase/supabase.types";
+import type { Document, DocumentWithTags } from "@/lib/supabase/supabase.types";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const AllDocsPage = () => {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<DocumentWithTags[]>([]);
   const { workspaceId } = useAppState();
 
   useEffect(() => {
     if (!workspaceId) {
-      redirect("/dashboard");
-      return;
+      return redirect("/dashboard");
     }
 
     const fetchData = async () => {
       try {
         const { data, error } = await getDocumentByWorkspaceId(workspaceId);
         if (error) {
-          redirect("/dashboard");
-          return;
+          return redirect("/dashboard");
         }
         setDocuments(data || []);
       } catch (error) {

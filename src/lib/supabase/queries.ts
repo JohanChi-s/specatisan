@@ -6,16 +6,21 @@ import {
   collaborators,
   collections,
   documents,
+  tags,
+  tagsToDocuments,
   users,
   workspaces,
 } from "./schema";
 import {
   Collection,
   Document,
+  DocumentWithTags,
   Subscription,
+  Tag,
   User,
   Workspace,
 } from "./supabase.types";
+import { omit } from "lodash";
 
 export const createWorkspace = async (workspace: Workspace) => {
   try {
@@ -254,12 +259,25 @@ export const getDocumentByWorkspaceId = async (workspaceId: string) => {
   const isValid = validate(workspaceId);
   if (!isValid) return { data: null, error: "Error" };
   try {
-    const results = (await db
-      .select()
-      .from(documents)
-      .orderBy(documents.createdAt)
-      .where(eq(documents.workspaceId, workspaceId))) as Document[] | [];
-    return { data: results as Collection[], error: null };
+    const results = await db.query.documents.findMany({
+      where: (doc, { eq }) => eq(doc.workspaceId, workspaceId),
+      with: {
+        tagsToDocuments: {
+          with: {
+            tag: true,
+          },
+        },
+      },
+    });
+    const documetnWithTags: DocumentWithTags[] = results.map((r) => {
+      const tags: Tag[] = [];
+      r.tagsToDocuments.map((t) => {
+        tags.push(t.tag);
+      });
+      omit(r, "tagsToDocuments");
+      return { ...r, tags };
+    });
+    return { data: documetnWithTags, error: null };
   } catch (error) {
     console.log(error);
     return { data: null, error: "Error" };
@@ -415,4 +433,88 @@ export const getUsersFromSearch = async (email: string) => {
     .from(users)
     .where(ilike(users.email, `${email}%`));
   return accounts;
+};
+
+// Get all tags by workspaceId
+export const getTags = async (workspaceId: string) => {
+  const isValid = validate(workspaceId);
+  if (!isValid) return { data: null, error: "Error" };
+  try {
+    const results = (await db
+      .select()
+      .from(tags)
+      .orderBy(tags.createdAt)
+      .where(eq(tags.workspaceId, workspaceId))) as Tag[] | [];
+    return { data: results, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const createTag = async (tag: Tag) => {
+  try {
+    await db.insert(tags).values(tag);
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+// update Tag
+export const updateTag = async (tag: Partial<Tag>) => {
+  if (!tag.id) return { data: null, error: "Error" };
+  try {
+    await db.update(tags).set(tag).where(eq(tags.id, tag.id));
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+// deleteTag
+export const deleteTag = async (tagId: string) => {
+  if (!tagId) return { data: null, error: "Error" };
+  try {
+    await db.delete(tags).where(eq(tags.id, tagId));
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const assignTagToDocument = async (
+  tagId: string,
+  documentId: string
+) => {
+  try {
+    await db.insert(tagsToDocuments).values({ tagId, documentId });
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const removeTagFromDocument = async (
+  tagId: string,
+  documentId: string
+) => {
+  try {
+    await db
+      .delete(tagsToDocuments)
+      .where(
+        and(
+          eq(tagsToDocuments.tagId, tagId),
+          eq(tagsToDocuments.documentId, documentId)
+        )
+      );
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
 };
