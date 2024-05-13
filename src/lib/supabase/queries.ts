@@ -28,7 +28,7 @@ export const createWorkspace = async (workspace: Workspace) => {
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: "Error" };
+    return { data: null, error: "Failed to create workspace due to an internal error" };
   }
 };
 
