@@ -337,10 +337,6 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const pathname = usePathname();
   const { user } = useSupabaseUser();
-  if (!user) {
-    console.error("User not authenticated");
-    return;
-  }
 
   const workspaceId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);

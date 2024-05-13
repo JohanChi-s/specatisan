@@ -120,16 +120,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
   //   state.workspaces.length,
   //   dispatch,
   // ]);
-try {
-  const { error } = await createDocument(newDocument);
-  if (error) throw new Error(`Document creation failed: ${error}`);
-} catch (error) {
-  toast({
-    title: "Error",
-    variant: "destructive",
-    description: error.message,
-  });
-}
   const handleCreateNewDoc = async () => {
     if (!params.workspaceId || !user) return;
     const newDocument: Document = {
