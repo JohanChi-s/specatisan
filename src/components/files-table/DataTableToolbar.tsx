@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { Table } from "@tanstack/react-table";
 import { DataTableViewOptions } from "./DataTableViewOptions";
+import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
+import React from "react";
+import { Tag } from "@/lib/supabase/supabase.types";
+import { useAppState } from "@/lib/providers/state-provider";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -15,6 +19,12 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  const [tags, setTags] = React.useState<Tag[]>([]);
+  const { state } = useAppState();
+
+  React.useEffect(() => {
+    setTags(state.tags || []);
+  }, [state.tags]);
 
   return (
     <div className="flex items-center justify-between">
@@ -27,20 +37,16 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {/* {table.getColumn("status") && (
-					<DataTableFacetedFilter
-						column={table.getColumn("status")}
-						title="Status"
-						options={statuses}
-					/>
-				)}
-				{table.getColumn("priority") && (
-					<DataTableFacetedFilter
-						column={table.getColumn("priority")}
-						title="Priority"
-						options={priorities}
-					/>
-				)} */}
+        {table.getColumn("tags") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("tags")}
+            title="Tags"
+            options={tags.map((tag) => ({
+              label: tag.name,
+              value: tag.id,
+            }))}
+          />
+        )}
         {isFiltered && (
           <Button
             variant="ghost"

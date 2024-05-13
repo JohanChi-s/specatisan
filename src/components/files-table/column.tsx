@@ -50,6 +50,9 @@ export const columns: ColumnDef<DocumentWithTags>[] = [
     },
   },
   {
+    id: "tags",
+    filterFn: "arrIncludesSome",
+    accessorFn: (row) => row.tags,
     header: "Tags",
     cell: ({ row }) => {
       const document = row.original;
