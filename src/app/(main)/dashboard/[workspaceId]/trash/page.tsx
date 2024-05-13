@@ -214,7 +214,7 @@ const TrashPage = () => {
                     <Button
                       size={"sm"}
                       className="mx-2"
-                      onClick={() => handleDeleteCollection}
+                      onClick={() => handleDeleteDocument(document.id)}
                       variant={"destructive"}
                     >
                       <Delete size={18} />
