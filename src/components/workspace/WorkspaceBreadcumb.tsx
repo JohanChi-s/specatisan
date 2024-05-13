@@ -18,7 +18,7 @@ interface WorkspaceBreadcumbProps {
   items?: BreadcrumbItemProps[];
 }
 
-export const defaultBreadcumbItems = [{ href: "/", label: "Home" }];
+export const defaultBreadcumbItems = [];
 
 const WorkspaceBreadcumb: React.FC<WorkspaceBreadcumbProps> = ({
   items = defaultBreadcumbItems,

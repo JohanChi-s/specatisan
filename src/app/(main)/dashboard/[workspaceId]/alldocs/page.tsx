@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 const AllDocsPage = () => {
   const [documents, setDocuments] = useState<DocumentWithTags[]>([]);
   const { workspaceId } = useAppState();
+  const { state } = useAppState();
 
   useEffect(() => {
     if (!workspaceId) {
@@ -19,9 +20,12 @@ const AllDocsPage = () => {
 
     const fetchData = async () => {
       try {
-        const { data, error } = await getDocumentByWorkspaceId(workspaceId);
+        var { data, error } = await getDocumentByWorkspaceId(workspaceId);
         if (error) {
           return redirect("/dashboard");
+        }
+        if (data) {
+          data = data.filter((doc) => doc.inTrash === null);
         }
         setDocuments(data || []);
       } catch (error) {
@@ -32,6 +36,11 @@ const AllDocsPage = () => {
 
     fetchData();
   }, [workspaceId]);
+
+  useEffect(() => {
+    const docs = state.documents.filter((doc) => doc.inTrash === null);
+    setDocuments(docs);
+  }, [state.documents]);
 
   return (
     <div className="container mx-auto px-5">

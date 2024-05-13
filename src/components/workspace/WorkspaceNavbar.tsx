@@ -5,7 +5,7 @@ import { updateDocument } from "@/lib/supabase/queries";
 import clsx from "clsx";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import TooltipComponent from "../global/tooltip-component";
 import { Button } from "../ui/button";
@@ -28,6 +28,7 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [docTitle, setDocTitle] = useState(title);
+  const router = useRouter();
   const { workspaceId } = useAppState();
 
   if (!workspaceId) return redirect("/dashboard");
@@ -69,11 +70,15 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
     setDocTitle(e.target.value);
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <div className="flex items-center justify-between w-full h-12 rounded-sm mb-1">
       {/* Create a back button with nextjs */}
       <div className="flex items-center">
-        <Button variant={"ghost"} onClick={() => {}}>
+        <Button variant={"ghost"} onClick={() => handleBack()}>
           <ChevronLeft size={24} />
         </Button>
         <WorkspaceBreadcumb items={items} />

@@ -208,7 +208,11 @@ const TrashPage = () => {
                     <h3 className="text-lg">{document.title}</h3>
                   </div>
                   <div className="">
-                    <Button size={"sm"} onClick={() => {}} variant={"default"}>
+                    <Button
+                      size={"sm"}
+                      onClick={() => handleRestoreDocument(document.id)}
+                      variant={"default"}
+                    >
                       <ArchiveRestore size={18} />
                     </Button>
                     <Button

@@ -63,6 +63,7 @@ const AssignTag: React.FC<Props> = ({ document }) => {
     });
 
     setDoc({ ...document, tags: documentTags });
+    setTags(tags.filter((t) => t.id !== tag.id));
 
     toast({
       variant: "default",
@@ -85,13 +86,14 @@ const AssignTag: React.FC<Props> = ({ document }) => {
       ...document,
       tags: document.tags?.filter((t) => t.id !== tag.id),
     });
+    setTags([...tags, tag]);
   };
 
   return (
     <div className="flex items-center gap-x-1">
-      {doc?.tags?.map((tag) => (
-        <Badge key={tag.id}>{tag.name}</Badge>
-      ))}
+      {doc.tags.length
+        ? doc?.tags?.map((tag) => <Badge key={tag.id}>{tag.name}</Badge>)
+        : null}
       <Popover>
         <PopoverTrigger asChild>
           <Button

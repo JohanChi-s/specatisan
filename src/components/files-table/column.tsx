@@ -1,19 +1,11 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { DocumentWithTags } from "@/lib/supabase/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText, MoreHorizontal } from "lucide-react";
+import { FileText } from "lucide-react";
 import AssignTag from "../tags/AssignTag";
 import { DataTableColumnHeader } from "./DataTableColumnHeader";
+import FileActionsDropdown from "./FileActionsDropdown";
 
 export const columns: ColumnDef<DocumentWithTags>[] = [
   {
@@ -85,28 +77,7 @@ export const columns: ColumnDef<DocumentWithTags>[] = [
     cell: ({ row }) => {
       const document = row.original;
 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(document.title)}
-            >
-              Copy document ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Share</DropdownMenuItem>
-            <DropdownMenuItem>Show hisoty actions</DropdownMenuItem>
-            <DropdownMenuItem>Delete Document</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <FileActionsDropdown document={document} />;
     },
   },
 ];

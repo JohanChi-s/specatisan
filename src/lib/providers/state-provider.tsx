@@ -18,6 +18,7 @@ import {
 } from "../supabase/supabase.types";
 import {
   getAllWorkspaces,
+  getDocumentByWorkspaceId,
   getSharedWorkspaces,
   getTags,
 } from "../supabase/queries";
@@ -32,6 +33,7 @@ interface AppState {
   workspaces: appWorkspacesType[] | [];
   currentWorkspace: appWorkspacesType | null;
   tags: Tag[] | [];
+  documents: DocumentWithTags[] | [];
 }
 
 type Action =
@@ -125,6 +127,7 @@ const initialState: AppState = {
   workspaces: [],
   currentWorkspace: null,
   tags: [],
+  documents: [],
 };
 
 const appReducer = (
@@ -168,12 +171,10 @@ const appReducer = (
         currentWorkspace: action.payload.workspace,
       };
     case "SET_FOLDERS":
-      console.log("workspace ===", state.workspaces.length);
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
-            console.log("workspace111", workspace, action.payload.collections);
             return {
               ...workspace,
               collections: action.payload.collections,
@@ -235,54 +236,27 @@ const appReducer = (
     case "SET_FILES":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              ...workspace.collections,
-              documents: action.payload.documents,
-            };
-          }
-          return workspace;
-        }),
+        documents: action.payload.documents,
       };
     case "ADD_FILE":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              collections: workspace.collections.map((collection) => {
-                return {
-                  ...collection,
-                };
-              }),
-            };
-          }
-          return workspace;
-        }),
+        documents: [
+          ...state.documents,
+          action.payload.document as DocumentWithTags,
+        ],
       };
     case "UPDATE_FILE":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
+        documents: state.documents.map((document) => {
+          if (document.id === action.payload.fileId) {
             return {
-              ...workspace,
-              ...workspace.collections,
-              documents: workspace.documents.map((document) => {
-                if (document.id === action.payload.fileId) {
-                  return {
-                    ...document,
-                    ...action.payload.document,
-                  };
-                }
-                return document;
-              }),
+              ...document,
+              ...action.payload.document,
             };
           }
-          return workspace;
+          return document;
         }),
       };
     case "SET_TAGS":
@@ -403,6 +377,23 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
         dispatch({
           type: "SET_TAGS",
           payload: { tags: data, workspaceId },
+        });
+      }
+    };
+    fetchTags();
+  }, [user?.id, workspaceId]);
+
+  // fetch docs
+  useEffect(() => {
+    if (!workspaceId || !user?.id) return;
+    const fetchTags = async () => {
+      const { data, error } = await getDocumentByWorkspaceId(workspaceId);
+      if (error || !data) {
+        return;
+      } else {
+        dispatch({
+          type: "SET_FILES",
+          payload: { documents: data, workspaceId },
         });
       }
     };
