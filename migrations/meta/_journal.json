@@ -99,6 +99,34 @@
       "when": 1715143816909,
       "tag": "0014_round_star_brand",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1715332999856,
+      "tag": "0015_tan_doomsday",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1715407802423,
+      "tag": "0016_bouncy_warhawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1715410892137,
+      "tag": "0017_clumsy_sauron",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1715571605128,
+      "tag": "0018_spotty_firelord",
+      "breakpoints": true
     }
   ]
 }

@@ -1,12 +1,18 @@
+"use client";
 import { useAppState } from "@/lib/providers/state-provider";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { updateCollection } from "@/lib/supabase/queries";
-import { Collection } from "@/lib/supabase/supabase.types";
-import { cn } from "@/lib/utils";
-import { Delete, Edit2, Settings } from "lucide-react";
-import Link from "next/link";
+import { updateDocument } from "@/lib/supabase/queries";
+import type { Document } from "@/lib/supabase/supabase.types";
+import {
+  CornerDownLeft,
+  Delete,
+  Edit2,
+  ExternalLink,
+  Link2,
+  Settings,
+} from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
 import React from "react";
-import EmojiPicker from "../global/emoji-picker";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -33,103 +39,119 @@ import {
 import { toast } from "../ui/use-toast";
 
 type Props = {
-  collection: Collection;
-  workspaceId: string;
+  document: Document;
 };
 
-const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
-  const { dispatch } = useAppState();
-  const [name, setName] = React.useState(collection.name);
+const FileActionsDropdown: React.FC<Props> = ({ document }) => {
+  const { dispatch, workspaceId } = useAppState();
+  const [title, setTitle] = React.useState(document.title);
   const { user } = useSupabaseUser();
+  const router = useRouter();
+  if (!workspaceId) {
+    toast({
+      title: "Error",
+      description: "Workspace ID is missing",
+      variant: "destructive",
+    });
+    return redirect("/dashboard");
+  }
 
   const handleSaveChange = async () => {
     if (!workspaceId) return;
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_FILE",
       payload: {
         workspaceId,
-        collectionId: collection.id,
-        collection: { name },
+        fileId: document.id,
+        document: { title },
       },
     });
-    const { data, error } = await updateCollection({ name }, collection.id);
+    const { data, error } = await updateDocument({ title }, document.id);
     if (error) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Could not update the name for this collection",
+        description: "Could not update the name for this Document",
       });
     } else {
       toast({
         title: "Success",
-        description: "Update name for the collection",
-      });
-    }
-  };
-  const onChangeEmoji = async (selectedEmoji: string) => {
-    if (!workspaceId) return;
-    dispatch({
-      type: "UPDATE_FOLDER",
-      payload: {
-        workspaceId,
-        collectionId: collection.id,
-        collection: { icon: selectedEmoji },
-      },
-    });
-    const { data, error } = await updateCollection(
-      { icon: selectedEmoji },
-      collection.id
-    );
-    if (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Could not update the emoji for this collection",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Update emoji for the collection",
+        description: "Update name for the Document",
       });
     }
   };
 
-  const handleDeleteCollection = async (collectionId: string) => {
+  const handleDeleteDocument = async (DocumentId: string) => {
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_FILE",
       payload: {
-        collection: { inTrash: `Deleted by ${user?.email}` },
-        collectionId: collectionId,
+        document: { inTrash: `Deleted by ${user?.email}` },
+        fileId: document.id,
         workspaceId,
       },
     });
-    const { error } = await updateCollection(
+    const { error } = await updateDocument(
       { inTrash: `Deleted by ${user?.email}` },
-      collectionId
+      DocumentId
     );
     if (error) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Could not move the collection to trash",
+        description: "Could not move the Document to trash",
       });
     } else {
       toast({
         title: "Success",
-        description: "Moved collection to trash",
+        description: "Moved Document to trash",
       });
     }
+  };
+
+  const handleRedirectToEditor = (document: Document) => {
+    return router.push(`/dashboard/${workspaceId}/${document.id}`);
+  };
+
+  const hanldeOpenEditor = (document: Document) => {
+    return router.push(`/dashboard/${workspaceId}/${document.id}`);
+  };
+
+  const hanldeCopyLink = (document: Document) => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/dashboard/${workspaceId}/${document.id}`
+    );
+    toast({
+      title: "Copied",
+      description: "Link copied to clipboard",
+    });
   };
 
   return (
-    <li className="flex flex-1 w-full px-2 py-1 rounded-md dark:bg-muted hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
-      <EmojiPicker getValue={onChangeEmoji}>{collection.icon}</EmojiPicker>
-      <Link
-        href={`/dashboard/${workspaceId}/collections/${collection.id}`}
-        className={cn("flex-1 w-full justify-start ml-2")}
+    <div className="flex items-center gap-x-2 ml-auto">
+      <Button
+        variant="default"
+        className="text-sm bg-green-500 hover:bg-green-600"
+        size="sm"
+        onClick={() => handleRedirectToEditor(document)}
       >
-        {collection.name}
-      </Link>
+        <CornerDownLeft className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="default"
+        className="text-sm"
+        size="sm"
+        onClick={() => hanldeOpenEditor(document)}
+      >
+        <ExternalLink className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="default"
+        className="text-sm"
+        size="sm"
+        onClick={() => hanldeCopyLink(document)}
+      >
+        <Link2 className="h-4 w-4" />
+      </Button>
       <Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -153,7 +175,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Collection</DropdownMenuLabel>
+            <DropdownMenuLabel>Document</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
@@ -169,9 +191,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
               </SheetTrigger>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => handleDeleteCollection(collection.id)}
-            >
+            <DropdownMenuItem onClick={() => handleDeleteDocument(document.id)}>
               <Delete className="mr-2 h-4 w-4" />
               <span>Delete</span>
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
@@ -180,21 +200,21 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
         </DropdownMenu>
         <SheetContent side={"left"}>
           <SheetHeader>
-            <SheetTitle>Edit collection</SheetTitle>
+            <SheetTitle>Edit Document</SheetTitle>
             <SheetDescription>
-              Make changes to your collection here
+              Make changes to your Document here
             </SheetDescription>
           </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
+              <Label htmlFor="tile" className="text-right">
+                Title
               </Label>
               <Input
-                id="name"
-                value={name}
+                id="title"
+                value={title}
                 className="col-span-3"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
           </div>
@@ -207,8 +227,8 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
           </SheetFooter>
         </SheetContent>
       </Sheet>
-    </li>
+    </div>
   );
 };
 
-export default CollectionItem;
+export default FileActionsDropdown;

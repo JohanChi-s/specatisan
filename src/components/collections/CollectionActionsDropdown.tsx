@@ -1,12 +1,18 @@
+"use client";
 import { useAppState } from "@/lib/providers/state-provider";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { updateCollection } from "@/lib/supabase/queries";
-import { Collection } from "@/lib/supabase/supabase.types";
-import { cn } from "@/lib/utils";
-import { Delete, Edit2, Settings } from "lucide-react";
-import Link from "next/link";
+import type { Collection } from "@/lib/supabase/supabase.types";
+import {
+  CornerDownLeft,
+  Delete,
+  Edit2,
+  ExternalLink,
+  Link2,
+  Settings,
+} from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
 import React from "react";
-import EmojiPicker from "../global/emoji-picker";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -34,13 +40,14 @@ import { toast } from "../ui/use-toast";
 
 type Props = {
   collection: Collection;
-  workspaceId: string;
 };
 
-const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
-  const { dispatch } = useAppState();
+const CollectionActionsDropdown: React.FC<Props> = ({ collection }) => {
+  const { dispatch, workspaceId } = useAppState();
   const [name, setName] = React.useState(collection.name);
   const { user } = useSupabaseUser();
+  const router = useRouter();
+  if (!workspaceId) return redirect("/dashboard");
 
   const handleSaveChange = async () => {
     if (!workspaceId) return;
@@ -57,79 +64,77 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Could not update the name for this collection",
+        description: "Could not update the name for this Collection",
       });
     } else {
       toast({
         title: "Success",
-        description: "Update name for the collection",
-      });
-    }
-  };
-  const onChangeEmoji = async (selectedEmoji: string) => {
-    if (!workspaceId) return;
-    dispatch({
-      type: "UPDATE_FOLDER",
-      payload: {
-        workspaceId,
-        collectionId: collection.id,
-        collection: { icon: selectedEmoji },
-      },
-    });
-    const { data, error } = await updateCollection(
-      { icon: selectedEmoji },
-      collection.id
-    );
-    if (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Could not update the emoji for this collection",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Update emoji for the collection",
+        description: "Update name for the Collection",
       });
     }
   };
 
-  const handleDeleteCollection = async (collectionId: string) => {
+  const handleDeleteCollection = async (CollectionId: string) => {
     dispatch({
       type: "UPDATE_FOLDER",
       payload: {
         collection: { inTrash: `Deleted by ${user?.email}` },
-        collectionId: collectionId,
+        collectionId: collection.id,
         workspaceId,
       },
     });
     const { error } = await updateCollection(
       { inTrash: `Deleted by ${user?.email}` },
-      collectionId
+      CollectionId
     );
     if (error) {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Could not move the collection to trash",
+        description: "Could not move the Collection to trash",
       });
     } else {
       toast({
         title: "Success",
-        description: "Moved collection to trash",
+        description: "Moved Collection to trash",
       });
     }
   };
 
+  const handleAccessCollection = (collection: Collection) => {
+    return router.push(
+      `/dashboard/${workspaceId}/collections/${collection.id}`
+    );
+  };
+
+  const hanldeCopyLink = (collection: Collection) => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/dashboard/${workspaceId}/collections/${collection.id}`
+    );
+    toast({
+      title: "Copied",
+      description: "Link copied to clipboard",
+    });
+  };
+
   return (
-    <li className="flex flex-1 w-full px-2 py-1 rounded-md dark:bg-muted hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
-      <EmojiPicker getValue={onChangeEmoji}>{collection.icon}</EmojiPicker>
-      <Link
-        href={`/dashboard/${workspaceId}/collections/${collection.id}`}
-        className={cn("flex-1 w-full justify-start ml-2")}
+    <div className="flex items-center gap-x-2 ml-auto">
+      <Button
+        variant="default"
+        className="text-sm bg-green-500 hover:bg-green-600"
+        size="sm"
+        onClick={() => handleAccessCollection(collection)}
       >
-        {collection.name}
-      </Link>
+        <CornerDownLeft className="h-4 w-4" />
+      </Button>
+      <Button
+        variant="default"
+        className="text-sm"
+        size="sm"
+        onClick={() => hanldeCopyLink(collection)}
+      >
+        <Link2 className="h-4 w-4" />
+      </Button>
       <Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -180,18 +185,18 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
         </DropdownMenu>
         <SheetContent side={"left"}>
           <SheetHeader>
-            <SheetTitle>Edit collection</SheetTitle>
+            <SheetTitle>Edit Collection</SheetTitle>
             <SheetDescription>
-              Make changes to your collection here
+              Make changes to your Collection here
             </SheetDescription>
           </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
+              <Label htmlFor="tile" className="text-right">
+                Title
               </Label>
               <Input
-                id="name"
+                id="title"
                 value={name}
                 className="col-span-3"
                 onChange={(e) => setName(e.target.value)}
@@ -207,8 +212,8 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
           </SheetFooter>
         </SheetContent>
       </Sheet>
-    </li>
+    </div>
   );
 };
 
-export default CollectionItem;
+export default CollectionActionsDropdown;

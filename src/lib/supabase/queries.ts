@@ -1,10 +1,26 @@
-'use server';
-import { validate } from 'uuid';
-import db from './db';
-import { Document, Collection, Subscription, User, Workspace } from './supabase.types';
-import { and, eq, ilike, notExists } from 'drizzle-orm';
-import { collaborators, collections, documents, users, workspaces } from './schema';
-import { revalidatePath } from 'next/cache';
+"use server";
+import { and, eq, ilike, notExists } from "drizzle-orm";
+import { validate } from "uuid";
+import db from "./db";
+import {
+  collaborators,
+  collections,
+  documents,
+  tags,
+  tagsToDocuments,
+  users,
+  workspaces,
+} from "./schema";
+import {
+  Collection,
+  Document,
+  DocumentWithTags,
+  Subscription,
+  Tag,
+  User,
+  Workspace,
+} from "./supabase.types";
+import { omit } from "lodash";
 
 export const createWorkspace = async (workspace: Workspace) => {
   try {
@@ -12,7 +28,7 @@ export const createWorkspace = async (workspace: Workspace) => {
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Failed to create workspace due to an internal error" };
   }
 };
 
@@ -39,7 +55,7 @@ export const getCollections = async (workspaceId: string) => {
   if (!isValid)
     return {
       data: null,
-      error: 'Error',
+      error: "Invalid workspace ID provided",
     };
 
   try {
@@ -51,8 +67,8 @@ export const getCollections = async (workspaceId: string) => {
     return { data: results as Collection[], error: null };
   } catch (error) {
     console.log("err: ", error);
-    
-    return { data: null, error: 'Error' };
+
+    return { data: null, error: "Error" };
   }
 };
 
@@ -61,7 +77,7 @@ export const getWorkspaceDetails = async (workspaceId: string) => {
   if (!isValid)
     return {
       data: [],
-      error: 'Error',
+      error: "Error",
     };
 
   try {
@@ -73,39 +89,55 @@ export const getWorkspaceDetails = async (workspaceId: string) => {
     return { data: response, error: null };
   } catch (error) {
     console.log(error);
-    return { data: [], error: 'Error' };
+    return { data: [], error: "Error" };
   }
 };
 
 export const getDocumentDetails = async (fileId: string) => {
   const isValid = validate(fileId);
   if (!isValid) {
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
   try {
-    const response = await db.query.documents.findFirst({ where: (d, { eq }) => eq(d.id, fileId)})
+    const response = await db.query.documents.findFirst({
+      where: (d, { eq }) => eq(d.id, fileId),
+    });
     return { data: response as Document, error: null };
   } catch (error) {
-    console.log('🔴Error', error);
-    return { data: null, error: 'Error' };
+    console.log("🔴Error", error);
+    return { data: null, error: "Error" };
   }
 };
 
 export const deleteDocument = async (fileId: string) => {
-  if (!fileId) return;
-  await db.delete(documents).where(eq(documents.id, fileId));
+  const isValid = validate(fileId);
+  if (!isValid) return { data: null, error: "INVALID_FILE_ID" };
+  try {
+    const response = await db.delete(documents).where(eq(documents.id, fileId));
+    return { data: response, error: null };
+  } catch (error) {
+    return { data: null, error: error };
+  }
 };
 
+// delete collection
 export const deleteCollection = async (collectionId: string) => {
-  if (!collectionId) return;
-  await db.delete(documents).where(eq(documents.id, collectionId));
+  const isValid = validate(collectionId);
+  if (!isValid) return { data: null, error: "INVALID_COLLECTION_ID" };
+  try {
+    const response = await db
+      .delete(collections)
+      .where(eq(collections.id, collectionId));
+    return { data: response, error: null };
+  } catch (error) {
+    return { data: null, error: error };
+  }
 };
-
 export const getCollectionDetails = async (collectionId: string) => {
   const isValid = validate(collectionId);
   if (!isValid) {
     data: [];
-    error: 'Error';
+    error: "Error";
   }
 
   try {
@@ -117,7 +149,7 @@ export const getCollectionDetails = async (collectionId: string) => {
 
     return { data: response, error: null };
   } catch (error) {
-    return { data: [], error: 'Error' };
+    return { data: [], error: "Error" };
   }
 };
 
@@ -192,9 +224,23 @@ export const getSharedWorkspaces = async (userId: string) => {
   return sharedWorkspaces;
 };
 
+// get All workspaces
+export const getAllWorkspaces = async (userId: string) => {
+  if (!userId) return { data: null, error: "Bad Request" };
+  try {
+    const resp = (await db
+      .select()
+      .from(workspaces)
+      .where(eq(workspaces.workspaceOwner, userId))) as Workspace[];
+    return { data: resp, error: null };
+  } catch (error) {
+    return { data: null, error: error };
+  }
+};
+
 export const getDocuments = async (collectionId: string) => {
   const isValid = validate(collectionId);
-  if (!isValid) return { data: null, error: 'Error' };
+  if (!isValid) return { data: null, error: "Error" };
   try {
     const results = (await db
       .select()
@@ -204,24 +250,37 @@ export const getDocuments = async (collectionId: string) => {
     return { data: results, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
 };
 
 // get Document by workspaceId
 export const getDocumentByWorkspaceId = async (workspaceId: string) => {
   const isValid = validate(workspaceId);
-  if (!isValid) return { data: null, error: 'Error' };
+  if (!isValid) return { data: null, error: "Error" };
   try {
-    const results = (await db
-      .select()
-      .from(documents)
-      .orderBy(documents.createdAt)
-      .where(eq(documents.workspaceId, workspaceId))) as Document[] | [];
-    return { data: results as Collection[], error: null };
+    const results = await db.query.documents.findMany({
+      where: (doc, { eq }) => eq(doc.workspaceId, workspaceId),
+      with: {
+        tagsToDocuments: {
+          with: {
+            tag: true,
+          },
+        },
+      },
+    });
+    const documetnWithTags: DocumentWithTags[] = results.map((r) => {
+      const tags: Tag[] = [];
+      r.tagsToDocuments.map((t) => {
+        tags.push(t.tag);
+      });
+      omit(r, "tagsToDocuments");
+      return { ...r, tags };
+    });
+    return { data: documetnWithTags, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
 };
 
@@ -299,7 +358,7 @@ export const createDocument = async (document: Document) => {
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
 };
 
@@ -308,24 +367,27 @@ export const updateCollection = async (
   collectionId: string
 ) => {
   try {
-    await db.update(collections).set(collection).where(eq(collections.id, collectionId));
+    await db
+      .update(collections)
+      .set(collection)
+      .where(eq(collections.id, collectionId));
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
 };
 
-export const updateDocument = async (document: Partial<Document>, fileId: string) => {
+export const updateDocument = async (
+  document: Partial<Document>,
+  fileId: string
+) => {
   try {
-    await db
-      .update(documents)
-      .set(document)
-      .where(eq(documents.id, fileId));
+    await db.update(documents).set(document).where(eq(documents.id, fileId));
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
 };
 
@@ -342,7 +404,7 @@ export const updateWorkspace = async (
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: 'Error' };
+    return { data: null, error: "Error" };
   }
 };
 
@@ -371,4 +433,88 @@ export const getUsersFromSearch = async (email: string) => {
     .from(users)
     .where(ilike(users.email, `${email}%`));
   return accounts;
+};
+
+// Get all tags by workspaceId
+export const getTags = async (workspaceId: string) => {
+  const isValid = validate(workspaceId);
+  if (!isValid) return { data: null, error: "Error" };
+  try {
+    const results = (await db
+      .select()
+      .from(tags)
+      .orderBy(tags.createdAt)
+      .where(eq(tags.workspaceId, workspaceId))) as Tag[] | [];
+    return { data: results, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const createTag = async (tag: Tag) => {
+  try {
+    await db.insert(tags).values(tag);
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+// update Tag
+export const updateTag = async (tag: Partial<Tag>) => {
+  if (!tag.id) return { data: null, error: "Error" };
+  try {
+    await db.update(tags).set(tag).where(eq(tags.id, tag.id));
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+// deleteTag
+export const deleteTag = async (tagId: string) => {
+  if (!tagId) return { data: null, error: "Error" };
+  try {
+    await db.delete(tags).where(eq(tags.id, tagId));
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const assignTagToDocument = async (
+  tagId: string,
+  documentId: string
+) => {
+  try {
+    await db.insert(tagsToDocuments).values({ tagId, documentId });
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const removeTagFromDocument = async (
+  tagId: string,
+  documentId: string
+) => {
+  try {
+    await db
+      .delete(tagsToDocuments)
+      .where(
+        and(
+          eq(tagsToDocuments.tagId, tagId),
+          eq(tagsToDocuments.documentId, documentId)
+        )
+      );
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
 };

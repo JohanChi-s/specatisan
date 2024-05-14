@@ -19,7 +19,12 @@ export const userPreferences = pgEnum("user_preferences", [
   "fullWidthDocuments",
 ]);
 
-export const keyStatus = pgEnum("key_status", ["default", "valid", "invalid", "expired"]);
+export const keyStatus = pgEnum("key_status", [
+  "default",
+  "valid",
+  "invalid",
+  "expired",
+]);
 export const keyType = pgEnum("key_type", [
   "aead-ietf",
   "aead-det",
@@ -36,9 +41,26 @@ export const keyType = pgEnum("key_type", [
 export const factorType = pgEnum("factor_type", ["totp", "webauthn"]);
 export const factorStatus = pgEnum("factor_status", ["unverified", "verified"]);
 export const aalLevel = pgEnum("aal_level", ["aal1", "aal2", "aal3"]);
-export const codeChallengeMethod = pgEnum("code_challenge_method", ["s256", "plain"]);
-export const equalityOp = pgEnum("equality_op", ["eq", "neq", "lt", "lte", "gt", "gte", "in"]);
-export const action = pgEnum("action", ["INSERT", "UPDATE", "DELETE", "TRUNCATE", "ERROR"]);
+export const codeChallengeMethod = pgEnum("code_challenge_method", [
+  "s256",
+  "plain",
+]);
+export const equalityOp = pgEnum("equality_op", [
+  "eq",
+  "neq",
+  "lt",
+  "lte",
+  "gt",
+  "gte",
+  "in",
+]);
+export const action = pgEnum("action", [
+  "INSERT",
+  "UPDATE",
+  "DELETE",
+  "TRUNCATE",
+  "ERROR",
+]);
 export const pricingType = pgEnum("pricing_type", ["one_time", "recurring"]);
 export const pricingPlanInterval = pgEnum("pricing_plan_interval", [
   "day",
@@ -69,7 +91,10 @@ export const CollectionPermission = pgEnum("collection_permission", [
   "read_write",
   "admin",
 ]);
-export const DocumentPermission = pgEnum("document_permission", ["read", "read_write"]);
+export const DocumentPermission = pgEnum("document_permission", [
+  "read",
+  "read_write",
+]);
 
 export const ActivityEvent = pgEnum("activity_event", [
   "collections.create",
@@ -178,9 +203,11 @@ export const documents = pgTable("documents", {
   emoji: text("emoji"),
   text: text("text"),
   content: jsonb("content"),
-  revisionCount: integer("revision_count").default(0),
   archivedAt: timestamp("archived_at", { withTimezone: true, mode: "string" }),
-  publishedAt: timestamp("published_at", { withTimezone: true, mode: "string" }),
+  publishedAt: timestamp("published_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
   template: boolean("template").default(false),
   sourceMetadata: jsonb("source_metadata"),
   parentDocumentId: uuid("parent_document_id"),
@@ -195,7 +222,7 @@ export const documents = pgTable("documents", {
   workspaceId: uuid("workspace_id")
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
-  collectionId: uuid("collection_id")
+  collectionId: uuid("collection_id"),
 });
 
 export const stars = pgTable("stars", {
@@ -204,9 +231,10 @@ export const stars = pgTable("stars", {
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .default(sql`now()`)
     .notNull(),
-  documentId: uuid("document_id").references(() => documents.id, { onDelete: "cascade" }),
+  documentId: uuid("document_id").references(() => documents.id, {
+    onDelete: "cascade",
+  }),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
-  collectionId: uuid("collection_id").references(() => collections.id, { onDelete: "cascade" }),
 });
 
 export const memberShip = pgTable("user_permissions", {
@@ -235,7 +263,9 @@ export const collections = pgTable("collections", {
   color: text("color"),
   index: text("index"),
   permission: text("permission"),
-  maintainerApprovalRequired: boolean("maintainer_approval_required").default(false),
+  maintainerApprovalRequired: boolean("maintainer_approval_required").default(
+    false
+  ),
   documentStructure: jsonb("document_structure"),
   sharing: boolean("sharing").default(true),
   inTrash: text("in_trash"),
@@ -283,13 +313,19 @@ export const users = pgTable("users", {
   preferences: jsonb("preferences"),
   notificationSettings: jsonb("notification_settings"),
   isViewer: boolean("is_viewer"),
-  lastActiveAt: timestamp("last_active_at", { withTimezone: true, mode: "string" }),
+  lastActiveAt: timestamp("last_active_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
   lastActiveIp: text("last_active_ip"),
   lastSignInEmailSendAt: timestamp("last_sign_in_email_send_at", {
     withTimezone: true,
     mode: "string",
   }),
-  suspendedAt: timestamp("suspended_at", { withTimezone: true, mode: "string" }),
+  suspendedAt: timestamp("suspended_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
   billingAddress: jsonb("billing_address"),
   paymentMethod: jsonb("payment_method"),
 });
@@ -348,7 +384,9 @@ export const subscriptions = pgTable("subscriptions", {
   priceId: text("price_id").references(() => prices.id),
   quantity: integer("quantity"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end"),
-  created: timestamp("created", { withTimezone: true, mode: "string" }).default(sql`now()`),
+  created: timestamp("created", { withTimezone: true, mode: "string" }).default(
+    sql`now()`
+  ),
   currentPeriodStart: timestamp("current_period_start", {
     withTimezone: true,
     mode: "string",
@@ -430,9 +468,6 @@ export const comments = pgTable("comments", {
     .references(() => collections.id, {
       onDelete: "cascade",
     }),
-  // parrentCommentId: uuid("parent_comment_id").references(() => comments.id, {
-  //   onDelete: "cascade",
-  // }),
 });
 
 export const policies = pgTable("policies", {
@@ -450,20 +485,6 @@ export const policies = pgTable("policies", {
     .references(() => workspaces.id, { onDelete: "cascade" }),
 });
 
-export const revisions = pgTable("revisions", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .default(sql`now()`)
-    .notNull(),
-  title: text("title").notNull(),
-  text: text("text").notNull(),
-  emoji: text("emoji"),
-  documentId: uuid("document_id")
-    .notNull()
-    .references(() => documents.id, { onDelete: "cascade" }),
-  userId: uuid("user_id").references(() => users.id),
-});
-
 export const shares = pgTable("shares", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
@@ -477,12 +498,57 @@ export const shares = pgTable("shares", {
   domain: text("domain"),
   documentTitle: text("document_title"),
   documentUrl: text("document_url"),
-  lastAccessAt: timestamp("last_access_at", { withTimezone: true, mode: "string" }),
+  lastAccessAt: timestamp("last_access_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
   url: text("url"),
   userId: uuid("user_id").references(() => users.id),
   includeChildDocuments: boolean("include_child_documents").default(false),
 });
 
+export const tags = pgTable("tags", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  name: text("name").notNull().unique(),
+  color: text("color"),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .default(sql`now()`)
+    .notNull(),
+  workspaceId: uuid("workspace_id")
+    .notNull()
+    .references(() => workspaces.id, { onDelete: "cascade" }),
+});
+
+export const tagsToDocuments = pgTable("tags_to_documents", {
+  documentId: uuid("document_id")
+    .notNull()
+    .references(() => documents.id),
+  tagId: uuid("tag_id")
+    .notNull()
+    .references(() => tags.id),
+});
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  tagsToDocuments: many(tagsToDocuments),
+}));
+
+export const tagsToDocumentsRelations = relations(
+  tagsToDocuments,
+  ({ one }) => ({
+    tag: one(tags, {
+      fields: [tagsToDocuments.tagId],
+      references: [tags.id],
+    }),
+    document: one(documents, {
+      fields: [tagsToDocuments.documentId],
+      references: [documents.id],
+    }),
+  })
+);
+
+export const documentsRelation = relations(documents, ({ many }) => ({
+  tagsToDocuments: many(tagsToDocuments),
+}));
 //Dont Delete!!!
 export const productsRelations = relations(products, ({ many }) => ({
   prices: many(prices),

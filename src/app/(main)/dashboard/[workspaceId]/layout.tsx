@@ -5,9 +5,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { useAppState } from "@/lib/providers/state-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { getAllWorkspaces } from "@/lib/supabase/queries";
+import { collections, documents } from "@/lib/supabase/schema";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 interface LayoutProps {
   children: React.ReactNode;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -22,6 +26,7 @@ const defaultProps = {
 
 const Layout: React.FC<LayoutProps> = ({ children, params }) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultProps.defaultCollapsed);
+
   return (
     <div className="flex w-full h-screen bg-background font-sans antialiased">
       <TooltipProvider delayDuration={0}>

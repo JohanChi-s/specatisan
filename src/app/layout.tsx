@@ -10,6 +10,7 @@ import AppStateProvider from "@/lib/providers/state-provider";
 import { SupabaseUserProvider } from "@/lib/providers/supabase-user-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { SocketProvider } from "@/lib/providers/socket-provider";
+import db from "@/lib/supabase/db";
 const inter = DM_Sans({
   subsets: ["latin"],
   weight: "400",
@@ -26,19 +27,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // console.log(db);
-
   return (
     <html lang="en">
       <body className={twMerge("bg-background", inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <AppStateProvider>
-            <SupabaseUserProvider>
+          <SupabaseUserProvider>
+            <AppStateProvider>
               <SocketProvider>
                 {children}
                 <Toaster />
               </SocketProvider>
-            </SupabaseUserProvider>
-          </AppStateProvider>
+            </AppStateProvider>
+          </SupabaseUserProvider>
         </ThemeProvider>
       </body>
     </html>

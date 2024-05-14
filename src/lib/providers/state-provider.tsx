@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import React, {
   Dispatch,
   createContext,
@@ -8,17 +9,31 @@ import React, {
   useMemo,
   useReducer,
 } from "react";
-import { Document, Collection, Workspace } from "../supabase/supabase.types";
-import { usePathname } from "next/navigation";
-import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
+import {
+  Collection,
+  Document,
+  DocumentWithTags,
+  Tag,
+  Workspace,
+} from "../supabase/supabase.types";
+import {
+  getAllWorkspaces,
+  getDocumentByWorkspaceId,
+  getSharedWorkspaces,
+  getTags,
+} from "../supabase/queries";
+import { useSupabaseUser } from "./supabase-user-provider";
 
 export type appWorkspacesType = Workspace & {
   collections: Collection[] | [];
-  documents: Document[] | [];
+  documents: DocumentWithTags[] | [];
 };
 
 interface AppState {
   workspaces: appWorkspacesType[] | [];
+  currentWorkspace: appWorkspacesType | null;
+  tags: Tag[] | [];
+  documents: DocumentWithTags[] | [];
 }
 
 type Action =
@@ -31,6 +46,10 @@ type Action =
   | {
       type: "SET_WORKSPACES";
       payload: { workspaces: appWorkspacesType[] };
+    }
+  | {
+      type: "SET_CURRENT_WORKSPACES";
+      payload: { workspace: appWorkspacesType };
     }
   | {
       type: "SET_FOLDERS";
@@ -48,10 +67,6 @@ type Action =
       };
     }
   | {
-      type: "DELETE_FILE";
-      payload: { workspaceId: string; collectionId: string; fileId: string };
-    }
-  | {
       type: "DELETE_FOLDER";
       payload: { workspaceId: string; collectionId: string };
     }
@@ -59,7 +74,7 @@ type Action =
       type: "SET_FILES";
       payload: {
         workspaceId: string;
-        documents: Document[];
+        documents: DocumentWithTags[];
       };
     }
   | {
@@ -73,13 +88,47 @@ type Action =
   | {
       type: "UPDATE_FILE";
       payload: {
-        document: Partial<Document>;
+        document: Partial<DocumentWithTags>;
         workspaceId: string;
         fileId: string;
       };
+    }
+  | {
+      type: "CREATE_TAG";
+      payload: {
+        tag: Tag;
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "SET_TAGS";
+      payload: {
+        tags: Tag[];
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "UPDATE_TAG";
+      payload: {
+        tag: Partial<Tag>;
+        tagId: string;
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "DELETE_TAG";
+      payload: {
+        tagId: string;
+        workspaceId: string;
+      };
     };
 
-const initialState: AppState = { workspaces: [] };
+const initialState: AppState = {
+  workspaces: [],
+  currentWorkspace: null,
+  tags: [],
+  documents: [],
+};
 
 const appReducer = (
   state: AppState = initialState,
@@ -116,12 +165,16 @@ const appReducer = (
         ...state,
         workspaces: action.payload.workspaces,
       };
+    case "SET_CURRENT_WORKSPACES":
+      return {
+        ...state,
+        currentWorkspace: action.payload.workspace,
+      };
     case "SET_FOLDERS":
       return {
         ...state,
         workspaces: state.workspaces.map((workspace) => {
           if (workspace.id === action.payload.workspaceId) {
-            // console.log("workspace", workspace, action.payload.collections);
             return {
               ...workspace,
               collections: action.payload.collections,
@@ -183,79 +236,56 @@ const appReducer = (
     case "SET_FILES":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              ...workspace.collections,
-              documents: action.payload.documents.sort(
-                (a, b) =>
-                  new Date(a.createdAt).getTime() -
-                  new Date(b.createdAt).getTime()
-              ),
-            };
-          }
-          return workspace;
-        }),
+        documents: action.payload.documents,
       };
     case "ADD_FILE":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              collections: workspace.collections.map((collection) => {
-                return {
-                  ...collection,
-                };
-              }),
-            };
-          }
-          return workspace;
-        }),
-      };
-    case "DELETE_FILE":
-      return {
-        ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              collection: workspace.collections.map((collection) => {
-                if (collection.id === action.payload.collectionId) {
-                  return {
-                    ...collection,
-                  };
-                }
-                return collection;
-              }),
-            };
-          }
-          return workspace;
-        }),
+        documents: [
+          ...state.documents,
+          action.payload.document as DocumentWithTags,
+        ],
       };
     case "UPDATE_FILE":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
+        documents: state.documents.map((document) => {
+          if (document.id === action.payload.fileId) {
             return {
-              ...workspace,
-              ...workspace.collections,
-              documents: workspace.documents.map((document) => {
-                if (document.id === action.payload.fileId) {
-                  return {
-                    ...document,
-                    ...action.payload.document,
-                  };
-                }
-                return document;
-              }),
+              ...document,
+              ...action.payload.document,
             };
           }
-          return workspace;
+          return document;
         }),
+      };
+    case "SET_TAGS":
+      return {
+        ...state,
+        tags: action.payload.tags,
+      };
+    case "CREATE_TAG":
+      return {
+        ...state,
+        tags: [...state.tags, action.payload.tag],
+      };
+    case "UPDATE_TAG":
+      return {
+        ...state,
+        tags: state.tags.map((tag) => {
+          if (tag.id === action.payload.tagId) {
+            return {
+              ...tag,
+              ...action.payload.tag,
+            };
+          }
+          return tag;
+        }),
+      };
+    case "DELETE_TAG":
+      return {
+        ...state,
+        tags: state.tags.filter((tag) => tag.id !== action.payload.tagId),
       };
     default:
       return initialState;
@@ -280,6 +310,7 @@ interface AppStateProviderProps {
 const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
   const pathname = usePathname();
+  const { user } = useSupabaseUser();
 
   const workspaceId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);
@@ -304,6 +335,70 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
         return urlSegments[3];
       }
   }, [pathname]);
+
+  useEffect(() => {
+    if (!workspaceId || !user?.id) return;
+    const fetchWorkspaces = async () => {
+      const { data, error } = await getAllWorkspaces(user.id);
+      if (error || !data) {
+        return;
+      } else {
+        const transformedData = data.map((workspace) => ({
+          ...workspace,
+          collections: [],
+          documents: [],
+        }));
+        const currentWorkspace = transformedData.find(
+          (w) => w.id === workspaceId
+        );
+        if (currentWorkspace) {
+          dispatch({
+            type: "SET_CURRENT_WORKSPACES",
+            payload: { workspace: currentWorkspace },
+          });
+        }
+        dispatch({
+          type: "SET_WORKSPACES",
+          payload: { workspaces: transformedData },
+        });
+      }
+    };
+    fetchWorkspaces();
+  }, [user?.id, workspaceId]);
+
+  // fetch tags
+  useEffect(() => {
+    if (!workspaceId || !user?.id) return;
+    const fetchTags = async () => {
+      const { data, error } = await getTags(workspaceId);
+      if (error || !data) {
+        return;
+      } else {
+        dispatch({
+          type: "SET_TAGS",
+          payload: { tags: data, workspaceId },
+        });
+      }
+    };
+    fetchTags();
+  }, [user?.id, workspaceId]);
+
+  // fetch docs
+  useEffect(() => {
+    if (!workspaceId || !user?.id) return;
+    const fetchTags = async () => {
+      const { data, error } = await getDocumentByWorkspaceId(workspaceId);
+      if (error || !data) {
+        return;
+      } else {
+        dispatch({
+          type: "SET_FILES",
+          payload: { documents: data, workspaceId },
+        });
+      }
+    };
+    fetchTags();
+  }, [user?.id, workspaceId]);
 
   useEffect(() => {
     console.log("App State Changed", state);

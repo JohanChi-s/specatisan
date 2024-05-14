@@ -5,26 +5,32 @@ import { updateDocument } from "@/lib/supabase/queries";
 import clsx from "clsx";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import TooltipComponent from "../global/tooltip-component";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { toast } from "../ui/use-toast";
+import WorkspaceBreadcumb, { BreadcrumbItemProps } from "./WorkspaceBreadcumb";
 
 type WorkspaceNavbarProps = {
   title?: string;
   documentId?: string;
+  items?: BreadcrumbItemProps[];
   isShowTabs?: boolean;
 };
 
 const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
   documentId,
+  items,
   title,
   isShowTabs = true,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [docTitle, setDocTitle] = useState(title);
+  const router = useRouter();
+  const pathname = usePathname();
+  const tab = pathname?.split("/")[3] || "alldocs";
   const { workspaceId } = useAppState();
 
   if (!workspaceId) return redirect("/dashboard");
@@ -66,13 +72,18 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
     setDocTitle(e.target.value);
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <div className="flex items-center justify-between w-full h-12 rounded-sm mb-1">
       {/* Create a back button with nextjs */}
       <div className="flex items-center">
-        <Button variant={"ghost"} onClick={() => {}}>
+        <Button variant={"ghost"} onClick={() => handleBack()}>
           <ChevronLeft size={24} />
         </Button>
+        <WorkspaceBreadcumb items={items} />
         {/* Breadcumb here */}
         {title && (
           <TooltipComponent message="Change title">
@@ -95,11 +106,11 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
         )}
       </div>
       {isShowTabs && (
-        <Tabs defaultValue="all">
+        <Tabs defaultValue={tab}>
           <div className="flex items-center px-4 py-2">
             <TabsList className="ml-auto">
               <TabsTrigger
-                value="all"
+                value="alldocs"
                 className="text-zinc-600 dark:text-zinc-200"
               >
                 <Link href={`/dashboard/${workspaceId}/alldocs`}>All docs</Link>

@@ -1,18 +1,12 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { DocumentWithTags, Tag } from "@/lib/supabase/supabase.types";
+import type { Collection } from "@/lib/supabase/supabase.types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileText } from "lucide-react";
-import AssignTag from "../tags/AssignTag";
-import { DataTableColumnHeader } from "./DataTableColumnHeader";
-import FileActionsDropdown from "./FileActionsDropdown";
+import { FolderIcon } from "lucide-react";
+import { DataTableColumnHeader } from "../files-table/DataTableColumnHeader";
+import CollectionActionsDropdown from "./CollectionActionsDropdown";
 
-const CustomFilterFn = (row: any, key: string, searchValue: string) => {
-  return !!row?.original[key].find((item: Tag) => {
-    return searchValue.includes(item.id);
-  });
-};
-export const columns: ColumnDef<DocumentWithTags>[] = [
+export const CollectionColumns: ColumnDef<Collection>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -34,28 +28,17 @@ export const columns: ColumnDef<DocumentWithTags>[] = [
     ),
   },
   {
-    accessorKey: "title",
-    header: "Title",
+    accessorKey: "name",
+    header: "Name",
     cell: ({ row }) => {
       const document = row.original;
       return (
         <div className="flex items-center">
-          <FileText className="h-4 w-4 mr-2" />
-          <span className="font-semibold text-xl">{document.title}</span>
+          <FolderIcon className="h-4 w-4 mr-2" />
+          <span className="font-semibold text-xl">{document.name}</span>
         </div>
       );
     },
-  },
-  {
-    id: "tags",
-    accessorFn: (row) => row.tags,
-    header: "Tags",
-    cell: ({ row }) => {
-      const document = row.original;
-      return <AssignTag document={document} />;
-    },
-    filterFn: CustomFilterFn,
-    enableGlobalFilter: false,
   },
   {
     accessorKey: "createdAt",
@@ -81,9 +64,9 @@ export const columns: ColumnDef<DocumentWithTags>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const document = row.original;
+      const collection = row.original;
 
-      return <FileActionsDropdown document={document} />;
+      return <CollectionActionsDropdown collection={collection} />;
     },
   },
 ];
