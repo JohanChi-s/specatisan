@@ -11,7 +11,7 @@ import {
   User2,
   Users,
 } from "lucide-react";
-import CommandSearchItem from "./CommandItem";
+import CommandSearchItem from "./CommandSearchItem";
 import { QuickFilterCombobox } from "./QuickFilterCombobox";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -28,11 +28,19 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { DocumentWithTags } from "@/lib/supabase/supabase.types";
+import { useAppState } from "@/lib/providers/state-provider";
 
 export function CommandMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [documents, setDocuments] = useState<DocumentWithTags[]>([]);
+  const { state } = useAppState();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const docs = state.documents.filter((doc) => doc.inTrash === null);
+    setDocuments(docs);
+  }, [state.documents]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -41,7 +49,7 @@ export function CommandMenu() {
       }
     };
     document.addEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isOpen]);
 
   return (
     <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -49,14 +57,10 @@ export function CommandMenu() {
         <div className="w-[630px]">
           <CommandInput placeholder="Type a command or search..." />
           <div>
-            <Tabs defaultValue="account" className="">
+            <Tabs defaultValue="docs" className="">
               <TabsList className="w-full flex items-center justify-start bg-transparent">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="tasks">Tasks</TabsTrigger>
                 <TabsTrigger value="docs">Docs</TabsTrigger>
-                <TabsTrigger value="whiteboard">Whiteboard</TabsTrigger>
-                <TabsTrigger value="documents">Documents</TabsTrigger>
-                <TabsTrigger value="people">People</TabsTrigger>
+                <TabsTrigger value="collections">collections</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -64,9 +68,15 @@ export function CommandMenu() {
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Suggestions">
-              <CommandSearchItem />
-              <CommandSearchItem />
-              <CommandSearchItem />
+              {documents.map((doc) => (
+                <CommandSearchItem
+                  key={doc.id}
+                  workspaceId={doc.workspaceId}
+                  title={doc.title}
+                  documentId={doc.id}
+                  createdAt={new Date(doc.createdAt).toLocaleDateString()}
+                />
+              ))}
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup heading="Settings">
@@ -91,19 +101,7 @@ export function CommandMenu() {
         <Separator orientation="vertical" />
         <div className="flex-1">
           <div className="flex flex-col w-full p-2 float-start">
-            <h4 className="text-sm p-2">Location Filter</h4>
-            <Button variant="ghost" size="sm" className="w-full justify-start">
-              Current Location
-            </Button>
-            <QuickFilterCombobox text="+ Add Location" items={[]} />
-          </div>
-          <div className="flex flex-col w-full p-2 float-start">
             <h4 className="text-sm p-2">Quick Filter</h4>
-            <QuickFilterCombobox
-              leftIcon={<Users className="pr-2" />}
-              text="Assigned To"
-              items={[]}
-            />
             <QuickFilterCombobox
               leftIcon={<User2 className="pr-2" />}
               text="Author"
@@ -111,7 +109,7 @@ export function CommandMenu() {
             />
             <QuickFilterCombobox
               leftIcon={<Target className="pr-2" />}
-              text="Status"
+              text="Tags"
               items={[]}
             />
             <Button
