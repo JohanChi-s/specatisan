@@ -129,7 +129,7 @@ const SettingsForm = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!workspaceId) return;
-    const document = e.target.documents?.[0];
+    const document = e.target.files?.[0];
     if (!document) return;
     const uuid = v4();
     setUploadingLogo(true);
@@ -147,6 +147,28 @@ const SettingsForm = () => {
       });
       await updateWorkspace({ logo: data.path }, workspaceId);
       setUploadingLogo(false);
+    }
+  };
+
+  const onChangeProfilePicture = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const document = e.target.files?.[0];
+    if (!document) return;
+    const uuid = v4();
+    setUploadingProfilePic(true);
+    const { data, error } = await supabase.storage
+      .from("profile-pictures")
+      .upload(`profilePicture.${uuid}`, document, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+
+    if (!error) {
+      await supabase.auth.updateUser({
+        data: { avatar_url: data.path },
+      });
+      setUploadingProfilePic(false);
     }
   };
 
@@ -399,7 +421,7 @@ const SettingsForm = () => {
               type="file"
               accept="image/*"
               placeholder="Profile Picture"
-              // onChange={onChangeProfilePicture}
+              onChange={onChangeProfilePicture}
               disabled={uploadingProfilePic}
             />
           </div>

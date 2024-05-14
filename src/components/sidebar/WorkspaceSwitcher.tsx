@@ -75,11 +75,13 @@ export default function WorkspaceSwitcher({
           <Avatar>
             <AvatarImage src="" />
             <AvatarFallback className="outline-1 outline-emerald-900">
-              AV
+              W
             </AvatarFallback>
           </Avatar>
           <div className="flex-col p-2 w-full justify-start">
-            <div className="font-bold text-base">Workspace Name</div>
+            <div className="font-bold text-base">
+              {selectedWorkspace?.title}
+            </div>
             <div className="font-light text-sm text-left flex items-center">
               <Cloud size={20} className="mr-2" />
               <span>Cloud</span>
