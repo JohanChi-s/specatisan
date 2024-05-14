@@ -13,13 +13,13 @@ dependencies:
     version: 3.556.0
   '@blocksuite/blocks':
     specifier: canary
-    version: 0.15.0-canary-202405101452-b0579db(yjs@13.6.15)
+    version: 0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15)
   '@blocksuite/presets':
     specifier: canary
-    version: 0.15.0-canary-202405101452-b0579db(yjs@13.6.15)
+    version: 0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15)
   '@blocksuite/store':
     specifier: canary
-    version: 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
+    version: 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
   '@hookform/resolvers':
     specifier: ^3.3.4
     version: 3.3.4(react-hook-form@7.51.3)
@@ -109,7 +109,7 @@ dependencies:
     version: 0.8.7(@supabase/supabase-js@2.42.5)
   '@supabase/supabase-js':
     specifier: ^2.38.1
-    version: 2.42.5(utf-8-validate@6.0.3)
+    version: 2.42.5(utf-8-validate@5.0.10)
   '@tanstack/react-table':
     specifier: ^8.16.0
     version: 8.16.0(react-dom@18.2.0)(react@18.2.0)
@@ -145,7 +145,7 @@ dependencies:
     version: 4.17.0
   '@udecode/cn':
     specifier: ^31.0.0
-    version: 31.0.0(@types/react@18.2.79)(class-variance-authority@0.7.0)(react-dom@18.2.0)(react@18.2.0)(tailwind-merge@1.14.0)
+    version: 31.0.0(@types/react@18.2.79)(class-variance-authority@0.7.0)(react-dom@18.2.0)(react@18.2.0)(tailwind-merge@2.3.0)
   '@udecode/plate-alignment':
     specifier: ^32.0.0
     version: 32.0.0(@udecode/plate-common@32.0.1)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)
@@ -295,7 +295,7 @@ dependencies:
     version: 32.0.0(@udecode/plate-common@32.0.1)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)
   '@udecode/plate-yjs':
     specifier: ^32.0.0
-    version: 32.0.0(@udecode/plate-common@32.0.1)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)(utf-8-validate@6.0.3)(y-protocols@1.0.6)
+    version: 32.0.0(@udecode/plate-common@32.0.1)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)(utf-8-validate@5.0.10)(y-protocols@1.0.6)
   '@udecode/slate-react':
     specifier: ^32.0.1
     version: 32.0.1(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-react@0.102.0)(slate@0.103.0)
@@ -324,7 +324,7 @@ dependencies:
     specifier: ^0.287.0
     version: 0.287.0(react@18.2.0)
   next:
-    specifier: latest
+    specifier: ^14.2.3
     version: 14.2.3(react-dom@18.2.0)(react@18.2.0)
   next-themes:
     specifier: ^0.2.1
@@ -376,10 +376,10 @@ dependencies:
     version: 0.102.0(react-dom@18.2.0)(react@18.2.0)(slate@0.103.0)
   socket.io:
     specifier: ^4.7.2
-    version: 4.7.5(utf-8-validate@6.0.3)
+    version: 4.7.5(utf-8-validate@5.0.10)
   socket.io-client:
     specifier: ^4.7.2
-    version: 4.7.5(utf-8-validate@6.0.3)
+    version: 4.7.5(utf-8-validate@5.0.10)
   sonner:
     specifier: ^1.4.41
     version: 1.4.41(react-dom@18.2.0)(react@18.2.0)
@@ -387,14 +387,14 @@ dependencies:
     specifier: ^14.1.0
     version: 14.25.0
   tailwind-merge:
-    specifier: ^1.14.0
-    version: 1.14.0
+    specifier: ^2.3.0
+    version: 2.3.0
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.3)
   utf-8-validate:
-    specifier: ^6.0.3
-    version: 6.0.3
+    specifier: ^5.0.10
+    version: 5.0.10
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
@@ -1026,28 +1026,28 @@ packages:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  /@blocksuite/block-std@0.15.0-canary-202405101452-b0579db(@blocksuite/inline@0.15.0-canary-202405101452-b0579db)(@blocksuite/store@0.15.0-canary-202405101452-b0579db):
-    resolution: {integrity: sha512-yvRycNWueUz6f+FQfJOD0yafSQbwaYhKse0zgFv2oP5eVKaip6Ed/VDOxZNkoGtGZkRZc+M7y+vZ8jpiXRWrOQ==}
+  /@blocksuite/block-std@0.15.0-canary-202405131108-aa6f0b7(@blocksuite/inline@0.15.0-canary-202405131108-aa6f0b7)(@blocksuite/store@0.15.0-canary-202405131108-aa6f0b7):
+    resolution: {integrity: sha512-btJCLqKl2ZhCzaA2d824idXuBlMMdZHeLqG+iUFlByrqinKa1nEdEv3R3q2l877aeIMXKRUjSQp4QBUl/cfNkw==}
     peerDependencies:
-      '@blocksuite/inline': 0.15.0-canary-202405101452-b0579db
-      '@blocksuite/store': 0.15.0-canary-202405101452-b0579db
+      '@blocksuite/inline': 0.15.0-canary-202405131108-aa6f0b7
+      '@blocksuite/store': 0.15.0-canary-202405131108-aa6f0b7
     dependencies:
-      '@blocksuite/global': 0.15.0-canary-202405101452-b0579db
-      '@blocksuite/inline': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
-      '@blocksuite/store': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/global': 0.15.0-canary-202405131108-aa6f0b7
+      '@blocksuite/inline': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/store': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
       lit: 3.1.3
       lz-string: 1.5.0
       w3c-keyname: 2.2.8
       zod: 3.22.5
     dev: false
 
-  /@blocksuite/blocks@0.15.0-canary-202405101452-b0579db(yjs@13.6.15):
-    resolution: {integrity: sha512-WCx2pdC2bbRAnRYjCMh9xGSrBgMDs3KKV0Rw5uYmtw5Z5wJWF9SuWUNCp8lqBFuFz9UFx8DBoVOqtIA6R6BRhg==}
+  /@blocksuite/blocks@0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15):
+    resolution: {integrity: sha512-qgnVdud/Uj2gw0uLSUQ04DJbNpoUaPj+I4msVWzHqP4A9Om8SfkK7qm2BhSJQ/cCagarSHb+Myjcbb7De25niw==}
     dependencies:
-      '@blocksuite/block-std': 0.15.0-canary-202405101452-b0579db(@blocksuite/inline@0.15.0-canary-202405101452-b0579db)(@blocksuite/store@0.15.0-canary-202405101452-b0579db)
-      '@blocksuite/global': 0.15.0-canary-202405101452-b0579db
-      '@blocksuite/inline': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
-      '@blocksuite/store': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/block-std': 0.15.0-canary-202405131108-aa6f0b7(@blocksuite/inline@0.15.0-canary-202405131108-aa6f0b7)(@blocksuite/store@0.15.0-canary-202405131108-aa6f0b7)
+      '@blocksuite/global': 0.15.0-canary-202405131108-aa6f0b7
+      '@blocksuite/inline': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/store': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
       '@dotlottie/player-component': 2.7.12
       '@fal-ai/serverless-client': 0.9.3
       '@floating-ui/dom': 1.6.3
@@ -1092,32 +1092,32 @@ packages:
       - yjs
     dev: false
 
-  /@blocksuite/global@0.15.0-canary-202405101452-b0579db:
-    resolution: {integrity: sha512-RjHyPiMCM38QlD4+VfnBASca48s6/pEUd2Euj9ejNJ98CMOcoKzJhdYJZrOPei5GP+j9cG9O0dIf/tQl8J2WZw==}
+  /@blocksuite/global@0.15.0-canary-202405131108-aa6f0b7:
+    resolution: {integrity: sha512-Ir78qOMb5ubo3JFCTIhr/m+Pdw8AO6TjVbMzFh/DgiU4GOc/nsSxj9sImgKjlz1b4I5GUXXwBn7mXz8ViqUpKw==}
     dependencies:
       zod: 3.22.5
     dev: false
 
-  /@blocksuite/inline@0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15):
-    resolution: {integrity: sha512-/rZEn3od14VCpowlqOhkgQ25EtD4RzOUDjlZsmKReaMFN1asAxuKzORBbl6aIDrRdJ4UITgTqWaJIVz7f6P8ww==}
+  /@blocksuite/inline@0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15):
+    resolution: {integrity: sha512-6AkjZG8FkdEuFfIO2r1aL97JdRZUx7mF9d1Mm7jIMajeZieM56rkNZc1i3rZXuo8m6hGkoJQA4uV+tjHhImbOw==}
     peerDependencies:
       lit: ^3.1.1
       yjs: ^13
     dependencies:
-      '@blocksuite/global': 0.15.0-canary-202405101452-b0579db
+      '@blocksuite/global': 0.15.0-canary-202405131108-aa6f0b7
       lit: 3.1.3
       yjs: 13.6.15
       zod: 3.22.5
     dev: false
 
-  /@blocksuite/presets@0.15.0-canary-202405101452-b0579db(yjs@13.6.15):
-    resolution: {integrity: sha512-9xJYSxrsQITLho9D6BSZYT2WPZ9OvLOxkNdD09zUpfhiKOdfmrv3o7hHZHnEW1OygUgY4+LPeDWPuiKqMNPekQ==}
+  /@blocksuite/presets@0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15):
+    resolution: {integrity: sha512-nQUE0ibNedAbmhBPofFa+rjHrrgJVa92hngckZqssG3/aMrHzFZ+Awk9rHMWa3DptmZ63k7/g4QdeJzQipASug==}
     dependencies:
-      '@blocksuite/block-std': 0.15.0-canary-202405101452-b0579db(@blocksuite/inline@0.15.0-canary-202405101452-b0579db)(@blocksuite/store@0.15.0-canary-202405101452-b0579db)
-      '@blocksuite/blocks': 0.15.0-canary-202405101452-b0579db(yjs@13.6.15)
-      '@blocksuite/global': 0.15.0-canary-202405101452-b0579db
-      '@blocksuite/inline': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
-      '@blocksuite/store': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/block-std': 0.15.0-canary-202405131108-aa6f0b7(@blocksuite/inline@0.15.0-canary-202405131108-aa6f0b7)(@blocksuite/store@0.15.0-canary-202405131108-aa6f0b7)
+      '@blocksuite/blocks': 0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15)
+      '@blocksuite/global': 0.15.0-canary-202405131108-aa6f0b7
+      '@blocksuite/inline': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/store': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
       '@dotlottie/player-component': 2.7.12
       '@fal-ai/serverless-client': 0.9.3
       '@floating-ui/dom': 1.6.3
@@ -1130,14 +1130,14 @@ packages:
       - yjs
     dev: false
 
-  /@blocksuite/store@0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15):
-    resolution: {integrity: sha512-uZu7TsZfQJGLXR8VLTA0Crn2q3yO5Y1G5uCamJPykvdfqgRnINovNqaFDEtMJRig/ZKE2YjymoWY4oifovSpwg==}
+  /@blocksuite/store@0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15):
+    resolution: {integrity: sha512-OzfW05KE1HVJ4YB7LG8kPfkMtQcjiXQukTI1R7CmqOVfrx5JE1z3agRnvIVhju7zkiuRVqSbr1tjL27X+uDxaw==}
     peerDependencies:
       yjs: ^13
     dependencies:
-      '@blocksuite/global': 0.15.0-canary-202405101452-b0579db
-      '@blocksuite/inline': 0.15.0-canary-202405101452-b0579db(lit@3.1.3)(yjs@13.6.15)
-      '@blocksuite/sync': 0.15.0-canary-202405101452-b0579db(yjs@13.6.15)
+      '@blocksuite/global': 0.15.0-canary-202405131108-aa6f0b7
+      '@blocksuite/inline': 0.15.0-canary-202405131108-aa6f0b7(lit@3.1.3)(yjs@13.6.15)
+      '@blocksuite/sync': 0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15)
       '@types/flexsearch': 0.7.6
       flexsearch: 0.7.43
       idb-keyval: 6.2.1
@@ -1152,12 +1152,12 @@ packages:
       - lit
     dev: false
 
-  /@blocksuite/sync@0.15.0-canary-202405101452-b0579db(yjs@13.6.15):
-    resolution: {integrity: sha512-u2RkWmaw2t9sxp5/gDuA1oAyXWNUZgw07fQ9Rx/pTS5cLJrJcNd5/ci6XAXvbGXN3VgDebPz53tMNqrMuKXJcg==}
+  /@blocksuite/sync@0.15.0-canary-202405131108-aa6f0b7(yjs@13.6.15):
+    resolution: {integrity: sha512-KQO0CqFjWVTu9zgFdxjP2ZzltVQsBdw5q42YSdT1PHJu1gvj6yNeZC7xtSGyWI+yYeRUfIR8S6ZojkZvznZf+Q==}
     peerDependencies:
       yjs: ^13
     dependencies:
-      '@blocksuite/global': 0.15.0-canary-202405101452-b0579db
+      '@blocksuite/global': 0.15.0-canary-202405131108-aa6f0b7
       idb: 8.0.0
       y-protocols: 1.0.6(yjs@13.6.15)
       yjs: 13.6.15
@@ -1535,7 +1535,7 @@ packages:
       lib0: 0.2.93
     dev: false
 
-  /@hocuspocus/provider@2.12.2(utf-8-validate@6.0.3)(y-protocols@1.0.6)(yjs@13.6.15):
+  /@hocuspocus/provider@2.12.2(utf-8-validate@5.0.10)(y-protocols@1.0.6)(yjs@13.6.15):
     resolution: {integrity: sha512-REltj4lbf+Nq30G7b1lFS9gfIv5RdbFZqd6VZ5kXAvDQNGzyiaEh8bbdn6q0O7tMyU+hoR6Y2UKBd9alXb4/gQ==}
     peerDependencies:
       y-protocols: ^1.0.6
@@ -1544,7 +1544,7 @@ packages:
       '@hocuspocus/common': 2.12.2
       '@lifeomic/attempt': 3.1.0
       lib0: 0.2.93
-      ws: 8.16.0(utf-8-validate@6.0.3)
+      ws: 8.16.0(utf-8-validate@5.0.10)
       y-protocols: 1.0.6(yjs@13.6.15)
       yjs: 13.6.15
     transitivePeerDependencies:
@@ -3582,7 +3582,7 @@ packages:
       '@supabase/supabase-js': ^2.19.0
     dependencies:
       '@supabase/auth-helpers-shared': 0.6.3(@supabase/supabase-js@2.42.5)
-      '@supabase/supabase-js': 2.42.5(utf-8-validate@6.0.3)
+      '@supabase/supabase-js': 2.42.5(utf-8-validate@5.0.10)
       set-cookie-parser: 2.6.0
     dev: false
 
@@ -3591,7 +3591,7 @@ packages:
     peerDependencies:
       '@supabase/supabase-js': ^2.19.0
     dependencies:
-      '@supabase/supabase-js': 2.42.5(utf-8-validate@6.0.3)
+      '@supabase/supabase-js': 2.42.5(utf-8-validate@5.0.10)
       jose: 4.15.5
     dev: false
 
@@ -3620,13 +3620,13 @@ packages:
       '@supabase/node-fetch': 2.6.15
     dev: false
 
-  /@supabase/realtime-js@2.9.4(utf-8-validate@6.0.3):
+  /@supabase/realtime-js@2.9.4(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-wdq+2hZpgw0r2ldRs87d3U08Y8BrsO1bZxPNqbImpYshAEkusDz4vufR8KaqujKxqewmXS6YnUhuRVdvSEIKCA==}
     dependencies:
       '@supabase/node-fetch': 2.6.15
       '@types/phoenix': 1.6.4
       '@types/ws': 8.5.10
-      ws: 8.16.0(utf-8-validate@6.0.3)
+      ws: 8.16.0(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -3638,14 +3638,14 @@ packages:
       '@supabase/node-fetch': 2.6.15
     dev: false
 
-  /@supabase/supabase-js@2.42.5(utf-8-validate@6.0.3):
+  /@supabase/supabase-js@2.42.5(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-T/FlVmNHR/MDl8KhmNLb94dh+cTpqyvFlNI/Zd97dwS1yCm59xM+sTzmQLKnGNY5sPuwp40/w52bWrczdjOYtA==}
     dependencies:
       '@supabase/auth-js': 2.63.1
       '@supabase/functions-js': 2.3.0
       '@supabase/node-fetch': 2.6.15
       '@supabase/postgrest-js': 1.15.2
-      '@supabase/realtime-js': 2.9.4(utf-8-validate@6.0.3)
+      '@supabase/realtime-js': 2.9.4(utf-8-validate@5.0.10)
       '@supabase/storage-js': 2.5.5
     transitivePeerDependencies:
       - bufferutil
@@ -4176,7 +4176,7 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
-  /@udecode/cn@31.0.0(@types/react@18.2.79)(class-variance-authority@0.7.0)(react-dom@18.2.0)(react@18.2.0)(tailwind-merge@1.14.0):
+  /@udecode/cn@31.0.0(@types/react@18.2.79)(class-variance-authority@0.7.0)(react-dom@18.2.0)(react@18.2.0)(tailwind-merge@2.3.0):
     resolution: {integrity: sha512-ZjYL0uSbJIAx63+VAEmIJOMomL7oSi0AB52tUDcTCUxzCu7c7NVcAdJQBlFA9piF7IyLPo5qU0MJ98yTtvWZ4w==}
     peerDependencies:
       class-variance-authority: '>=0.7.0'
@@ -4188,7 +4188,7 @@ packages:
       class-variance-authority: 0.7.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      tailwind-merge: 1.14.0
+      tailwind-merge: 2.3.0
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -5314,7 +5314,7 @@ packages:
       - scheduler
     dev: false
 
-  /@udecode/plate-yjs@32.0.0(@udecode/plate-common@32.0.1)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)(utf-8-validate@6.0.3)(y-protocols@1.0.6):
+  /@udecode/plate-yjs@32.0.0(@udecode/plate-common@32.0.1)(react-dom@18.2.0)(react@18.2.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)(utf-8-validate@5.0.10)(y-protocols@1.0.6):
     resolution: {integrity: sha512-IYucW0r3I1MIb98zMXe6o+V9XL7LUJKqQmwaYt31Xoa3/NqZUODErt3HQkh6l6wO5KplYApkcn8CxKuhLDxI6w==}
     peerDependencies:
       '@udecode/plate-common': '>=32.0.0'
@@ -5325,7 +5325,7 @@ packages:
       slate-hyperscript: '>=0.66.0'
       slate-react: '>=0.99.0'
     dependencies:
-      '@hocuspocus/provider': 2.12.2(utf-8-validate@6.0.3)(y-protocols@1.0.6)(yjs@13.6.15)
+      '@hocuspocus/provider': 2.12.2(utf-8-validate@5.0.10)(y-protocols@1.0.6)(yjs@13.6.15)
       '@slate-yjs/core': 1.0.2(slate@0.103.0)(yjs@13.6.15)
       '@udecode/plate-common': 32.0.1(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)(scheduler@0.23.0)(slate-history@0.100.0)(slate-hyperscript@0.100.0)(slate-react@0.102.0)(slate@0.103.0)
       react: 18.2.0
@@ -6375,13 +6375,13 @@ packages:
   /emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
-  /engine.io-client@6.5.3(utf-8-validate@6.0.3):
+  /engine.io-client@6.5.3(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-9Z0qLB0NIisTRt1DZ/8U2k12RJn8yls/nXMZLn+/N8hANT3TcYjKFKcwbw5zFQiN4NTde3TSY9zb79e1ij6j9Q==}
     dependencies:
       '@socket.io/component-emitter': 3.1.1
       debug: 4.3.4
       engine.io-parser: 5.2.2
-      ws: 8.11.0(utf-8-validate@6.0.3)
+      ws: 8.11.0(utf-8-validate@5.0.10)
       xmlhttprequest-ssl: 2.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -6394,7 +6394,7 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: false
 
-  /engine.io@6.5.4(utf-8-validate@6.0.3):
+  /engine.io@6.5.4(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-KdVSDKhVKyOi+r5uEabrDLZw2qXStVvCsEB/LN3mw4WFi6Gx50jTyuxYVCwAAC0U46FdnzP/ScKRBTXb/NiEOg==}
     engines: {node: '>=10.2.0'}
     dependencies:
@@ -6407,7 +6407,7 @@ packages:
       cors: 2.8.5
       debug: 4.3.4
       engine.io-parser: 5.2.2
-      ws: 8.11.0(utf-8-validate@6.0.3)
+      ws: 8.11.0(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -9811,24 +9811,24 @@ packages:
     resolution: {integrity: sha512-4qdtOGcBjral6YIBCWJ0ljFSKNLz9KkhbWtuGvUyRowl1kxfuE1x/Z/aJcaiilpb3do9bl5K7/1h9XC5wWpY/A==}
     dev: false
 
-  /socket.io-adapter@2.5.4(utf-8-validate@6.0.3):
+  /socket.io-adapter@2.5.4(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-wDNHGXGewWAjQPt3pyeYBtpWSq9cLE5UW1ZUPL/2eGK9jtse/FpXib7epSTsz0Q0m+6sg6Y4KtcFTlah1bdOVg==}
     dependencies:
       debug: 4.3.4
-      ws: 8.11.0(utf-8-validate@6.0.3)
+      ws: 8.11.0(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
     dev: false
 
-  /socket.io-client@4.7.5(utf-8-validate@6.0.3):
+  /socket.io-client@4.7.5(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-sJ/tqHOCe7Z50JCBCXrsY3I2k03iOiUe+tj1OmKeD2lXPiGH/RUCdTZFoqVyN7l1MnpIzPrGtLcijffmeouNlQ==}
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.1.1
       debug: 4.3.4
-      engine.io-client: 6.5.3(utf-8-validate@6.0.3)
+      engine.io-client: 6.5.3(utf-8-validate@5.0.10)
       socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
@@ -9846,7 +9846,7 @@ packages:
       - supports-color
     dev: false
 
-  /socket.io@4.7.5(utf-8-validate@6.0.3):
+  /socket.io@4.7.5(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-DmeAkF6cwM9jSfmp6Dr/5/mfMwb5Z5qRrSXLpo3Fq5SqyU8CMF15jIN4ZhfSwu35ksM1qmHZDQ/DK5XTccSTvA==}
     engines: {node: '>=10.2.0'}
     dependencies:
@@ -9854,8 +9854,8 @@ packages:
       base64id: 2.0.0
       cors: 2.8.5
       debug: 4.3.4
-      engine.io: 6.5.4(utf-8-validate@6.0.3)
-      socket.io-adapter: 2.5.4(utf-8-validate@6.0.3)
+      engine.io: 6.5.4(utf-8-validate@5.0.10)
+      socket.io-adapter: 2.5.4(utf-8-validate@5.0.10)
       socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
@@ -10095,8 +10095,10 @@ packages:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
     dev: false
 
-  /tailwind-merge@1.14.0:
-    resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}
+  /tailwind-merge@2.3.0:
+    resolution: {integrity: sha512-vkYrLpIP+lgR0tQCG6AP7zZXCTLc1Lnv/CCRT3BqJ9CZ3ui2++GPaGb1x/ILsINIMSYqqvrpqjUFsMNLlW99EA==}
+    dependencies:
+      '@babel/runtime': 7.24.4
     dev: false
 
   /tailwindcss-animate@1.0.7(tailwindcss@3.4.3):
@@ -10516,8 +10518,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /utf-8-validate@6.0.3:
-    resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
+  /utf-8-validate@5.0.10:
+    resolution: {integrity: sha512-Z6czzLq4u8fPOyx7TU6X3dvUZVvoJmxSQ+IcrlmagKhilxlhZgxPK6C5Jqbkw1IDUmFTM+cz9QDnnLTwDz/2gQ==}
     engines: {node: '>=6.14.2'}
     requiresBuild: true
     dependencies:
@@ -10738,7 +10740,7 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
-  /ws@8.11.0(utf-8-validate@6.0.3):
+  /ws@8.11.0(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -10750,10 +10752,10 @@ packages:
       utf-8-validate:
         optional: true
     dependencies:
-      utf-8-validate: 6.0.3
+      utf-8-validate: 5.0.10
     dev: false
 
-  /ws@8.16.0(utf-8-validate@6.0.3):
+  /ws@8.16.0(utf-8-validate@5.0.10):
     resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -10765,7 +10767,7 @@ packages:
       utf-8-validate:
         optional: true
     dependencies:
-      utf-8-validate: 6.0.3
+      utf-8-validate: 5.0.10
     dev: false
 
   /xmlhttprequest-ssl@2.0.0:

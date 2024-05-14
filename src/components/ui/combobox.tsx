@@ -5,6 +5,16 @@ import { Check, ChevronDown, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Button } from "./button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./command";
 
 const frameworks = [
   {
@@ -30,8 +40,8 @@ const frameworks = [
 ];
 
 export function Combobox() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -66,7 +76,7 @@ export function Combobox() {
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0",
+                      value === framework.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                   {framework.label}
