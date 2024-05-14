@@ -47,7 +47,14 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
   const [title, setTitle] = React.useState(document.title);
   const { user } = useSupabaseUser();
   const router = useRouter();
-  if (!workspaceId) return redirect("/dashboard");
+  if (!workspaceId) {
+    toast({
+      title: "Error",
+      description: "Workspace ID is missing",
+      variant: "destructive",
+    });
+    return redirect("/dashboard");
+  }
 
   const handleSaveChange = async () => {
     if (!workspaceId) return;
