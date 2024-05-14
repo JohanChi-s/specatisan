@@ -337,67 +337,47 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!workspaceId || !user?.id) return;
-    const fetchWorkspaces = async () => {
-      const { data, error } = await getAllWorkspaces(user.id);
-      if (error || !data) {
-        return;
-      } else {
-        const transformedData = data.map((workspace) => ({
-          ...workspace,
-          collections: [],
-          documents: [],
-        }));
-        const currentWorkspace = transformedData.find(
-          (w) => w.id === workspaceId
-        );
-        if (currentWorkspace) {
-          dispatch({
-            type: "SET_CURRENT_WORKSPACES",
-            payload: { workspace: currentWorkspace },
-          });
-        }
-        dispatch({
-          type: "SET_WORKSPACES",
-          payload: { workspaces: transformedData },
-        });
-      }
-    };
-    fetchWorkspaces();
-  }, [user?.id, workspaceId]);
+    if (!user?.id || !workspaceId) return;
 
-  // fetch tags
-  useEffect(() => {
-    if (!workspaceId || !user?.id) return;
-    const fetchTags = async () => {
-      const { data, error } = await getTags(workspaceId);
-      if (error || !data) {
-        return;
-      } else {
-        dispatch({
-          type: "SET_TAGS",
-          payload: { tags: data, workspaceId },
-        });
-      }
-    };
-    fetchTags();
-  }, [user?.id, workspaceId]);
+    const fetchData = async () => {
+      const { data: workspaces, error: workspacesError } =
+        await getAllWorkspaces(user.id);
+      if (workspacesError || !workspaces) return;
 
-  // fetch docs
-  useEffect(() => {
-    if (!workspaceId || !user?.id) return;
-    const fetchTags = async () => {
-      const { data, error } = await getDocumentByWorkspaceId(workspaceId);
-      if (error || !data) {
-        return;
-      } else {
+      const transformedData = workspaces.map((workspace: Workspace) => ({
+        ...workspace,
+        collections: [],
+        documents: [],
+      }));
+      const currentWorkspace = transformedData.find(
+        (w: Workspace) => w.id === workspaceId
+      );
+
+      if (currentWorkspace) {
         dispatch({
-          type: "SET_FILES",
-          payload: { documents: data, workspaceId },
+          type: "SET_CURRENT_WORKSPACES",
+          payload: { workspace: currentWorkspace },
         });
       }
+      dispatch({
+        type: "SET_WORKSPACES",
+        payload: { workspaces: transformedData },
+      });
+
+      const { data: tags, error: tagsError } = await getTags(workspaceId);
+      if (!tagsError && tags) {
+        dispatch({ type: "SET_TAGS", payload: { tags: tags, workspaceId } });
+      }
+
+      const { data: documents, error } = await getDocumentByWorkspaceId(
+        workspaceId
+      );
+      if (!error && documents) {
+        dispatch({ type: "SET_FILES", payload: { documents, workspaceId } });
+      }
     };
-    fetchTags();
+
+    fetchData();
   }, [user?.id, workspaceId]);
 
   useEffect(() => {

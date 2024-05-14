@@ -96,30 +96,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
     fetchData();
   }, [params.workspaceId, router]);
 
-  // useEffect(() => {
-  //   if (!state.workspaces.length) {
-  //     dispatch({
-  //       type: "SET_WORKSPACES",
-  //       payload: {
-  //         workspaces: [
-  //           ...privateWorkspaces,
-  //           ...sharedWorkspaces,
-  //           ...collaboratingWorkspaces,
-  //         ].map((workspace) => ({
-  //           ...workspace,
-  //           collections: [],
-  //           documents: [],
-  //         })),
-  //       },
-  //     });
-  //   }
-  // }, [
-  //   privateWorkspaces,
-  //   collaboratingWorkspaces,
-  //   sharedWorkspaces,
-  //   state.workspaces.length,
-  //   dispatch,
-  // ]);
   const handleCreateNewDoc = async () => {
     if (!params.workspaceId || !user) return;
     const newDocument: Document = {
