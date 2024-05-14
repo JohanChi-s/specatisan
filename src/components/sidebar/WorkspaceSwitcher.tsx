@@ -57,7 +57,6 @@ export default function WorkspaceSwitcher({
       payload: { workspace: workspace },
     });
     setOpen(false);
-    console.log(`/dashboard/${option.id}`);
 
     router.push(`/dashboard/${option.id}`);
   };
