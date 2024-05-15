@@ -4,14 +4,15 @@ import { columns } from "@/components/files-table/column";
 import { DataTable } from "@/components/files-table/data-table";
 import CustomDialogTrigger from "@/components/global/custom-dialog-trigger";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import WorkspaceBreadcumb from "@/components/workspace/WorkspaceBreadcumb";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 import { useAppState } from "@/lib/providers/state-provider";
-import { getDocumentByWorkspaceId } from "@/lib/supabase/queries";
-import { Document, DocumentWithTags } from "@/lib/supabase/supabase.types";
+import { getDocumentsByCollectionId } from "@/lib/supabase/queries";
+import { DocumentWithTags } from "@/lib/supabase/supabase.types";
 import { PlusCircle } from "lucide-react";
 import { redirect } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const CollectionDetailPage = ({
   params,
@@ -23,27 +24,35 @@ const CollectionDetailPage = ({
   const [rowSelection, setRowSelection] = useState({});
 
   useEffect(() => {
-    if (!workspaceId) {
-      redirect("/dashboard");
-      return;
+    if (!workspaceId || !params.collectionId) {
+      return redirect("/dashboard");
     }
 
     const fetchData = async () => {
       try {
-        var { data, error } = await getDocumentByWorkspaceId(workspaceId);
+        var { data, error } = await getDocumentsByCollectionId(
+          params.collectionId
+        );
+        console.log("🚀 ~ fetchData ~ data:", data);
         if (error) {
-          return redirect("/dashboard");
+          toast({
+            variant: "destructive",
+            title: "Error fetching documents",
+          });
         }
         data = data?.filter((doc: DocumentWithTags) => doc.inTrash === null);
         setDocuments(data || []);
       } catch (error) {
         console.error("Error fetching documents:", error);
-        // Handle error (e.g., show an error message)
+        toast({
+          variant: "destructive",
+          title: "Error fetching documents",
+        });
       }
     };
 
     fetchData();
-  }, [workspaceId]);
+  }, [params.collectionId, workspaceId]);
 
   return (
     <div className="container mx-auto px-5">

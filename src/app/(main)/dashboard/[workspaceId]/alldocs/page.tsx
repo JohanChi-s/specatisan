@@ -41,6 +41,7 @@ const AllDocsPage = () => {
     const docs = state.documents.filter((doc) => doc.inTrash === null);
     setDocuments(docs);
   }, [state.documents]);
+  const [rowSelection, setRowSelection] = useState({});
 
   return (
     <div className="container mx-auto px-5">
@@ -48,7 +49,12 @@ const AllDocsPage = () => {
       <WorkspaceNavbar />
 
       {/* Data Table */}
-      <DataTable columns={columns} data={documents} />
+      <DataTable
+        columns={columns}
+        data={documents}
+        rowSelection={rowSelection}
+        setRowSelection={setRowSelection}
+      />
     </div>
   );
 };

@@ -287,6 +287,37 @@ export const getDocumentByWorkspaceId = async (workspaceId: string) => {
   }
 };
 
+// get Documents by collectionId
+export const getDocumentsByCollectionId = async (collectionId: string) => {
+  const isValid = validate(collectionId);
+  if (!isValid) return { data: [], error: "Error" };
+  try {
+    const results = await db.query.documents.findMany({
+      where: (doc, { eq }) => eq(doc.collectionId, collectionId),
+      with: {
+        tagsToDocuments: {
+          with: {
+            tag: true,
+          },
+        },
+      },
+    });
+    console.log("🚀 ~ getDocumentsByCollectionId ~ results:", results);
+    const documetnWithTags: DocumentWithTags[] = results.map((r) => {
+      const tags: Tag[] = [];
+      r.tagsToDocuments.map((t) => {
+        tags.push(t.tag);
+      });
+      omit(r, "tagsToDocuments");
+      return { ...r, tags };
+    });
+    return { data: documetnWithTags, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: [], error: "Error" };
+  }
+};
+
 export const addCollaborators = async (users: User[], workspaceId: string) => {
   const response = users.forEach(async (user: User) => {
     const userExists = await db.query.collaborators.findFirst({
