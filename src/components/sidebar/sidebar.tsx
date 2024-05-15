@@ -31,6 +31,7 @@ import { useAppState } from "@/lib/providers/state-provider";
 import { UUID } from "crypto";
 import { AuthUser } from "@supabase/supabase-js";
 import UserCard from "./user-card";
+import FavoritesList from "./Favorites";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -193,19 +194,9 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               </Button>
             </Settings>
           </li>
-          {/* <li className="flex items-center text-base">
-            <Link
-              href={`/dashboard/${params.workspaceId}/tags`}
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'sm' }),
-                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Calendar className="mr-2 h-4 w-4" />
-              <span>Journal</span>
-            </Link>
-          </li> */}
         </ul>
+        {/* Favorites */}
+        <FavoritesList />
         {/* Collections */}
         <CollectionsDropdownList
           workspaceCollections={workspaceCollectionData}

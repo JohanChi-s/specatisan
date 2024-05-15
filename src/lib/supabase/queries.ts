@@ -6,6 +6,7 @@ import {
   collaborators,
   collections,
   documents,
+  stars,
   tags,
   tagsToDocuments,
   users,
@@ -15,6 +16,7 @@ import {
   Collection,
   Document,
   DocumentWithTags,
+  StarWithDocument,
   Subscription,
   Tag,
   User,
@@ -549,5 +551,49 @@ export const removeTagFromDocument = async (
   } catch (error) {
     console.log(error);
     return { data: null, error: "Error" };
+  }
+};
+
+export const getStars = async (userId: string, workspaceId: string) => {
+  if (!userId) return { data: [], error: "Error" };
+  try {
+    const response = await db.query.stars.findMany({
+      where: (s, { eq }) =>
+        and(eq(s.userId, userId), eq(s.workspaceId, workspaceId)),
+      with: {
+        document: true,
+      },
+    });
+    return { data: response as StarWithDocument[], error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: [], error: "Error" };
+  }
+};
+
+export const createFavorite = async (
+  documentId: string,
+  userId: string,
+  workspaceId: string
+) => {
+  if (!documentId || !workspaceId || !userId)
+    return { data: null, error: "Can't create star" };
+  try {
+    await db.insert(stars).values({ documentId, workspaceId, userId });
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Can't create star" };
+  }
+};
+
+export const deleteFavorite = async (favoriteId: string) => {
+  if (!favoriteId) return { data: null, error: "Can't delete star" };
+  try {
+    await db.delete(stars).where(eq(stars.id, favoriteId));
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Can't delete star" };
   }
 };

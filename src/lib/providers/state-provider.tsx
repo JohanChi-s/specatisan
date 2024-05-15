@@ -13,6 +13,7 @@ import {
   Collection,
   Document,
   DocumentWithTags,
+  StarWithDocument,
   Tag,
   Workspace,
 } from "../supabase/supabase.types";
@@ -20,6 +21,7 @@ import {
   getAllWorkspaces,
   getDocumentByWorkspaceId,
   getSharedWorkspaces,
+  getStars,
   getTags,
 } from "../supabase/queries";
 import { useSupabaseUser } from "./supabase-user-provider";
@@ -33,6 +35,7 @@ interface AppState {
   workspaces: appWorkspacesType[] | [];
   currentWorkspace: appWorkspacesType | null;
   tags: Tag[] | [];
+  favorites: StarWithDocument[] | [];
   documents: DocumentWithTags[] | [];
 }
 
@@ -121,12 +124,34 @@ type Action =
         tagId: string;
         workspaceId: string;
       };
+    }
+  | {
+      type: "SET_FAVORITES";
+      payload: {
+        favorites: StarWithDocument[];
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "ADD_FAVORITE";
+      payload: {
+        favorite: StarWithDocument;
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "DELETE_FAVORITE";
+      payload: {
+        favoriteId: string;
+        workspaceId: string;
+      };
     };
 
 const initialState: AppState = {
   workspaces: [],
   currentWorkspace: null,
   tags: [],
+  favorites: [],
   documents: [],
 };
 
@@ -287,6 +312,24 @@ const appReducer = (
         ...state,
         tags: state.tags.filter((tag) => tag.id !== action.payload.tagId),
       };
+    case "SET_FAVORITES":
+      return {
+        ...state,
+        favorites: action.payload.favorites,
+      };
+    case "ADD_FAVORITE":
+      return {
+        ...state,
+        favorites: [...state.favorites, action.payload.favorite],
+      };
+    case "DELETE_FAVORITE":
+      return {
+        ...state,
+        favorites: state.favorites.filter(
+          (favorite) => favorite.id !== action.payload.favoriteId
+        ),
+      };
+
     default:
       return initialState;
   }
@@ -369,11 +412,21 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
         dispatch({ type: "SET_TAGS", payload: { tags: tags, workspaceId } });
       }
 
-      const { data: documents, error } = await getDocumentByWorkspaceId(
+      const { data: documents, error: docError } =
+        await getDocumentByWorkspaceId(workspaceId);
+      if (!docError && documents) {
+        dispatch({ type: "SET_FILES", payload: { documents, workspaceId } });
+      }
+
+      const { data: favorites, error: favoriteError } = await getStars(
+        user.id,
         workspaceId
       );
-      if (!error && documents) {
-        dispatch({ type: "SET_FILES", payload: { documents, workspaceId } });
+      if (!favoriteError && favorites) {
+        dispatch({
+          type: "SET_FAVORITES",
+          payload: { favorites: favorites, workspaceId },
+        });
       }
     };
 

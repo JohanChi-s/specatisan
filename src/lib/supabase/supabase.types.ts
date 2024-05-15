@@ -700,6 +700,7 @@ export type Database = {
           id: string;
           index: string | null;
           user_id: string | null;
+          workspace_id: string | null;
         };
         Insert: {
           created_at?: string;
@@ -707,6 +708,7 @@ export type Database = {
           id?: string;
           index?: string | null;
           user_id?: string | null;
+          workspace_id?: string | null;
         };
         Update: {
           created_at?: string;
@@ -714,6 +716,7 @@ export type Database = {
           id?: string;
           index?: string | null;
           user_id?: string | null;
+          workspace_id?: string | null;
         };
         Relationships: [
           {
@@ -728,6 +731,13 @@ export type Database = {
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stars_workspace_id_workspaces_id_fk";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
             referencedColumns: ["id"];
           }
         ];
@@ -1229,6 +1239,9 @@ export type DocumentWithTags = Document & {
 };
 export type TagWithDocuments = Tag & {
   documents?: Document[];
+};
+export type StarWithDocument = Star & {
+  document: Document;
 };
 export type ProductWirhPrice = Product & {
   prices?: Price[];

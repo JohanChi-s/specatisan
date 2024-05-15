@@ -19,13 +19,11 @@ type Props = {
 
 const AddDocToCollection: React.FC<Props> = ({ collectionId }) => {
   const [documents, setDocuments] = useState<DocumentWithTags[] | []>([]);
-  const { workspaceId } = useAppState();
+  const { workspaceId, dispatch } = useAppState();
 
   const [rowSelection, setRowSelection] = useState({});
 
   const handleSave = async () => {
-    console.log("collectionId", collectionId);
-
     if (!collectionId || !workspaceId) return;
     const docIds = Object.keys(rowSelection).map((key) => {
       if (key) return documents[parseInt(key)];
@@ -44,12 +42,14 @@ const AddDocToCollection: React.FC<Props> = ({ collectionId }) => {
           variant: "destructive",
           title: "Error adding document to collection",
         });
+        return;
       }
     });
     toast({
       variant: "default",
       title: "Document added to collection",
     });
+    window.location.reload();
   };
 
   useEffect(() => {

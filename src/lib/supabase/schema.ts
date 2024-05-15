@@ -235,7 +235,18 @@ export const stars = pgTable("stars", {
     onDelete: "cascade",
   }),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+  workspaceId: uuid("workspace_id").references(() => workspaces.id, {
+    onDelete: "cascade",
+  }),
 });
+
+export const starsRelations = relations(stars, ({ one }) => ({
+  document: one(documents, {
+    fields: [stars.documentId],
+    references: [documents.id],
+  }),
+  user: one(users, { fields: [stars.userId], references: [users.id] }),
+}));
 
 export const memberShip = pgTable("user_permissions", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
