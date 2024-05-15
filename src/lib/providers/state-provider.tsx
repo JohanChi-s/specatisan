@@ -323,8 +323,8 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const collectionId = useMemo(() => {
     const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
-      if (urlSegments?.length > 2) {
-        return urlSegments[2];
+      if (urlSegments?.length > 4) {
+        return urlSegments[4];
       }
   }, [pathname]);
 

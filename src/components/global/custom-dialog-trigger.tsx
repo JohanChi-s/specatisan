@@ -1,13 +1,16 @@
 import React from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import clsx from "clsx";
+import { Button } from "../ui/button";
 
 interface CustomDialogTriggerProps {
   header?: string;

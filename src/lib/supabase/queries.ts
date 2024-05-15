@@ -28,7 +28,10 @@ export const createWorkspace = async (workspace: Workspace) => {
     return { data: null, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: "Failed to create workspace due to an internal error" };
+    return {
+      data: null,
+      error: "Failed to create workspace due to an internal error",
+    };
   }
 };
 
@@ -257,7 +260,7 @@ export const getDocuments = async (collectionId: string) => {
 // get Document by workspaceId
 export const getDocumentByWorkspaceId = async (workspaceId: string) => {
   const isValid = validate(workspaceId);
-  if (!isValid) return { data: null, error: "Error" };
+  if (!isValid) return { data: [], error: "Error" };
   try {
     const results = await db.query.documents.findMany({
       where: (doc, { eq }) => eq(doc.workspaceId, workspaceId),
@@ -280,7 +283,7 @@ export const getDocumentByWorkspaceId = async (workspaceId: string) => {
     return { data: documetnWithTags, error: null };
   } catch (error) {
     console.log(error);
-    return { data: null, error: "Error" };
+    return { data: [], error: "Error" };
   }
 };
 
