@@ -33,7 +33,6 @@ const CollectionDetailPage = ({
         var { data, error } = await getDocumentsByCollectionId(
           params.collectionId
         );
-        console.log("🚀 ~ fetchData ~ data:", data);
         if (error) {
           toast({
             variant: "destructive",

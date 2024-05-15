@@ -302,7 +302,6 @@ export const getDocumentsByCollectionId = async (collectionId: string) => {
         },
       },
     });
-    console.log("🚀 ~ getDocumentsByCollectionId ~ results:", results);
     const documetnWithTags: DocumentWithTags[] = results.map((r) => {
       const tags: Tag[] = [];
       r.tagsToDocuments.map((t) => {
