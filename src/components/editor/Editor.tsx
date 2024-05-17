@@ -1,14 +1,7 @@
 "use client";
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { createPlateUI } from "@/lib/plate/create-plate-ui";
 import { CommentsProvider } from "@/lib/plate/comments/CommentsProvider";
+import { createPlateUI } from "@/lib/plate/create-plate-ui";
 import { editableProps } from "@/lib/plate/editableProps";
 import { isEnabled } from "@/lib/plate/is-enabled";
 import { alignPlugin } from "@/lib/plate/plugins/alignPlugin";
@@ -27,11 +20,9 @@ import { softBreakPlugin } from "@/lib/plate/plugins/softBreakPlugin";
 import { tabbablePlugin } from "@/lib/plate/plugins/tabbablePlugin";
 import { trailingBlockPlugin } from "@/lib/plate/plugins/trailingBlockPlugin";
 import { MENTIONABLES } from "@/lib/plate/values/mentionables";
-import { usePlaygroundValue } from "@/lib/plate/values/usePlaygroundValue";
 import { cn } from "@udecode/cn";
 import { createAlignPlugin } from "@udecode/plate-alignment";
 import { createAutoformatPlugin } from "@udecode/plate-autoformat";
-import { createYjsPlugin } from "@udecode/plate-yjs";
 import {
   createBoldPlugin,
   createCodePlugin,
@@ -42,8 +33,8 @@ import {
   createUnderlinePlugin,
 } from "@udecode/plate-basic-marks";
 import {
-  createBlockquotePlugin,
   ELEMENT_BLOCKQUOTE,
+  createBlockquotePlugin,
 } from "@udecode/plate-block-quote";
 import {
   createExitBreakPlugin,
@@ -52,20 +43,18 @@ import {
 } from "@udecode/plate-break";
 import { createCaptionPlugin } from "@udecode/plate-caption";
 import {
-  createCodeBlockPlugin,
   ELEMENT_CODE_BLOCK,
+  createCodeBlockPlugin,
 } from "@udecode/plate-code-block";
 import { createComboboxPlugin } from "@udecode/plate-combobox";
 import { createCommentsPlugin } from "@udecode/plate-comments";
 import {
-  createPlugins,
   Plate,
   PlateController,
   PlateEditor,
   PlatePluginComponent,
-  useEditorRef,
-  useEditorSelector,
-  Value,
+  TElement,
+  createPlugins,
 } from "@udecode/plate-common";
 import { createDndPlugin } from "@udecode/plate-dnd";
 import { createEmojiPlugin } from "@udecode/plate-emoji";
@@ -76,13 +65,13 @@ import {
   createFontSizePlugin,
 } from "@udecode/plate-font";
 import {
-  createHeadingPlugin,
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
   ELEMENT_H4,
   ELEMENT_H5,
   ELEMENT_H6,
+  createHeadingPlugin,
 } from "@udecode/plate-heading";
 import { createHighlightPlugin } from "@udecode/plate-highlight";
 import { createHorizontalRulePlugin } from "@udecode/plate-horizontal-rule";
@@ -102,8 +91,8 @@ import { createMentionPlugin } from "@udecode/plate-mention";
 import { createNodeIdPlugin } from "@udecode/plate-node-id";
 import { createNormalizeTypesPlugin } from "@udecode/plate-normalizers";
 import {
-  createParagraphPlugin,
   ELEMENT_PARAGRAPH,
+  createParagraphPlugin,
 } from "@udecode/plate-paragraph";
 import { createResetNodePlugin } from "@udecode/plate-reset-node";
 import {
@@ -116,22 +105,20 @@ import { createDeserializeMdPlugin } from "@udecode/plate-serializer-md";
 import { createSlashPlugin } from "@udecode/plate-slash-command";
 import { createTabbablePlugin } from "@udecode/plate-tabbable";
 import { createTablePlugin } from "@udecode/plate-table";
-import { createTogglePlugin, ELEMENT_TOGGLE } from "@udecode/plate-toggle";
+import { ELEMENT_TOGGLE, createTogglePlugin } from "@udecode/plate-toggle";
 import { createTrailingBlockPlugin } from "@udecode/plate-trailing-block";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { ValueId } from "@/config/customizer-plugins";
-import { captionPlugin } from "@/lib/plate/plugins/captionPlugin";
-import { SLASH_RULES } from "@/lib/plate/values/slashRules";
 import { settingsStore } from "@/components/context/settings-store";
-import { FixedToolbarButtons } from "@/components/plate-ui/fixed-toolbar-buttons";
-import { FloatingToolbarButtons } from "@/components/plate-ui/floating-toolbar-buttons";
 import { CommentsPopover } from "@/components/plate-ui/comments-popover";
 import { CursorOverlay } from "@/components/plate-ui/cursor-overlay";
 import { Editor } from "@/components/plate-ui/editor";
 import { FixedToolbar } from "@/components/plate-ui/fixed-toolbar";
+import { FixedToolbarButtons } from "@/components/plate-ui/fixed-toolbar-buttons";
 import { FloatingToolbar } from "@/components/plate-ui/floating-toolbar";
+import { FloatingToolbarButtons } from "@/components/plate-ui/floating-toolbar-buttons";
 import {
   FireLiComponent,
   FireMarker,
@@ -142,11 +129,12 @@ import {
 } from "@/components/plate-ui/indent-todo-marker-component";
 import { MentionCombobox } from "@/components/plate-ui/mention-combobox";
 import { SlashCombobox } from "@/components/plate-ui/slash-combobox";
+import { ValueId } from "@/config/customizer-plugins";
+import { captionPlugin } from "@/lib/plate/plugins/captionPlugin";
+import { SLASH_RULES } from "@/lib/plate/values/slashRules";
 import { getDocumentDetails, updateDocument } from "@/lib/supabase/queries";
-import { useAppState } from "@/lib/providers/state-provider";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
-import { deserialize } from "v8";
 
 export const usePlaygroundPlugins = ({
   id,
@@ -360,29 +348,6 @@ export const usePlaygroundPlugins = ({
     [enabled]
   );
 };
-
-// reset editor when initialValue changes
-export const useInitialValueVersion = (initialValue: Value) => {
-  const enabled = settingsStore.use.checkedPlugins();
-  const [version, setVersion] = useState(1);
-  const prevEnabled = useRef(enabled);
-  const prevInitialValueRef = useRef(initialValue);
-
-  useEffect(() => {
-    if (enabled === prevEnabled.current) return;
-    prevEnabled.current = enabled;
-    setVersion((v) => v + 1);
-  }, [enabled]);
-
-  useEffect(() => {
-    if (initialValue === prevInitialValueRef.current) return;
-    prevInitialValueRef.current = initialValue;
-    setVersion((v) => v + 1);
-  }, [initialValue]);
-
-  return version;
-};
-
 export default function MainEditor({
   id,
   documentId,
@@ -394,8 +359,6 @@ export default function MainEditor({
   const containerRef = useRef(null);
   const enabled = settingsStore.use.checkedComponents();
   const editorRef = useRef<PlateEditor | null>(null);
-  var initialValue = usePlaygroundValue(id);
-  const [value, setValue] = useState(initialValue);
   const plugins = usePlaygroundPlugins({
     id,
     components: createPlateUI(
@@ -406,30 +369,20 @@ export default function MainEditor({
       }
     ),
   });
-  // Initialize initialValue state with an empty array
   const key = documentId;
-  // Fetch the document details when documentId changes
+
   useEffect(() => {
-    const fetchDocument = async () => {
-      try {
-        const { data, error } = await getDocumentDetails(documentId);
-        if (error) {
-          console.error("Error fetching document details:", error);
-          return redirect("/dashboard");
-        } else {
-          const value = data?.text;
-          console.log("Fetched document content:", value);
-          if (value) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
-            setValue(JSON.parse(value));
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching document details:", error);
-        return redirect("/dashboard");
+    const editor = editorRef.current;
+    async function fetchData() {
+      const { data, error } = await getDocumentDetails(documentId);
+      if (error) {
+        toast.error("Failed to load the document");
+        return;
       }
-    };
-    fetchDocument();
+      editor?.reset();
+      editor?.insertNodes(data?.content as TElement[]);
+    }
+    fetchData();
   }, [documentId]);
 
   const handleAutoSave = useCallback(async () => {
@@ -438,14 +391,14 @@ export default function MainEditor({
 
     // Handle the case where editor is null
     const isAstChange = editor.history.undos.length;
-    const value = editor.value;
+    const value = editor.children;
     if (isAstChange) {
-      // Save the value to Local Storage.
-      console.log("Auto Save", value);
-      // const content = JSON.stringify(value);
+      console.log("Auto Save", editor);
 
-      // console.log("type:", typeof content);
-      const { error } = await updateDocument({ content: value }, documentId);
+      const { error } = await updateDocument(
+        { content: value as Object },
+        documentId
+      );
       if (error) {
         toast.error("Failed to save the document");
       } else {
@@ -454,16 +407,6 @@ export default function MainEditor({
     }
   }, [documentId]);
 
-  // const CustomEffect = () => {
-  //   const editor = useEditorRef();
-
-  //   useEffect(() => {
-  //     console.log(editor);
-  //   }, [editor]);
-
-  //   return null;
-  // };
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="relative h-screen">
@@ -471,7 +414,6 @@ export default function MainEditor({
           <Plate
             key={key}
             editorRef={editorRef}
-            value={value}
             plugins={plugins}
             normalizeInitialValue
           >
@@ -520,10 +462,10 @@ export default function MainEditor({
                   )}
 
                   {isEnabled("mention", id, enabled["mention-combobox"]) && (
-                    <MentionCombobox items={MENTIONABLES} />
+                    <MentionCombobox items={[]} />
                   )}
 
-                  <SlashCombobox items={SLASH_RULES} />
+                  <SlashCombobox items={[]} />
 
                   {isEnabled("cursoroverlay", id) && (
                     <CursorOverlay containerRef={containerRef} />
