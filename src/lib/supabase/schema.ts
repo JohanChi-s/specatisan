@@ -10,6 +10,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { collectionPermission } from "../../../migrations/schema";
 
 export const userPreferences = pgEnum("user_preferences", [
   "rememberLastPath",
@@ -88,7 +89,7 @@ export const userFlags = pgEnum("user_flags", [
 
 export const CollectionPermission = pgEnum("collection_permission", [
   "read",
-  "read_write",
+  "edit",
   "admin",
 ]);
 export const DocumentPermission = pgEnum("document_permission", [
@@ -235,21 +236,18 @@ export const stars = pgTable("stars", {
     onDelete: "cascade",
   }),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+  workspaceId: uuid("workspace_id").references(() => workspaces.id, {
+    onDelete: "cascade",
+  }),
 });
 
-export const memberShip = pgTable("user_permissions", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .default(sql`now()`)
-    .notNull(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  workspaceId: uuid("workspace_id")
-    .notNull()
-    .references(() => workspaces.id, { onDelete: "cascade" }),
-  permission: text("permission").notNull(),
-});
+export const starsRelations = relations(stars, ({ one }) => ({
+  document: one(documents, {
+    fields: [stars.documentId],
+    references: [documents.id],
+  }),
+  user: one(users, { fields: [stars.userId], references: [users.id] }),
+}));
 
 export const collections = pgTable("collections", {
   id: uuid("id").primaryKey().defaultRandom().notNull(),
@@ -284,9 +282,12 @@ export const collaborators = pgTable("collaborators", {
     .notNull()
     .references(() => workspaces.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .default(sql`now()`)
+    .defaultNow()
     .notNull(),
-  userId: uuid("user_id").notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
+  permission: collectionPermission("permission").default("edit").notNull(),
 });
 
 export const workspaces = pgTable("workspaces", {
@@ -312,13 +313,7 @@ export const users = pgTable("users", {
   language: text("language"),
   preferences: jsonb("preferences"),
   notificationSettings: jsonb("notification_settings"),
-  isViewer: boolean("is_viewer"),
   lastActiveAt: timestamp("last_active_at", {
-    withTimezone: true,
-    mode: "string",
-  }),
-  lastActiveIp: text("last_active_ip"),
-  lastSignInEmailSendAt: timestamp("last_sign_in_email_send_at", {
     withTimezone: true,
     mode: "string",
   }),

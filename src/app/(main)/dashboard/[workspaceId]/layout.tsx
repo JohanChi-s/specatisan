@@ -5,13 +5,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { useAppState } from "@/lib/providers/state-provider";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { getAllWorkspaces } from "@/lib/supabase/queries";
-import { collections, documents } from "@/lib/supabase/schema";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 interface LayoutProps {
   children: React.ReactNode;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -52,7 +48,7 @@ const Layout: React.FC<LayoutProps> = ({ children, params }) => {
             suppressHydrationWarning
             defaultSize={defaultProps.defaultLayout[1]}
           >
-            <div className="flex h-full justify-center p-2 m-2 rounded-sm bg-white shadow-2xl">
+            <div className="flex h-full justify-center p-2 m-2 rounded-sm bg-background shadow-2xl">
               {children}
             </div>
           </ResizablePanel>

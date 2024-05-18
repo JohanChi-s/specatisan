@@ -32,8 +32,6 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
 
   useEffect(() => {
     if (workspaceCollections.length > 0) {
-      console.log("workspaceCollections", workspaceCollections);
-
       dispatch({
         type: "SET_FOLDERS",
         payload: {

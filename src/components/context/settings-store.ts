@@ -1,32 +1,29 @@
-'use client';
+"use client";
 
-import { KEY_SINGLE_LINE } from '@udecode/plate-break';
-import { createZustandStore } from '@udecode/plate-common';
-import { KEY_NORMALIZE_TYPES } from '@udecode/plate-normalizers';
-import { KEY_SELECT_ON_BACKSPACE } from '@udecode/plate-select';
-import { toast } from 'sonner';
+import { KEY_SINGLE_LINE } from "@udecode/plate-break";
+import { createZustandStore } from "@udecode/plate-common";
+import { KEY_NORMALIZE_TYPES } from "@udecode/plate-normalizers";
+import { KEY_SELECT_ON_BACKSPACE } from "@udecode/plate-select";
+import { toast } from "sonner";
 
-import { customizerItems, SettingPlugin } from '@/config/customizer-items';
-import { customizerList } from '@/config/customizer-list';
-import { customizerPlugins, ValueId } from '@/config/customizer-plugins';
+import { customizerItems, SettingPlugin } from "@/config/customizer-items";
+import { customizerList } from "@/config/customizer-list";
+import { customizerPlugins, ValueId } from "@/config/customizer-plugins";
 
 export const categoryIds = customizerList.map((item) => item.id);
 
 const defaultCheckedComponents = {} as Record<string, boolean>;
 
-const defaultCheckedPlugins = customizerList.reduce(
-  (acc, item) => {
-    item.children.forEach((child) => {
-      child.components?.forEach((component) => {
-        defaultCheckedComponents[component.id] = true;
-      });
-
-      acc[child.id] = true;
+const defaultCheckedPlugins = customizerList.reduce((acc, item) => {
+  item.children.forEach((child) => {
+    child.components?.forEach((component) => {
+      defaultCheckedComponents[component.id] = true;
     });
-    return acc;
-  },
-  {} as Record<string, boolean>
-);
+
+    acc[child.id] = true;
+  });
+  return acc;
+}, {} as Record<string, boolean>);
 
 export const getDefaultCheckedPlugins = () => {
   return {
@@ -60,9 +57,8 @@ const initialState: SettingsStoreValue = {
   showSettings: false,
   loadingSettings: true,
   showComponents: true,
-  homeTab: 'playground',
-  // homeTab: 'installation',
-  customizerTab: 'plugins',
+  homeTab: "playground",
+  customizerTab: "plugins",
 
   valueId: customizerPlugins.playground.id as ValueId,
 
@@ -72,7 +68,7 @@ const initialState: SettingsStoreValue = {
   checkedComponents: getDefaultCheckedComponents(),
 };
 
-export const settingsStore = createZustandStore('settings')(initialState)
+export const settingsStore = createZustandStore("settings")(initialState)
   .extendActions((set) => ({
     resetPlugins: ({
       exclude,

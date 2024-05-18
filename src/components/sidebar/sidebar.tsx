@@ -31,6 +31,7 @@ import { useAppState } from "@/lib/providers/state-provider";
 import { UUID } from "crypto";
 import { AuthUser } from "@supabase/supabase-js";
 import UserCard from "./user-card";
+import FavoritesList from "./Favorites";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -85,6 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           getCollaboratingWorkspaces(user.id),
           getSharedWorkspaces(user.id),
         ]);
+
         setPrivateWorkspaces(privateWs);
         setCollaboratingWorkspaces(collabWs);
         setSharedWorkspaces(sharedWs);
@@ -96,30 +98,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
     fetchData();
   }, [params.workspaceId, router]);
 
-  // useEffect(() => {
-  //   if (!state.workspaces.length) {
-  //     dispatch({
-  //       type: "SET_WORKSPACES",
-  //       payload: {
-  //         workspaces: [
-  //           ...privateWorkspaces,
-  //           ...sharedWorkspaces,
-  //           ...collaboratingWorkspaces,
-  //         ].map((workspace) => ({
-  //           ...workspace,
-  //           collections: [],
-  //           documents: [],
-  //         })),
-  //       },
-  //     });
-  //   }
-  // }, [
-  //   privateWorkspaces,
-  //   collaboratingWorkspaces,
-  //   sharedWorkspaces,
-  //   state.workspaces.length,
-  //   dispatch,
-  // ]);
   const handleCreateNewDoc = async () => {
     if (!params.workspaceId || !user) return;
     const newDocument: Document = {
@@ -196,40 +174,33 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href={`/dashboard/${params.workspaceId}/alldocs`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <FolderIcon className="mr-2 h-4 w-4" />
               <span>All docs</span>
             </Link>
           </li>
-          <li className="flex items-center w-full">
-            <Settings>
-              <Button
-                variant="ghost"
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "sm" }),
-                  "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
-                )}
-              >
-                <Settings2 className="mr-2 h-4 w-4" />
-                <span>Setting</span>
-              </Button>
-            </Settings>
-          </li>
-          {/* <li className="flex items-center text-base">
-            <Link
-              href={`/dashboard/${params.workspaceId}/tags`}
-              className={cn(
-                buttonVariants({ variant: 'ghost', size: 'sm' }),
-                'dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white'
-              )}
-            >
-              <Calendar className="mr-2 h-4 w-4" />
-              <span>Journal</span>
-            </Link>
-          </li> */}
+          {state?.userPermisison === "admin" ||
+          state.userPermisison === undefined ? (
+            <li className="flex items-center w-full">
+              <Settings>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "sm" }),
+                    " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                  )}
+                >
+                  <Settings2 className="mr-2 h-4 w-4" />
+                  <span>Setting</span>
+                </Button>
+              </Settings>
+            </li>
+          ) : null}
         </ul>
+        {/* Favorites */}
+        <FavoritesList />
         {/* Collections */}
         <CollectionsDropdownList
           workspaceCollections={workspaceCollectionData}
@@ -252,7 +223,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href={`/dashboard/${params.workspaceId}/trash`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <Trash2 className="mr-2 h-4 w-4" />
@@ -264,7 +235,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href="#"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <Download className="mr-2 h-4 w-4" />

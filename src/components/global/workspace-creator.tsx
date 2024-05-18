@@ -1,10 +1,13 @@
 "use client";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { User, workspace } from "@/lib/supabase/supabase.types";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { User, Workspace } from "@/lib/supabase/supabase.types";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -13,14 +16,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Lock, Plus, Share } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { v4 } from "uuid";
-import { addCollaborators, createWorkspace } from "@/lib/supabase/queries";
-import CollaboratorSearch from "./collaborator-search";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  addCollaborators,
+  createWorkspace,
+  getUserById,
+  getUserWorkspaces,
+} from "@/lib/supabase/queries";
+import { Lock, Plus, Share } from "lucide-react";
+import { v4 } from "uuid";
+import CollaboratorItem from "./CollaboratorItem";
+import CollaboratorSearch from "./collaborator-search";
+
+export type Colab = User & {
+  permission: string;
+  colaboratorId?: string;
+};
 
 const WorkspaceCreator = () => {
   const { user } = useSupabaseUser();
@@ -28,22 +39,50 @@ const WorkspaceCreator = () => {
   const router = useRouter();
   const [permissions, setPermissions] = useState("private");
   const [title, setTitle] = useState("");
-  const [collaborators, setCollaborators] = useState<User[]>([]);
+  const [collaborators, setCollaborators] = useState<Colab[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const addCollaborator = (user: User) => {
+  useEffect(() => {
+    if (!user?.id) return;
+    const setOwnerWorkspace = async () => {
+      const { data, error } = await getUserById(user.id);
+      if (error) {
+        console.log("error", error);
+        return;
+      }
+      if (data) {
+        const owner: Colab = { ...data, permission: "admin" };
+        setCollaborators([owner]);
+      }
+    };
+    setOwnerWorkspace();
+  }, [user?.id]);
+
+  const addCollaborator = (user: Colab) => {
     setCollaborators([...collaborators, user]);
   };
 
-  const removeCollaborator = (user: User) => {
+  const removeCollaborator = (user: Colab) => {
     setCollaborators(collaborators.filter((c) => c.id !== user.id));
+  };
+
+  const updateColabPermission = (user: Colab) => {
+    const colabs = collaborators.map((c) => {
+      if (c.id === user.id) {
+        return { ...c, permission: user.permission };
+      }
+      return c;
+    });
+    console.log("colabs", colabs);
+
+    setCollaborators(colabs);
   };
 
   const createItem = async () => {
     setIsLoading(true);
     const uuid = v4();
     if (user?.id) {
-      const newWorkspace: workspace = {
+      const newWorkspace: Workspace = {
         data: null,
         createdAt: new Date().toISOString(),
         iconId: "💼",
@@ -62,7 +101,15 @@ const WorkspaceCreator = () => {
       if (permissions === "shared") {
         toast({ title: "Success", description: "Created the workspace" });
         await createWorkspace(newWorkspace);
-        await addCollaborators(collaborators, uuid);
+        const { error } = await addCollaborators(collaborators, uuid);
+        if (error) {
+          toast({
+            title: "Error",
+            description: "Failed to add collaborators",
+            variant: "destructive",
+          });
+          console.log("error", error);
+        }
         router.refresh();
       }
     }
@@ -171,38 +218,13 @@ const WorkspaceCreator = () => {
             >
               {collaborators.length ? (
                 collaborators.map((c) => (
-                  <div
-                    className="p-4 flex
-                      justify-between
-                      items-center
-                "
+                  <CollaboratorItem
                     key={c.id}
-                  >
-                    <div className="flex gap-4 items-center">
-                      <Avatar>
-                        <AvatarImage src="/avatars/7.png" />
-                        <AvatarFallback>PJ</AvatarFallback>
-                      </Avatar>
-                      <div
-                        className="text-sm 
-                          gap-2
-                          text-muted-foreground
-                          overflow-hidden
-                          overflow-ellipsis
-                          sm:w-[300px]
-                          w-[140px]
-                        "
-                      >
-                        {c.email}
-                      </div>
-                    </div>
-                    <Button
-                      variant="secondary"
-                      onClick={() => removeCollaborator(c)}
-                    >
-                      Remove
-                    </Button>
-                  </div>
+                    editable={c.permission !== "admin"}
+                    updateColabPermission={updateColabPermission}
+                    collaborator={c}
+                    removeCollaborator={removeCollaborator}
+                  />
                 ))
               ) : (
                 <div

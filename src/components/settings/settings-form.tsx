@@ -1,10 +1,36 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
-import { User, Workspace } from "@/lib/supabase/supabase.types";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { useRouter } from "next/navigation";
+import {
+  addCollaborators,
+  deleteWorkspace,
+  getCollaboratorsForWorkspace,
+  removeCollaborators,
+  updateColaborator,
+  updateWorkspace,
+} from "@/lib/supabase/queries";
+import { Workspace } from "@/lib/supabase/supabase.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
   Briefcase,
@@ -16,46 +42,22 @@ import {
   Share,
   User as UserIcon,
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import {
-  addCollaborators,
-  deleteWorkspace,
-  getCollaborators,
-  removeCollaborators,
-  updateWorkspace,
-} from "@/lib/supabase/queries";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import { v4 } from "uuid";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
-import CollaboratorSearch from "../global/collaborator-search";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import LogoutButton from "../global/logout-button";
-import Link from "next/link";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
 import { postData } from "@/lib/utils";
+import Link from "next/link";
+import CollaboratorSearch from "../global/collaborator-search";
+import LogoutButton from "../global/logout-button";
+import { Colab } from "../global/workspace-creator";
+import CollaboratorItem from "../global/CollaboratorItem";
+import { CollectionPermission } from "@/shared/types";
 
 const SettingsForm = () => {
   const { toast } = useToast();
@@ -65,7 +67,7 @@ const SettingsForm = () => {
   const supabase = createClientComponentClient();
   const { state, workspaceId, dispatch } = useAppState();
   const [permissions, setPermissions] = useState("private");
-  const [collaborators, setCollaborators] = useState<User[] | []>([]);
+  const [collaborators, setCollaborators] = useState<Colab[] | []>([]);
   const [openAlertMessage, setOpenAlertMessage] = useState(false);
   const [workspaceDetails, setWorkspaceDetails] = useState<Workspace>();
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -89,7 +91,7 @@ const SettingsForm = () => {
     setLoadingPortal(false);
   };
   //addcollborators
-  const addCollaborator = async (profile: User) => {
+  const addCollaborator = async (profile: Colab) => {
     if (!workspaceId) return;
     if (subscription?.status !== "active" && collaborators.length >= 2) {
       setOpen(true);
@@ -100,7 +102,7 @@ const SettingsForm = () => {
   };
 
   //remove collaborators
-  const removeCollaborator = async (user: User) => {
+  const removeCollaborator = async (user: Colab) => {
     if (!workspaceId) return;
     if (collaborators.length === 1) {
       setPermissions("private");
@@ -129,7 +131,7 @@ const SettingsForm = () => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!workspaceId) return;
-    const document = e.target.documents?.[0];
+    const document = e.target.files?.[0];
     if (!document) return;
     const uuid = v4();
     setUploadingLogo(true);
@@ -147,6 +149,28 @@ const SettingsForm = () => {
       });
       await updateWorkspace({ logo: data.path }, workspaceId);
       setUploadingLogo(false);
+    }
+  };
+
+  const onChangeProfilePicture = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const document = e.target.files?.[0];
+    if (!document) return;
+    const uuid = v4();
+    setUploadingProfilePic(true);
+    const { data, error } = await supabase.storage
+      .from("profile-pictures")
+      .upload(`profilePicture.${uuid}`, document, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+
+    if (!error) {
+      await supabase.auth.updateUser({
+        data: { avatar_url: data.path },
+      });
+      setUploadingProfilePic(false);
     }
   };
 
@@ -178,7 +202,7 @@ const SettingsForm = () => {
   useEffect(() => {
     if (!workspaceId) return;
     const fetchCollaborators = async () => {
-      const response = await getCollaborators(workspaceId);
+      const response = await getCollaboratorsForWorkspace(workspaceId);
       if (response.length) {
         setPermissions("shared");
         setCollaborators(response);
@@ -186,6 +210,25 @@ const SettingsForm = () => {
     };
     fetchCollaborators();
   }, [workspaceId]);
+
+  const updateColabPermission = async (user: Colab) => {
+    if (!user.colaboratorId) return;
+    const { error } = await updateColaborator(
+      { permission: user.permission as CollectionPermission },
+      user.colaboratorId
+    );
+    if (error) {
+      console.error(error);
+    }
+    const colabs = collaborators.map((c) => {
+      if (c.id === user.id) {
+        return { ...c, permission: user.permission };
+      }
+      return c;
+    });
+
+    setCollaborators(colabs);
+  };
 
   return (
     <div className="flex gap-4 flex-col w-full">
@@ -295,38 +338,13 @@ const SettingsForm = () => {
               >
                 {collaborators.length ? (
                   collaborators.map((c) => (
-                    <div
-                      className="p-4 flex
-                      justify-between
-                      items-center
-                "
+                    <CollaboratorItem
                       key={c.id}
-                    >
-                      <div className="flex gap-4 items-center">
-                        <Avatar>
-                          <AvatarImage src="/avatars/7.png" />
-                          <AvatarFallback>PJ</AvatarFallback>
-                        </Avatar>
-                        <div
-                          className="text-sm 
-                          gap-2
-                          text-muted-foreground
-                          overflow-hidden
-                          overflow-ellipsis
-                          sm:w-[300px]
-                          w-[140px]
-                        "
-                        >
-                          {c.email}
-                        </div>
-                      </div>
-                      <Button
-                        variant="secondary"
-                        onClick={() => removeCollaborator(c)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
+                      editable={c.permission !== "admin"}
+                      updateColabPermission={updateColabPermission}
+                      collaborator={c}
+                      removeCollaborator={removeCollaborator}
+                    />
                   ))
                 ) : (
                   <div
@@ -399,7 +417,7 @@ const SettingsForm = () => {
               type="file"
               accept="image/*"
               placeholder="Profile Picture"
-              // onChange={onChangeProfilePicture}
+              onChange={onChangeProfilePicture}
               disabled={uploadingProfilePic}
             />
           </div>

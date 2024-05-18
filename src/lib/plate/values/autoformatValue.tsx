@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@udecode/plate-test-utils';
+import { jsx } from "@udecode/plate-test-utils";
 
 jsx;
 
@@ -45,7 +45,7 @@ export const autoformatValue: any = (
       </hli>
       <hli>
         <hlic>
-          We even support smart quotes, try typing{' '}
+          We even support smart quotes, try typing{" "}
           <htext code>"hello" 'world'</htext>.
         </hlic>
       </hli>
@@ -57,14 +57,14 @@ export const autoformatValue: any = (
     <hul>
       <hli>
         <hlic>
-          Type <htext code>*</htext>, <htext code>-</htext> or{' '}
+          Type <htext code>*</htext>, <htext code>-</htext> or{" "}
           <htext code>+</htext>
           followed by <htext code>space</htext> to create a bulleted list.
         </hlic>
       </hli>
       <hli>
         <hlic>
-          Type <htext code>1.</htext> or <htext code>1)</htext> followed by{' '}
+          Type <htext code>1.</htext> or <htext code>1)</htext> followed by{" "}
           <htext code>space</htext>
           to create a numbered list.
         </hlic>
@@ -111,13 +111,13 @@ export const autoformatValue: any = (
       </hli>
       <hli>
         <hlic>
-          Type <htext code>#####</htext> followed by <htext code>space</htext>{' '}
+          Type <htext code>#####</htext> followed by <htext code>space</htext>{" "}
           to create an H5 sub-heading.
         </hlic>
       </hli>
       <hli>
         <hlic>
-          Type <htext code>######</htext> followed by <htext code>space</htext>{' '}
+          Type <htext code>######</htext> followed by <htext code>space</htext>{" "}
           to create an H6 sub-heading.
         </hlic>
       </hli>

@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAppState } from "@/lib/providers/state-provider";
 import { createWorkspace } from "@/lib/supabase/queries";
-import type { Subscription, workspace } from "@/lib/supabase/supabase.types";
+import type { Subscription, Workspace } from "@/lib/supabase/supabase.types";
 import type { CreateWorkspaceFormSchema } from "@/lib/types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
@@ -79,7 +79,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
     }
     try {
-      const newWorkspace: workspace = {
+      const newWorkspace: Workspace = {
         data: null,
         createdAt: new Date().toISOString(),
         iconId: selectedEmoji,
@@ -96,7 +96,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
       dispatch({
         type: "ADD_WORKSPACE",
-        payload: { ...newWorkspace, collections: [] },
+        payload: { ...newWorkspace, collections: [], documents: [] },
       });
 
       toast({

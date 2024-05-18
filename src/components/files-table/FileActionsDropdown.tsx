@@ -1,8 +1,8 @@
 "use client";
 import { useAppState } from "@/lib/providers/state-provider";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { updateDocument } from "@/lib/supabase/queries";
-import type { Document } from "@/lib/supabase/supabase.types";
+import { createFavorite, updateDocument } from "@/lib/supabase/queries";
+import type { Document, Star } from "@/lib/supabase/supabase.types";
 import {
   CornerDownLeft,
   Delete,
@@ -10,6 +10,7 @@ import {
   ExternalLink,
   Link2,
   Settings,
+  StarIcon,
 } from "lucide-react";
 import { redirect, useRouter } from "next/navigation";
 import React from "react";
@@ -37,6 +38,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { toast } from "../ui/use-toast";
+import { v4 } from "uuid";
 
 type Props = {
   document: Document;
@@ -108,6 +110,44 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
     }
   };
 
+  const handleAddStar = async (document: Document) => {
+    if (!user || !workspaceId) return;
+    try {
+      const { error } = await createFavorite(
+        document.id,
+        user?.id,
+        workspaceId
+      );
+      if (error) throw new Error("Error adding favorite");
+      const newFavorite: Star = {
+        documentId: document.id,
+        userId: user.id,
+        workspaceId,
+        id: v4(),
+        createdAt: new Date().toISOString(),
+        index: null,
+      };
+      dispatch({
+        type: "ADD_FAVORITE",
+        payload: {
+          favorite: { ...newFavorite, document: document },
+          workspaceId,
+        },
+      });
+      toast({
+        title: "Success",
+        description: "Document added to favorites",
+      });
+    } catch (error) {
+      console.log("Error adding favorite", error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Could not add document to favorites",
+      });
+    }
+  };
+
   const handleRedirectToEditor = (document: Document) => {
     return router.push(`/dashboard/${workspaceId}/${document.id}`);
   };
@@ -151,6 +191,15 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
         onClick={() => hanldeCopyLink(document)}
       >
         <Link2 className="h-4 w-4" />
+      </Button>
+
+      <Button
+        variant="ghost"
+        className="text-sm hover:bg-slate-300 rounded-full"
+        size="sm"
+        onClick={() => handleAddStar(document)}
+      >
+        <StarIcon className="font-extralight text-slate-600" />
       </Button>
       <Sheet>
         <DropdownMenu>
