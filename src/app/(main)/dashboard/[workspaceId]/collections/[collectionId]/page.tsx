@@ -56,7 +56,18 @@ const CollectionDetailPage = ({
   return (
     <div className="container mx-auto px-5">
       {/* Workspace Navbar */}
-      <WorkspaceNavbar />
+      <WorkspaceNavbar
+        items={[
+          {
+            href: `dashboard/${workspaceId}/collections`,
+            label: "Collections",
+          },
+          {
+            href: `dashboard/${workspaceId}/collections/${params.collectionId}`,
+            label: params.collectionId,
+          },
+        ]}
+      />
 
       {/* Workspace Breadcrumb (if needed) */}
       <WorkspaceBreadcumb items={[]} />

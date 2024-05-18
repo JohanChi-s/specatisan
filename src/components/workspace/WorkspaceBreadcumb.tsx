@@ -25,10 +25,12 @@ const WorkspaceBreadcumb: React.FC<WorkspaceBreadcumbProps> = ({
 }) => {
   return (
     <Breadcrumb className="flex items-center">
-      <BreadcrumbList>
+      <BreadcrumbList className="flex items-center">
         {items.map((item, index) => (
-          <div key={item.label} className="flex">
-            {index === 0 ? null : <BreadcrumbSeparator className="text-base" />}
+          <div key={item.label} className="flex items-center">
+            {index === 0 ? null : (
+              <BreadcrumbSeparator className="text-xl mr-1" />
+            )}
             <BreadcrumbItem className="text-base">
               <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
             </BreadcrumbItem>

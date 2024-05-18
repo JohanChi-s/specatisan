@@ -46,7 +46,11 @@ const AllDocsPage = () => {
   return (
     <div className="container mx-auto px-5">
       {/* Workspace Navbar */}
-      <WorkspaceNavbar />
+      <WorkspaceNavbar
+        items={[
+          { href: `dashboard/${workspaceId}/alldocs`, label: "All Docs" },
+        ]}
+      />
 
       {/* Data Table */}
       <DataTable

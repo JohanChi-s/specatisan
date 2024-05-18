@@ -41,10 +41,10 @@ const FavoriteItem: React.FC<Props> = ({ favorite }) => {
   };
 
   return (
-    <li className="flex flex-1 w-full px-2 py-1 rounded-md dark:bg-muted hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
+    <li className="flex flex-1 w-full px-2 py-1 rounded-md hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
       <StarIcon className="w-4 h-4 mr-2" />
       <Link
-        href={`/dashboard/${workspaceId}/${favorite.id}`}
+        href={`/dashboard/${workspaceId}/${favorite.document.id}`}
         className={cn("flex-1 w-full justify-start ml-2")}
       >
         {favorite.document.title}

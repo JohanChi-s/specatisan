@@ -27,7 +27,11 @@ const CollectionsPage: React.FC = () => {
   if (!workspaceId) redirect("/dashboard");
   return (
     <div className="container mx-auto">
-      <WorkspaceNavbar />
+      <WorkspaceNavbar
+        items={[
+          { href: `dashboard/${workspaceId}/collections`, label: "All Docs" },
+        ]}
+      />
       <Separator className="my-2" />
       <CollectionDataTable columns={CollectionColumns} data={collections} />
     </div>
