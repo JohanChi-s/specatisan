@@ -174,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href={`/dashboard/${params.workspaceId}/alldocs`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <FolderIcon className="mr-2 h-4 w-4" />
@@ -189,7 +189,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
                   variant="ghost"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "sm" }),
-                    "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                    " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
                   )}
                 >
                   <Settings2 className="mr-2 h-4 w-4" />
@@ -223,7 +223,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href={`/dashboard/${params.workspaceId}/trash`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <Trash2 className="mr-2 h-4 w-4" />
@@ -235,7 +235,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href="#"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <Download className="mr-2 h-4 w-4" />

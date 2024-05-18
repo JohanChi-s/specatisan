@@ -33,11 +33,11 @@ const AssignTag: React.FC<Props> = ({ document }) => {
   useEffect(() => {
     if (state.tags.length) {
       const unUseTag = state.tags.filter(
-        (tag) => !doc.tags?.find((t) => t.id === tag.id)
+        (tag) => !doc?.tags?.find((t) => t.id === tag.id)
       );
       setTags(unUseTag);
     }
-  }, [doc.tags, state.tags]);
+  }, [doc?.tags, state.tags]);
 
   const handleAssignTag = async (tag: Tag) => {
     if (!workspaceId) return redirect("/dashboard");
@@ -91,7 +91,7 @@ const AssignTag: React.FC<Props> = ({ document }) => {
 
   return (
     <div className="flex items-center gap-x-1">
-      {doc.tags.length
+      {doc?.tags?.length
         ? doc?.tags?.map((tag) => <Badge key={tag.id}>{tag.name}</Badge>)
         : null}
       <Popover>
@@ -110,7 +110,7 @@ const AssignTag: React.FC<Props> = ({ document }) => {
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading="Assigned Tags">
-                {doc.tags.map((tag) => (
+                {doc?.tags?.map((tag) => (
                   <CommandItem key={tag.id} onSelect={() => {}}>
                     <div className="flex items-center justify-start">
                       <TagIcon className="mr-2 h-5 w-5" />

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import MainEditor from "@/components/editor/Editor";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
+import { ValueId } from "@/config/customizer-plugins";
 import { getDocumentDetails } from "@/lib/supabase/queries";
 import { redirect } from "next/navigation";
 
@@ -12,7 +13,6 @@ export default async function DocumentDetailPage({
 }) {
   const { data, error } = await getDocumentDetails(params.documentId);
   if (error || data?.id === undefined) {
-    console.log("error", error);
     redirect("/dashboard");
   }
   return (
