@@ -1,7 +1,4 @@
 "use client";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { User } from "@/lib/supabase/supabase.types";
-import React, { useEffect, useRef, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -10,17 +7,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Label } from "../ui/label";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { getUsersFromSearch } from "@/lib/supabase/queries";
+import { User } from "@/lib/supabase/supabase.types";
 import { Search } from "lucide-react";
-import { Input } from "../ui/input";
-import { ScrollArea } from "../ui/scroll-area";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { getUsersFromSearch } from "@/lib/supabase/queries";
+import { Input } from "../ui/input";
+import { ScrollArea } from "../ui/scroll-area";
+import { Colab } from "./workspace-creator";
 
 interface CollaboratorSearchProps {
-  existingCollaborators: User[] | [];
-  getCollaborator: (collaborator: User) => void;
+  existingCollaborators: Colab[] | [];
+  getCollaborator: (collaborator: Colab) => void;
   children: React.ReactNode;
 }
 
@@ -30,7 +30,7 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
   getCollaborator,
 }) => {
   const { user } = useSupabaseUser();
-  const [searchResults, setSearchResults] = useState<User[] | []>([]);
+  const [searchResults, setSearchResults] = useState<Colab[] | []>([]);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
@@ -38,24 +38,33 @@ const CollaboratorSearch: React.FC<CollaboratorSearchProps> = ({
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
-
-  const getUserData = () => {};
-
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (timerRef) clearTimeout(timerRef.current);
-    // timerRef.current = setTimeout(async () => {
-    //   const res = await getUsersFromSearch(e.target.value);
-    //   setSearchResults(res);
-    // }, 450);
+    timerRef.current = setTimeout(async () => {
+      const { data, error } = await getUsersFromSearch(e.target.value);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      const colabs = data.map((user: User) => {
+        return {
+          ...user,
+          permission: "edit",
+        };
+      });
+      setSearchResults(colabs);
+    }, 450);
   };
 
-  const addCollaborator = (user: User) => {
+  const addCollaborator = (user: Colab) => {
     getCollaborator(user);
   };
 
   return (
     <Sheet>
-      <SheetTrigger className="w-full">{children}</SheetTrigger>
+      <SheetTrigger className="w-full" asChild>
+        {children}
+      </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
           <SheetTitle>Search Collaborator</SheetTitle>

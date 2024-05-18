@@ -462,10 +462,10 @@ export default function MainEditor({
                   )}
 
                   {isEnabled("mention", id, enabled["mention-combobox"]) && (
-                    <MentionCombobox items={[]} />
+                    <MentionCombobox items={MENTIONABLES} />
                   )}
 
-                  <SlashCombobox items={[]} />
+                  <SlashCombobox items={SLASH_RULES} />
 
                   {isEnabled("cursoroverlay", id) && (
                     <CursorOverlay containerRef={containerRef} />

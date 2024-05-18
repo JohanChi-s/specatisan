@@ -134,6 +134,13 @@
       "when": 1715780896742,
       "tag": "0019_sturdy_wolverine",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1715935541401,
+      "tag": "0020_thin_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

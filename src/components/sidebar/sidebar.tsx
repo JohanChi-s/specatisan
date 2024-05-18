@@ -86,6 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           getCollaboratingWorkspaces(user.id),
           getSharedWorkspaces(user.id),
         ]);
+
         setPrivateWorkspaces(privateWs);
         setCollaboratingWorkspaces(collabWs);
         setSharedWorkspaces(sharedWs);
@@ -180,20 +181,23 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               <span>All docs</span>
             </Link>
           </li>
-          <li className="flex items-center w-full">
-            <Settings>
-              <Button
-                variant="ghost"
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "sm" }),
-                  "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
-                )}
-              >
-                <Settings2 className="mr-2 h-4 w-4" />
-                <span>Setting</span>
-              </Button>
-            </Settings>
-          </li>
+          {state?.userPermisison === "admin" ||
+          state.userPermisison === undefined ? (
+            <li className="flex items-center w-full">
+              <Settings>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "sm" }),
+                    "dark:bg-muted w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                  )}
+                >
+                  <Settings2 className="mr-2 h-4 w-4" />
+                  <span>Setting</span>
+                </Button>
+              </Settings>
+            </li>
+          ) : null}
         </ul>
         {/* Favorites */}
         <FavoritesList />

@@ -11,19 +11,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import Logo from "../../../../public/vercel.svg";
 import Loader from "@/components/global/Loader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { MailCheck } from "lucide-react";
-import { FormSchema } from "@/lib/types";
 import { actionSignUpUser } from "@/lib/server-actions/auth-actions";
+import { FormSchema } from "@/lib/types";
+import { MailCheck } from "lucide-react";
 
 const SignUpFormSchema = z
   .object({
@@ -59,6 +57,7 @@ const Signup = () => {
         "bg-red-500/10": codeExchangeError,
         "border-red-500/50": codeExchangeError,
         "text-red-700": codeExchangeError,
+        "dark:bg-red-500/20": codeExchangeError,
       }),
     [codeExchangeError]
   );

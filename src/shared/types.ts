@@ -98,7 +98,7 @@ export enum UserCreatableIntegrationService {
 
 export enum CollectionPermission {
   Read = "read",
-  ReadWrite = "read_write",
+  ReadWrite = "edit",
   Admin = "admin",
 }
 
@@ -110,17 +110,17 @@ export enum DocumentPermission {
 export type IntegrationSettings<T> = T extends IntegrationType.Embed
   ? { url: string }
   : T extends IntegrationType.Analytics
-    ? { measurementId: string }
-    : T extends IntegrationType.Post
-      ? { url: string; channel: string; channelId: string }
-      : T extends IntegrationType.Command
-        ? { serviceTeamId: string }
-        :
-            | { url: string }
-            | { url: string; channel: string; channelId: string }
-            | { serviceTeamId: string }
-            | { measurementId: string }
-            | undefined;
+  ? { measurementId: string }
+  : T extends IntegrationType.Post
+  ? { url: string; channel: string; channelId: string }
+  : T extends IntegrationType.Command
+  ? { serviceTeamId: string }
+  :
+      | { url: string }
+      | { url: string; channel: string; channelId: string }
+      | { serviceTeamId: string }
+      | { measurementId: string }
+      | undefined;
 
 export enum UserPreference {
   /** Whether reopening the app should redirect to the last viewed document. */

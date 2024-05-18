@@ -118,6 +118,56 @@ export default function WorkspaceSwitcher({
                   />
                 </div>
               ))}
+              {collaboratingWorkspaces.map((workspace) => (
+                <div
+                  key={workspace.id}
+                  onClick={() => handleSelect(workspace)}
+                  className="text-sm cursor-pointer my-1 flex flex-1 items-center hover:bg-slate-200 justify-start p-2 rounded-md"
+                >
+                  <Avatar className="mr-2 h-5 w-5">
+                    <AvatarImage
+                      src={`https://avatar.vercel.sh/${workspace.bannerUrl}.png`}
+                      alt={workspace.title}
+                      className="grayscale"
+                    />
+                    <AvatarFallback>Workspace</AvatarFallback>
+                  </Avatar>
+                  {workspace.title}
+                  <CheckIcon
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      selectedWorkspace?.id === workspace.id
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                </div>
+              ))}
+              {/* {sharedWorkspaces.map((workspace) => (
+                <div
+                  key={workspace.id}
+                  onClick={() => handleSelect(workspace)}
+                  className="text-sm cursor-pointer my-1 flex flex-1 items-center hover:bg-slate-200 justify-start p-2 rounded-md"
+                >
+                  <Avatar className="mr-2 h-5 w-5">
+                    <AvatarImage
+                      src={`https://avatar.vercel.sh/${workspace.bannerUrl}.png`}
+                      alt={workspace.title}
+                      className="grayscale"
+                    />
+                    <AvatarFallback>Workspace</AvatarFallback>
+                  </Avatar>
+                  {workspace.title}
+                  <CheckIcon
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      selectedWorkspace?.id === workspace.id
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                </div>
+              ))} */}
             </CommandGroup>
             <CommandGroup heading="Actions">
               <CustomDialogTrigger

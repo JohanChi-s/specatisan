@@ -18,13 +18,16 @@ import {
   Workspace,
 } from "../supabase/supabase.types";
 import {
-  getAllWorkspaces,
+  getUserWorkspaces,
   getDocumentByWorkspaceId,
   getSharedWorkspaces,
   getStars,
   getTags,
+  getCollaborators,
+  getUserPermission,
 } from "../supabase/queries";
 import { useSupabaseUser } from "./supabase-user-provider";
+import { Colab } from "@/components/global/workspace-creator";
 
 export type appWorkspacesType = Workspace & {
   collections: Collection[] | [];
@@ -37,6 +40,7 @@ interface AppState {
   tags: Tag[] | [];
   favorites: StarWithDocument[] | [];
   documents: DocumentWithTags[] | [];
+  userPermisison: string | undefined;
 }
 
 type Action =
@@ -145,6 +149,20 @@ type Action =
         favoriteId: string;
         workspaceId: string;
       };
+    }
+  | {
+      type: "SET_USER_PERMISSION";
+      payload: {
+        permission: string;
+        workspaceId: string;
+      };
+    }
+  | {
+      type: "UPDATE_USER_PERMISSION";
+      payload: {
+        permission: string;
+        workspaceId: string;
+      };
     };
 
 const initialState: AppState = {
@@ -153,6 +171,7 @@ const initialState: AppState = {
   tags: [],
   favorites: [],
   documents: [],
+  userPermisison: undefined,
 };
 
 const appReducer = (
@@ -329,6 +348,16 @@ const appReducer = (
           (favorite) => favorite.id !== action.payload.favoriteId
         ),
       };
+    case "SET_USER_PERMISSION":
+      return {
+        ...state,
+        userPermisison: action.payload.permission,
+      };
+    case "UPDATE_USER_PERMISSION":
+      return {
+        ...state,
+        userPermisison: action.payload.permission,
+      };
 
     default:
       return initialState;
@@ -384,7 +413,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
 
     const fetchData = async () => {
       const { data: workspaces, error: workspacesError } =
-        await getAllWorkspaces(user.id);
+        await getUserWorkspaces(user.id);
       if (workspacesError || !workspaces) return;
 
       const transformedData = workspaces.map((workspace: Workspace) => ({
@@ -426,6 +455,18 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
         dispatch({
           type: "SET_FAVORITES",
           payload: { favorites: favorites, workspaceId },
+        });
+      }
+
+      const { data: currentUserPermission, error: permissionError } =
+        await getUserPermission(workspaceId, user.id);
+      if (!permissionError && currentUserPermission) {
+        dispatch({
+          type: "SET_USER_PERMISSION",
+          payload: {
+            permission: currentUserPermission.permission,
+            workspaceId,
+          },
         });
       }
     };

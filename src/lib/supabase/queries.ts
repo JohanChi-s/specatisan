@@ -13,6 +13,7 @@ import {
   workspaces,
 } from "./schema";
 import {
+  Collaborator,
   Collection,
   Document,
   DocumentWithTags,
@@ -23,6 +24,20 @@ import {
   Workspace,
 } from "./supabase.types";
 import { omit } from "lodash";
+import { Colab } from "@/components/global/workspace-creator";
+import { CollectionPermission } from "@/shared/types";
+
+export const getUserById = async (userId: string) => {
+  try {
+    if (!userId) return { data: null, error: "User ID is required" };
+    const response = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, userId),
+    });
+    return { data: response, error: null };
+  } catch (error) {
+    return { data: null, error: error };
+  }
+};
 
 export const createWorkspace = async (workspace: Workspace) => {
   try {
@@ -230,7 +245,7 @@ export const getSharedWorkspaces = async (userId: string) => {
 };
 
 // get All workspaces
-export const getAllWorkspaces = async (userId: string) => {
+export const getUserWorkspaces = async (userId: string) => {
   if (!userId) return { data: null, error: "Bad Request" };
   try {
     const resp = (await db
@@ -319,15 +334,24 @@ export const getDocumentsByCollectionId = async (collectionId: string) => {
   }
 };
 
-export const addCollaborators = async (users: User[], workspaceId: string) => {
-  const response = users.forEach(async (user: User) => {
-    const userExists = await db.query.collaborators.findFirst({
-      where: (u, { eq }) =>
-        and(eq(u.userId, user.id), eq(u.workspaceId, workspaceId)),
+export const addCollaborators = async (users: Colab[], workspaceId: string) => {
+  try {
+    const response = users.forEach(async (user: Colab) => {
+      const userExists = await db.query.collaborators.findFirst({
+        where: (u, { eq }) =>
+          and(eq(u.userId, user.id), eq(u.workspaceId, workspaceId)),
+      });
+      if (!userExists)
+        await db.insert(collaborators).values({
+          userId: user.id,
+          workspaceId,
+          permission: user.permission as CollectionPermission,
+        });
     });
-    if (!userExists)
-      await db.insert(collaborators).values({ workspaceId, userId: user.id });
-  });
+    return { error: null };
+  } catch (error) {
+    return { error: error };
+  }
 };
 
 export const removeCollaborators = async (
@@ -461,13 +485,72 @@ export const getCollaborators = async (workspaceId: string) => {
   return resolvedUsers.filter(Boolean) as User[];
 };
 
-export const getUsersFromSearch = async (email: string) => {
-  if (!email) return [];
-  const accounts = db
+// getUserPermission
+export const getUserPermission = async (
+  workspaceId: string,
+  userId: string
+) => {
+  if (!workspaceId || !userId) return { data: null, error: "Error" };
+  try {
+    const response = await db.query.collaborators.findFirst({
+      where: (c, { and, eq }) =>
+        and(eq(c.userId, userId), eq(c.workspaceId, workspaceId)),
+    });
+    return { data: response, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const updateColaborator = async (
+  colaborator: Partial<Collaborator>,
+  colaboratorId: string
+) => {
+  try {
+    await db
+      .update(collaborators)
+      .set(colaborator)
+      .where(eq(collaborators.id, colaboratorId));
+    return { data: null, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Error" };
+  }
+};
+
+export const getCollaboratorsForWorkspace = async (
+  workspaceId: string
+): Promise<Colab[]> => {
+  const result = await db
     .select()
-    .from(users)
-    .where(ilike(users.email, `${email}%`));
-  return accounts;
+    .from(collaborators)
+    .innerJoin(users, eq(collaborators.userId, users.id))
+    .where(eq(collaborators.workspaceId, workspaceId));
+
+  // Transform the result to match the Colab type
+  const collaboratorsList: Colab[] = result.map((row) => {
+    return {
+      ...row.users,
+      permission: row.collaborators.permission,
+      colaboratorId: row.collaborators.id,
+    };
+  });
+
+  return collaboratorsList;
+};
+
+export const getUsersFromSearch = async (email: string) => {
+  if (!email) return { data: [], error: "Email is required" };
+  try {
+    const data = (await db.query.users.findMany({
+      where: (u, { ilike }) => ilike(u.email, `%${email}%`),
+    })) as User[];
+    return { data, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: [], error: "Can't get users data" };
+  }
 };
 
 // Get all tags by workspaceId

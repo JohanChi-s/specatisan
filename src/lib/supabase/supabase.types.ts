@@ -32,22 +32,32 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
+          permission: Database["public"]["Enums"]["collection_permission"];
           user_id: string;
           workspace_id: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
+          permission?: Database["public"]["Enums"]["collection_permission"];
           user_id: string;
           workspace_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
+          permission?: Database["public"]["Enums"]["collection_permission"];
           user_id?: string;
           workspace_id?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: "collaborators_user_id_users_id_fk";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "collaborators_workspace_id_workspaces_id_fk";
             columns: ["workspace_id"];
@@ -591,13 +601,6 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "prices_product_id_fkey";
-            columns: ["product_id"];
-            isOneToOne: false;
-            referencedRelation: "products";
-            referencedColumns: ["id"];
-          },
-          {
             foreignKeyName: "prices_product_id_products_id_fk";
             columns: ["product_id"];
             isOneToOne: false;
@@ -796,13 +799,6 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: "subscriptions_price_id_fkey";
-            columns: ["price_id"];
-            isOneToOne: false;
-            referencedRelation: "prices";
-            referencedColumns: ["id"];
-          },
-          {
             foreignKeyName: "subscriptions_price_id_prices_id_fk";
             columns: ["price_id"];
             isOneToOne: false;
@@ -880,45 +876,6 @@ export type Database = {
           }
         ];
       };
-      user_permissions: {
-        Row: {
-          created_at: string;
-          id: string;
-          permission: string;
-          user_id: string;
-          workspace_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          id?: string;
-          permission: string;
-          user_id: string;
-          workspace_id: string;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          permission?: string;
-          user_id?: string;
-          workspace_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "user_permissions_user_id_users_id_fk";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "user_permissions_workspace_id_workspaces_id_fk";
-            columns: ["workspace_id"];
-            isOneToOne: false;
-            referencedRelation: "workspaces";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
       users: {
         Row: {
           avatar_url: string | null;
@@ -926,7 +883,12 @@ export type Database = {
           email: string | null;
           full_name: string | null;
           id: string;
+          language: string | null;
+          last_active_at: string | null;
+          notification_settings: Json | null;
           payment_method: Json | null;
+          preferences: Json | null;
+          suspended_at: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -935,7 +897,12 @@ export type Database = {
           email?: string | null;
           full_name?: string | null;
           id: string;
+          language?: string | null;
+          last_active_at?: string | null;
+          notification_settings?: Json | null;
           payment_method?: Json | null;
+          preferences?: Json | null;
+          suspended_at?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -944,7 +911,12 @@ export type Database = {
           email?: string | null;
           full_name?: string | null;
           id?: string;
+          language?: string | null;
+          last_active_at?: string | null;
+          notification_settings?: Json | null;
           payment_method?: Json | null;
+          preferences?: Json | null;
+          suspended_at?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -1074,7 +1046,7 @@ export type Database = {
         | "webhookSubscriptions.create"
         | "webhookSubscriptions.delete";
       code_challenge_method: "s256" | "plain";
-      collection_permission: "read" | "read_write" | "admin";
+      collection_permission: "read" | "read_write" | "admin" | "view" | "edit";
       document_permission: "read" | "read_write";
       equality_op: "eq" | "neq" | "lt" | "lte" | "gt" | "gte" | "in";
       factor_status: "unverified" | "verified";
@@ -1129,6 +1101,7 @@ export type Database = {
         | "codeBlockLineNumbers"
         | "seamlessEdit"
         | "fullWidthDocuments";
+      workspace_permission: "read" | "edit" | "admin";
     };
     CompositeTypes: {
       [_ in never]: never;
