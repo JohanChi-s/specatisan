@@ -13,14 +13,11 @@ import { Input } from "@/components/ui/input";
 import { actionLoginUser } from "@/lib/server-actions/auth-actions";
 import { FormSchema } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
-import Logo from "../../../../public/vercel.svg";
-import { GithubIcon } from "lucide-react";
 
 const LoginPage = () => {
   const router = useRouter();

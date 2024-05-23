@@ -3,13 +3,83 @@
 import React, { useState } from "react";
 import { cn } from "@udecode/cn";
 import {
-  CODE_BLOCK_LANGUAGES,
-  CODE_BLOCK_LANGUAGES_POPULAR,
   useCodeBlockCombobox,
   useCodeBlockComboboxState,
 } from "@udecode/plate-code-block";
 
 import { Icons } from "@/components/icons";
+
+export const CODE_BLOCK_LANGUAGES_POPULAR: Record<string, string> = {
+  bash: "Bash",
+  css: "CSS",
+  git: "Git",
+  graphql: "GraphQL",
+  html: "HTML",
+  javascript: "JavaScript",
+  json: "JSON",
+  jsx: "JSX",
+  markdown: "Markdown",
+  sql: "SQL",
+  svg: "SVG",
+  tsx: "TSX",
+  typescript: "TypeScript",
+  wasm: "WebAssembly",
+};
+
+export const CODE_BLOCK_LANGUAGES: Record<string, string> = {
+  antlr4: "ANTLR4",
+  bash: "Bash",
+  c: "C",
+  cmake: "CMake",
+  coffeescript: "CoffeeScript",
+  csharp: "C#",
+  css: "CSS",
+  dart: "Dart",
+  django: "Django",
+  docker: "Docker",
+  ejs: "EJS",
+  erlang: "Erlang",
+  git: "Git",
+  go: "Go",
+  graphql: "GraphQL",
+  groovy: "Groovy",
+  html: "HTML",
+  java: "Java",
+  javascript: "JavaScript",
+  json: "JSON",
+  jsx: "JSX",
+  kotlin: "Kotlin",
+  latex: "LaTeX",
+  less: "Less",
+  lua: "Lua",
+  makefile: "Makefile",
+  markdown: "Markdown",
+  markup: "Markup",
+  matlab: "MATLAB",
+  objectivec: "Objective-C",
+  perl: "Perl",
+  php: "PHP",
+  powershell: "PowerShell",
+  properties: ".properties",
+  protobuf: "Protocol Buffers",
+  python: "Python",
+  r: "R",
+  ruby: "Ruby",
+  sass: "Sass (Sass)",
+  // scala: 'Scala',
+  scheme: "Scheme",
+  // FIXME: Error with current scala grammar
+  scss: "Sass (Scss)",
+  shell: "Shell",
+  sql: "SQL",
+  svg: "SVG",
+  swift: "Swift",
+  tsx: "TSX",
+  typescript: "TypeScript",
+  wasm: "WebAssembly",
+  xml: "XML",
+  yaml: "YAML",
+};
 
 import { Button } from "./button";
 import {

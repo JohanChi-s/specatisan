@@ -1,6 +1,9 @@
 import { useOthers, useSelf } from "@/liveblocks.config";
 import styles from "./Avatars.module.css";
 
+// Create live avatars using Liveblocks presence
+// https://liveblocks.io/docs/api-reference/liveblocks-react#useOthers
+
 export function Avatars() {
   const users = useOthers();
   const currentUser = useSelf();

@@ -28,6 +28,7 @@ import {
 } from "../supabase/queries";
 import { useSupabaseUser } from "./supabase-user-provider";
 import { Colab } from "@/components/global/workspace-creator";
+import { debounce } from "lodash";
 
 export type appWorkspacesType = Workspace & {
   collections: Collection[] | [];
@@ -384,8 +385,13 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const pathname = usePathname();
   const { user } = useSupabaseUser();
 
-  const workspaceId = useMemo(() => {
+  const parsePathname = (pathname: string) => {
     const urlSegments = pathname?.split("/").filter(Boolean);
+    return urlSegments;
+  };
+
+  const workspaceId = useMemo(() => {
+    const urlSegments = parsePathname(pathname);
     if (urlSegments)
       if (urlSegments.length > 1) {
         return urlSegments[1];
@@ -393,7 +399,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   const collectionId = useMemo(() => {
-    const urlSegments = pathname?.split("/").filter(Boolean);
+    const urlSegments = parsePathname(pathname);
     if (urlSegments)
       if (urlSegments?.length > 4) {
         return urlSegments[4];
@@ -401,79 +407,90 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   }, [pathname]);
 
   const fileId = useMemo(() => {
-    const urlSegments = pathname?.split("/").filter(Boolean);
+    const urlSegments = parsePathname(pathname);
     if (urlSegments)
       if (urlSegments?.length > 3) {
         return urlSegments[3];
       }
   }, [pathname]);
 
+  const fetchData = useMemo(
+    () =>
+      debounce(async (userId, workspaceId) => {
+        if (!userId || !workspaceId) return;
+
+        try {
+          const { data: workspaces, error: workspacesError } =
+            await getUserWorkspaces(userId);
+          if (workspacesError || !workspaces) return;
+
+          const transformedData = workspaces.map((workspace) => ({
+            ...workspace,
+            collections: [],
+            documents: [],
+          }));
+
+          const currentWorkspace = transformedData.find(
+            (w) => w.id === workspaceId
+          );
+
+          if (currentWorkspace) {
+            dispatch({
+              type: "SET_CURRENT_WORKSPACES",
+              payload: { workspace: currentWorkspace },
+            });
+          }
+          dispatch({
+            type: "SET_WORKSPACES",
+            payload: { workspaces: transformedData },
+          });
+
+          const { data: tags, error: tagsError } = await getTags(workspaceId);
+          if (!tagsError && tags) {
+            dispatch({ type: "SET_TAGS", payload: { tags, workspaceId } });
+          }
+
+          const { data: documents, error: docError } =
+            await getDocumentByWorkspaceId(workspaceId);
+          if (!docError && documents) {
+            dispatch({
+              type: "SET_FILES",
+              payload: { documents, workspaceId },
+            });
+          }
+
+          const { data: favorites, error: favoriteError } = await getStars(
+            userId,
+            workspaceId
+          );
+          if (!favoriteError && favorites) {
+            dispatch({
+              type: "SET_FAVORITES",
+              payload: { favorites, workspaceId },
+            });
+          }
+
+          const { data: currentUserPermission, error: permissionError } =
+            await getUserPermission(workspaceId, userId);
+          if (!permissionError && currentUserPermission) {
+            dispatch({
+              type: "SET_USER_PERMISSION",
+              payload: {
+                permission: currentUserPermission.permission,
+                workspaceId,
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }, 500), // Adjust the debounce delay as necessary
+    []
+  );
+
   useEffect(() => {
-    if (!user?.id || !workspaceId) return;
-
-    const fetchData = async () => {
-      const { data: workspaces, error: workspacesError } =
-        await getUserWorkspaces(user.id);
-      if (workspacesError || !workspaces) return;
-
-      const transformedData = workspaces.map((workspace: Workspace) => ({
-        ...workspace,
-        collections: [],
-        documents: [],
-      }));
-      const currentWorkspace = transformedData.find(
-        (w: Workspace) => w.id === workspaceId
-      );
-
-      if (currentWorkspace) {
-        dispatch({
-          type: "SET_CURRENT_WORKSPACES",
-          payload: { workspace: currentWorkspace },
-        });
-      }
-      dispatch({
-        type: "SET_WORKSPACES",
-        payload: { workspaces: transformedData },
-      });
-
-      const { data: tags, error: tagsError } = await getTags(workspaceId);
-      if (!tagsError && tags) {
-        dispatch({ type: "SET_TAGS", payload: { tags: tags, workspaceId } });
-      }
-
-      const { data: documents, error: docError } =
-        await getDocumentByWorkspaceId(workspaceId);
-      if (!docError && documents) {
-        dispatch({ type: "SET_FILES", payload: { documents, workspaceId } });
-      }
-
-      const { data: favorites, error: favoriteError } = await getStars(
-        user.id,
-        workspaceId
-      );
-      if (!favoriteError && favorites) {
-        dispatch({
-          type: "SET_FAVORITES",
-          payload: { favorites: favorites, workspaceId },
-        });
-      }
-
-      const { data: currentUserPermission, error: permissionError } =
-        await getUserPermission(workspaceId, user.id);
-      if (!permissionError && currentUserPermission) {
-        dispatch({
-          type: "SET_USER_PERMISSION",
-          payload: {
-            permission: currentUserPermission.permission,
-            workspaceId,
-          },
-        });
-      }
-    };
-
-    fetchData();
-  }, [user?.id, workspaceId]);
-
+    fetchData(user?.id, workspaceId);
+  }, [user?.id, workspaceId, fetchData]);
   useEffect(() => {
     console.log("App State Changed", state);
   }, [state]);

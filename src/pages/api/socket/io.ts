@@ -18,15 +18,20 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
       addTrailingSlash: false,
     });
     io.on("connection", (s) => {
-      s.on("create-room", (fileId) => {
-        s.join(fileId);
+      s.on("create-room", (documentId) => {
+        s.join(documentId);
       });
-      s.on("send-changes", (deltas, fileId) => {
+      s.on("send-changes", (deltas, documentId) => {
         console.log("CHANGE");
-        s.to(fileId).emit("receive-changes", deltas, fileId);
+        s.to(documentId).emit("receive-changes", deltas, documentId);
       });
-      s.on("send-cursor-move", (range, fileId, cursorId) => {
-        s.to(fileId).emit("receive-cursor-move", range, fileId, cursorId);
+      s.on("send-cursor-move", (range, documentId, cursorId) => {
+        s.to(documentId).emit(
+          "receive-cursor-move",
+          range,
+          documentId,
+          cursorId
+        );
       });
     });
     res.socket.server.io = io;
