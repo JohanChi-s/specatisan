@@ -1,5 +1,6 @@
 "use client";
 
+import { debounce } from "lodash";
 import { usePathname } from "next/navigation";
 import React, {
   Dispatch,
@@ -10,6 +11,13 @@ import React, {
   useReducer,
 } from "react";
 import {
+  getDocumentByWorkspaceId,
+  getStars,
+  getTags,
+  getUserPermission,
+  getUserWorkspaces,
+} from "../supabase/queries";
+import {
   Collection,
   Document,
   DocumentWithTags,
@@ -17,18 +25,7 @@ import {
   Tag,
   Workspace,
 } from "../supabase/supabase.types";
-import {
-  getUserWorkspaces,
-  getDocumentByWorkspaceId,
-  getSharedWorkspaces,
-  getStars,
-  getTags,
-  getCollaborators,
-  getUserPermission,
-} from "../supabase/queries";
 import { useSupabaseUser } from "./supabase-user-provider";
-import { Colab } from "@/components/global/workspace-creator";
-import { debounce } from "lodash";
 
 export type appWorkspacesType = Workspace & {
   collections: Collection[] | [];
@@ -385,7 +382,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const pathname = usePathname();
   const { user } = useSupabaseUser();
 
-  const parsePathname = (pathname: string) => {
+  const parsePathname = (pathname: string | null) => {
     const urlSegments = pathname?.split("/").filter(Boolean);
     return urlSegments;
   };

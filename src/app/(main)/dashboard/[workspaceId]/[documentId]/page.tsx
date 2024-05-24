@@ -1,10 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import { Room } from "@/app/Room";
-import CollaborativeEditor from "@/components/editor/CollaborativeEditor";
 import MainEditor from "@/components/editor/Editor";
 import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
-import { ValueId } from "@/config/customizer-plugins";
 import { getDocumentDetails } from "@/lib/supabase/queries";
 import { redirect } from "next/navigation";
 
@@ -24,9 +21,6 @@ export default async function DocumentDetailPage({
         title={data.title}
         isShowTabs={false}
       />
-      {/* <Room documentId={data.id}>
-        <CollaborativeEditor />
-      </Room> */}
       <MainEditor documentId={data?.id} />
     </div>
   );

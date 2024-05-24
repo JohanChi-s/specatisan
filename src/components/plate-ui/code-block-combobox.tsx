@@ -82,14 +82,9 @@ export const CODE_BLOCK_LANGUAGES: Record<string, string> = {
 };
 
 import { Button } from "./button";
-import {
-  Command,
-  CommandEmpty,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "./command";
+import { Command, CommandEmpty, CommandInput, CommandList } from "./command";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { CommandItem } from "../ui/command";
 
 const languages: { value: string; label: string }[] = [
   { value: "text", label: "Plain Text" },
@@ -140,7 +135,7 @@ export function CodeBlockCombobox() {
                 className="cursor-pointer"
                 onSelect={(_value) => {
                   commandItemProps.onSelect(_value);
-                  setOpen(false);
+                  setOpen(false); 
                 }}
               >
                 <Icons.check

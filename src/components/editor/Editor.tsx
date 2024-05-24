@@ -51,9 +51,7 @@ import { createCommentsPlugin } from "@udecode/plate-comments";
 import {
   Plate,
   PlateController,
-  PlateEditor,
   PlatePluginComponent,
-  TElement,
   createPlugins,
 } from "@udecode/plate-common";
 import { createDndPlugin } from "@udecode/plate-dnd";
@@ -103,12 +101,12 @@ import { createBlockSelectionPlugin } from "@udecode/plate-selection";
 import { createDeserializeDocxPlugin } from "@udecode/plate-serializer-docx";
 import { createDeserializeMdPlugin } from "@udecode/plate-serializer-md";
 import { createSlashPlugin } from "@udecode/plate-slash-command";
-import { createYjsPlugin } from "@udecode/plate-yjs";
 import { createTabbablePlugin } from "@udecode/plate-tabbable";
 import { createTablePlugin } from "@udecode/plate-table";
 import { ELEMENT_TOGGLE, createTogglePlugin } from "@udecode/plate-toggle";
 import { createTrailingBlockPlugin } from "@udecode/plate-trailing-block";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createYjsPlugin } from "@udecode/plate-yjs";
+import { useMemo, useRef, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -133,27 +131,8 @@ import { SlashCombobox } from "@/components/plate-ui/slash-combobox";
 import { ValueId } from "@/config/customizer-plugins";
 import { captionPlugin } from "@/lib/plate/plugins/captionPlugin";
 import { SLASH_RULES } from "@/lib/plate/values/slashRules";
-import {
-  findUser,
-  getDocumentDetails,
-  updateDocument,
-} from "@/lib/supabase/queries";
-import { redirect } from "next/navigation";
-import { useSocket } from "@/lib/providers/socket-provider";
-import { toast } from "../ui/use-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { WithCursorsOptions } from "@slate-yjs/core";
-// import { initialData } from "@/dummy/EditorPreview";
-import { usePlaygroundValue } from "@/lib/plate/values/usePlaygroundValue";
-// import { initialData } from "@/dummy/EditorPreview";
+import { redirect } from "next/navigation";
 
 export const usePlaygroundPlugins = ({
   id,

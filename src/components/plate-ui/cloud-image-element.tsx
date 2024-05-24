@@ -73,6 +73,7 @@ export function CloudImageElement({
             }}
           />
         ) : (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             className={cn(
               "block rounded-lg",
