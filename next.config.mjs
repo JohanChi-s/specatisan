@@ -3,6 +3,7 @@ import webpackNodeExternals  from "webpack-node-externals";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["@slate-yjs/react"],
   images: {
     domains: ["lzikiidzevbmtqyuqhgk.supabase.co"],
   },

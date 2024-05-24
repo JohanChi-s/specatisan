@@ -51,9 +51,7 @@ import { createCommentsPlugin } from "@udecode/plate-comments";
 import {
   Plate,
   PlateController,
-  PlateEditor,
   PlatePluginComponent,
-  TElement,
   createPlugins,
 } from "@udecode/plate-common";
 import { createDndPlugin } from "@udecode/plate-dnd";
@@ -107,7 +105,8 @@ import { createTabbablePlugin } from "@udecode/plate-tabbable";
 import { createTablePlugin } from "@udecode/plate-table";
 import { ELEMENT_TOGGLE, createTogglePlugin } from "@udecode/plate-toggle";
 import { createTrailingBlockPlugin } from "@udecode/plate-trailing-block";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createYjsPlugin } from "@udecode/plate-yjs";
+import { useMemo, useRef, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -132,9 +131,8 @@ import { SlashCombobox } from "@/components/plate-ui/slash-combobox";
 import { ValueId } from "@/config/customizer-plugins";
 import { captionPlugin } from "@/lib/plate/plugins/captionPlugin";
 import { SLASH_RULES } from "@/lib/plate/values/slashRules";
-import { getDocumentDetails, updateDocument } from "@/lib/supabase/queries";
+import { WithCursorsOptions } from "@slate-yjs/core";
 import { redirect } from "next/navigation";
-import { toast } from "sonner";
 
 export const usePlaygroundPlugins = ({
   id,
@@ -348,6 +346,13 @@ export const usePlaygroundPlugins = ({
     [enabled]
   );
 };
+type CursorData = {
+  color: string; // Color of the cursor
+  name: string; // Name of the user
+  style?: React.CSSProperties;
+  selectionStyle?: React.CSSProperties;
+};
+
 export default function MainEditor({
   id,
   documentId,
@@ -358,7 +363,8 @@ export default function MainEditor({
   if (!documentId) redirect("/dashboard");
   const containerRef = useRef(null);
   const enabled = settingsStore.use.checkedComponents();
-  const editorRef = useRef<PlateEditor | null>(null);
+  // const editorRef = useRef<PlateEditor | null>(null);
+  const [value, setValue] = useState([]);
   const plugins = usePlaygroundPlugins({
     id,
     components: createPlateUI(
@@ -371,41 +377,58 @@ export default function MainEditor({
   });
   const key = documentId;
 
-  useEffect(() => {
-    const editor = editorRef.current;
-    async function fetchData() {
-      const { data, error } = await getDocumentDetails(documentId);
-      if (error) {
-        toast.error("Failed to load the document");
-        return;
-      }
-      editor?.reset();
-      editor?.insertNodes(data?.content as TElement[]);
-    }
-    fetchData();
-  }, [documentId]);
+  // useEffect(() => {
+  //   const editor = editorRef.current;
+  //   async function fetchData() {
+  //     const { data, error } = await getDocumentDetails(documentId);
+  //     if (error) {
+  //       toast({
+  //         title: "Failed to load the document",
+  //         variant: "destructive",
+  //       });
+  //       return;
+  //     }
+  //     editor?.reset();
+  //     editor?.insertNodes(data?.content as TElement[], { at: [0] });
+  //   }
+  //   fetchData();
+  // }, [documentId]);
+  const cursorOptions: WithCursorsOptions<CursorData> = {
+    cursorStateField: "selection",
+    cursorDataField: "cursorData",
+    data: {
+      color: "blue", // Default cursor color
+      name: "User", // Default user name
+    },
+    autoSend: true,
+  };
 
-  const handleAutoSave = useCallback(async () => {
-    const editor = editorRef.current;
-    if (!editor) return;
+  // const handleAutoSave = useCallback(async () => {
+  //   const editor = editorRef.current;
+  //   if (!editor) return;
 
-    // Handle the case where editor is null
-    const isAstChange = editor.history.undos.length;
-    const value = editor.children;
-    if (isAstChange) {
-      console.log("Auto Save", editor);
+  //   // Handle the case where editor is null
+  //   const isAstChange = editor.history.undos.length;
+  //   const value = editor.children;
+  //   if (isAstChange) {
+  //     console.log("Auto Save", editor);
 
-      const { error } = await updateDocument(
-        { content: value as Object },
-        documentId
-      );
-      if (error) {
-        toast.error("Failed to save the document");
-      } else {
-        toast.success("Document saved");
-      }
-    }
-  }, [documentId]);
+  //     const { error } = await updateDocument(
+  //       { content: value as Object },
+  //       documentId
+  //     );
+  //     if (error) {
+  //       toast({
+  //         title: "Failed to save the document",
+  //         variant: "destructive",
+  //       });
+  //     } else {
+  //       toast({
+  //         title: "Document saved",
+  //       });
+  //     }
+  //   }
+  // }, [documentId]);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -413,8 +436,21 @@ export default function MainEditor({
         <PlateController>
           <Plate
             key={key}
-            editorRef={editorRef}
-            plugins={plugins}
+            value={value}
+            onChange={setValue}
+            plugins={[
+              ...plugins,
+              createYjsPlugin({
+                options: {
+                  disableCursors: false,
+                  cursorOptions: cursorOptions,
+                  hocuspocusProviderOptions: {
+                    url: "ws://0.0.0.0:1234",
+                    name: documentId,
+                  },
+                },
+              }),
+            ]}
             normalizeInitialValue
           >
             {/* <CustomEffect /> */}
@@ -444,7 +480,7 @@ export default function MainEditor({
                     variant="ghost"
                     size="md"
                     focusRing={false}
-                    onBlur={handleAutoSave}
+                    // onBlur={handleAutoSave}
                     className={cn(
                       editableProps.className,
                       "px-8",
