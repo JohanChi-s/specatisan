@@ -48,9 +48,7 @@ import {
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 import { ImageUpload } from "./ImageUpload";
 import { TableOfContentsNode } from "./TableOfContentsNode";
-import { common, createLowlight } from "lowlight";
-
-const lowlight = createLowlight(common);
+import { lowlight } from "lowlight";
 
 interface ExtensionKitProps {
   provider?: HocuspocusProvider | null;

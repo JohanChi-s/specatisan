@@ -111,7 +111,6 @@ export default function Document({
       ).json();
 
       const { token } = data;
-      console.log("🚀 ~ dataFetch ~ token:", token);
 
       // set state when the data received
       setCollabToken(token);

@@ -8,6 +8,8 @@ import { LinkMenu } from "@/components/BlockEditor/menus";
 
 import { useBlockEditor } from "@/hooks/useBlockEditor";
 
+import "@/components/BlockEditor/styles/index.css";
+
 import { Sidebar } from "@/components/BlockEditor/Sidebar";
 import { Loader } from "@/components/BlockEditor/ui/Loader";
 import { EditorContext } from "@/components/BlockEditor/context/EditorContext";
@@ -27,7 +29,7 @@ import { ContentItemMenu } from "../menus/ContentItemMenu";
 export const BlockEditor = ({ aiToken, ydoc, provider }: TiptapProps) => {
   const aiState = useAIState();
   const menuContainerRef = useRef(null);
-  const editorRef = useRef<PureEditorContent | null>(null);
+  const editorRef = useRef<HTMLDivElement | null>(null);
 
   const { editor, users, characterCount, collabState, leftSidebar } =
     useBlockEditor({ aiToken, ydoc, provider });
@@ -54,7 +56,7 @@ export const BlockEditor = ({ aiToken, ydoc, provider }: TiptapProps) => {
 
   return (
     <EditorContext.Provider value={providerValue}>
-      <div className="flex h-full" ref={menuContainerRef}>
+      <div className="flex h-full w-full" ref={menuContainerRef}>
         <Sidebar
           isOpen={leftSidebar.isOpen}
           onClose={leftSidebar.close}
