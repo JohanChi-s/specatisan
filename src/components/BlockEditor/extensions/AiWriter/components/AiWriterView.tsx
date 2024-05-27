@@ -1,56 +1,77 @@
-import { Extension, NodeViewWrapper, NodeViewWrapperProps } from '@tiptap/react'
-import { useCallback, useMemo, useState } from 'react'
-import toast from 'react-hot-toast'
-import { v4 as uuid } from 'uuid'
+import {
+  Extension,
+  NodeViewWrapper,
+  NodeViewWrapperProps,
+} from "@tiptap/react";
+import { useCallback, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import { v4 as uuid } from "uuid";
 
-import { Button } from '@/components/ui/Button'
-import { Loader } from '@/components/ui/Loader'
-import { Panel, PanelHeadline } from '@/components/ui/Panel'
-import { Textarea } from '@/components/ui/Textarea'
-import { Icon } from '@/components/ui/Icon'
+import { BlockButton } from "@/components/BlockEditor/ui/Button";
+import { Loader } from "@/components/BlockEditor/ui/Loader";
+import { Panel, PanelHeadline } from "@/components/BlockEditor/ui/Panel";
+import { Textarea } from "@/components/BlockEditor/ui/Textarea";
+import { Icon } from "@/components/BlockEditor/ui/Icon";
 
-import { AiTone, AiToneOption } from '@/components/BlockEditor/types'
-import { tones } from '@/lib/constants'
+import {
+  AiTone,
+  AiToneOption,
+} from "@/components/BlockEditor/BlockEditor/types";
+import { tones } from "@/lib/BlockEditor/constants";
 
-import * as Dropdown from '@radix-ui/react-dropdown-menu'
-import { Toolbar } from '@/components/ui/Toolbar'
-import { Surface } from '@/components/ui/Surface'
-import { DropdownButton } from '@/components/ui/Dropdown'
+import * as Dropdown from "@radix-ui/react-dropdown-menu";
+import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
+import { Surface } from "@/components/BlockEditor/ui/Surface";
+import { DropdownButton } from "@/components/BlockEditor/ui/Dropdown";
 
 export interface DataProps {
-  text: string
-  addHeading: boolean
-  tone?: AiTone
-  textUnit?: string
-  textLength?: string
-  language?: string
+  text: string;
+  addHeading: boolean;
+  tone?: AiTone;
+  textUnit?: string;
+  textLength?: string;
+  language?: string;
 }
 
-export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapperProps) => {
-  const aiOptions = editor.extensionManager.extensions.find((ext: Extension) => ext.name === 'ai').options
+export const AiWriterView = ({
+  editor,
+  node,
+  getPos,
+  deleteNode,
+}: NodeViewWrapperProps) => {
+  const aiOptions = editor.extensionManager.extensions.find(
+    (ext: Extension) => ext.name === "ai"
+  ).options;
 
   const [data, setData] = useState<DataProps>({
-    text: '',
+    text: "",
     tone: undefined,
     textLength: undefined,
     addHeading: false,
     language: undefined,
-  })
-  const currentTone = tones.find(t => t.value === data.tone)
-  const [previewText, setPreviewText] = useState(undefined)
-  const [isFetching, setIsFetching] = useState(false)
-  const textareaId = useMemo(() => uuid(), [])
+  });
+  const currentTone = tones.find((t) => t.value === data.tone);
+  const [previewText, setPreviewText] = useState(undefined);
+  const [isFetching, setIsFetching] = useState(false);
+  const textareaId = useMemo(() => uuid(), []);
 
   const generateText = useCallback(async () => {
-    const { text: dataText, tone, textLength, textUnit, addHeading, language } = data
+    const {
+      text: dataText,
+      tone,
+      textLength,
+      textUnit,
+      addHeading,
+      language,
+    } = data;
 
     if (!data.text) {
-      toast.error('Please enter a description')
+      toast.error("Please enter a description");
 
-      return
+      return;
     }
 
-    setIsFetching(true)
+    setIsFetching(true);
 
     const payload = {
       text: dataText,
@@ -59,66 +80,72 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
       useHeading: addHeading,
       tone,
       language,
-    }
+    };
 
     try {
-      const { baseUrl, appId, token } = aiOptions
+      const { baseUrl, appId, token } = aiOptions;
       const response = await fetch(`${baseUrl}/text/prompt`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          accept: 'application.json',
-          'Content-Type': 'application/json',
-          'X-App-Id': appId.trim(),
+          accept: "application.json",
+          "Content-Type": "application/json",
+          "X-App-Id": appId.trim(),
           Authorization: `Bearer ${token.trim()}`,
         },
         body: JSON.stringify(payload),
-      })
+      });
 
-      const json = await response.json()
-      const text = json.response
+      const json = await response.json();
+      const text = json.response;
 
       if (!text.length) {
-        setIsFetching(false)
+        setIsFetching(false);
 
-        return
+        return;
       }
 
-      setPreviewText(text)
+      setPreviewText(text);
 
-      setIsFetching(false)
+      setIsFetching(false);
     } catch (errPayload: any) {
-      const errorMessage = errPayload?.response?.data?.error
-      const message = errorMessage !== 'An error occurred' ? `An error has occured: ${errorMessage}` : errorMessage
+      const errorMessage = errPayload?.response?.data?.error;
+      const message =
+        errorMessage !== "An error occurred"
+          ? `An error has occured: ${errorMessage}`
+          : errorMessage;
 
-      setIsFetching(false)
-      toast.error(message)
+      setIsFetching(false);
+      toast.error(message);
     }
-  }, [data, aiOptions])
+  }, [data, aiOptions]);
 
   const insert = useCallback(() => {
-    const from = getPos()
-    const to = from + node.nodeSize
+    const from = getPos();
+    const to = from + node.nodeSize;
 
-    editor.chain().focus().insertContentAt({ from, to }, previewText).run()
-  }, [editor, previewText, getPos, node.nodeSize])
+    editor.chain().focus().insertContentAt({ from, to }, previewText).run();
+  }, [editor, previewText, getPos, node.nodeSize]);
 
   const discard = useCallback(() => {
-    deleteNode()
-  }, [deleteNode])
+    deleteNode();
+  }, [deleteNode]);
 
-  const onTextAreaChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setData(prevData => ({ ...prevData, text: e.target.value }))
-  }, [])
+  const onTextAreaChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setData((prevData) => ({ ...prevData, text: e.target.value }));
+    },
+    []
+  );
 
   const onUndoClick = useCallback(() => {
-    setData(prevData => ({ ...prevData, tone: undefined }))
-  }, [])
+    setData((prevData) => ({ ...prevData, tone: undefined }));
+  }, []);
 
   const createItemClickHandler = useCallback((tone: AiToneOption) => {
     return () => {
-      setData(prevData => ({ ...prevData, tone: tone.value }))
-    }
-  }, [])
+      setData((prevData) => ({ ...prevData, tone: tone.value }));
+    };
+  }, []);
 
   return (
     <NodeViewWrapper data-drag-handle>
@@ -143,7 +170,7 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
             id={textareaId}
             value={data.text}
             onChange={onTextAreaChange}
-            placeholder={'Tell me what you want me to write about.'}
+            placeholder={"Tell me what you want me to write about."}
             required
             className="mb-2"
           />
@@ -151,11 +178,11 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
             <div className="flex justify-between w-auto gap-1">
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
-                  <Button variant="tertiary">
+                  <BlockButton variant="tertiary">
                     <Icon name="Mic" />
-                    {currentTone?.label || 'Change tone'}
+                    {currentTone?.label || "Change tone"}
                     <Icon name="ChevronDown" />
-                  </Button>
+                  </BlockButton>
                 </Dropdown.Trigger>
                 <Dropdown.Portal>
                   <Dropdown.Content side="bottom" align="start" asChild>
@@ -163,7 +190,10 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
                       {!!data.tone && (
                         <>
                           <Dropdown.Item asChild>
-                            <DropdownButton isActive={data.tone === undefined} onClick={onUndoClick}>
+                            <DropdownButton
+                              isActive={data.tone === undefined}
+                              onClick={onUndoClick}
+                            >
                               <Icon name="Undo2" />
                               Reset
                             </DropdownButton>
@@ -171,9 +201,12 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
                           <Toolbar.Divider horizontal />
                         </>
                       )}
-                      {tones.map(tone => (
+                      {tones.map((tone) => (
                         <Dropdown.Item asChild key={tone.value}>
-                          <DropdownButton isActive={tone.value === data.tone} onClick={createItemClickHandler(tone)}>
+                          <DropdownButton
+                            isActive={tone.value === data.tone}
+                            onClick={createItemClickHandler(tone)}
+                          >
                             {tone.label}
                           </DropdownButton>
                         </Dropdown.Item>
@@ -185,29 +218,41 @@ export const AiWriterView = ({ editor, node, getPos, deleteNode }: NodeViewWrapp
             </div>
             <div className="flex justify-between w-auto gap-1">
               {previewText && (
-                <Button
+                <BlockButton
                   variant="ghost"
                   className="text-red-500 hover:bg-red-500/10 hover:text-red-500"
                   onClick={discard}
                 >
                   <Icon name="Trash" />
                   Discard
-                </Button>
+                </BlockButton>
               )}
               {previewText && (
-                <Button variant="ghost" onClick={insert} disabled={!previewText}>
+                <BlockButton
+                  variant="ghost"
+                  onClick={insert}
+                  disabled={!previewText}
+                >
                   <Icon name="Check" />
                   Insert
-                </Button>
+                </BlockButton>
               )}
-              <Button variant="primary" onClick={generateText} style={{ whiteSpace: 'nowrap' }}>
-                {previewText ? <Icon name="Repeat" /> : <Icon name="Sparkles" />}
-                {previewText ? 'Regenerate' : 'Generate text'}
-              </Button>
+              <BlockButton
+                variant="primary"
+                onClick={generateText}
+                style={{ whiteSpace: "nowrap" }}
+              >
+                {previewText ? (
+                  <Icon name="Repeat" />
+                ) : (
+                  <Icon name="Sparkles" />
+                )}
+                {previewText ? "Regenerate" : "Generate text"}
+              </BlockButton>
             </div>
           </div>
         </div>
       </Panel>
     </NodeViewWrapper>
-  )
-}
+  );
+};

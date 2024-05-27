@@ -7,9 +7,10 @@ import React, {
   useState,
 } from "react";
 
-import { Button } from "@/components/BlockEditor/ui/Button";
+import { BlockButton } from "@/components/BlockEditor/ui/Button";
 import { Panel } from "@/components/BlockEditor/ui/Panel";
 import { EmojiListProps } from "../types";
+import Image from "next/image";
 
 const EmojiList = forwardRef((props: EmojiListProps, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -97,7 +98,7 @@ const EmojiList = forwardRef((props: EmojiListProps, ref) => {
   return (
     <Panel className="overflow-y-auto max-w-[18rem] max-h-[18rem]">
       {props.items.map((item: EmojiItem, index: number) => (
-        <Button
+        <BlockButton
           active={index === selectedIndex}
           variant="ghost"
           className="justify-start w-full"
@@ -107,12 +108,12 @@ const EmojiList = forwardRef((props: EmojiListProps, ref) => {
           data-emoji-name={item.name}
         >
           {item.fallbackImage ? (
-            <img src={item.fallbackImage} className="w-5 h-5" alt="emoji" />
+            <Image src={item.fallbackImage} className="w-5 h-5" alt="emoji" />
           ) : (
             item.emoji
           )}{" "}
           <span className="truncate text-ellipsis">:{item.name}:</span>
-        </Button>
+        </BlockButton>
       ))}
     </Panel>
   );

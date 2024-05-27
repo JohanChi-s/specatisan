@@ -1,6 +1,6 @@
 import { Spinner } from "@/components/BlockEditor/ui/Spinner";
 import { useDropZone, useFileUpload, useUploader } from "./hooks";
-import { Button } from "@/components/BlockEditor/ui/Button";
+import { BlockButton } from "@/components/BlockEditor/ui/Button";
 import { Icon } from "@/components/BlockEditor/ui/Icon";
 import { cn } from "@/lib/utils";
 import { ChangeEvent, useCallback } from "react";
@@ -52,7 +52,7 @@ export const ImageUploader = ({
           {draggedInside ? "Drop image here" : "Drag and drop or"}
         </div>
         <div>
-          <Button
+          <BlockButton
             disabled={draggedInside}
             onClick={handleUploadClick}
             variant="primary"
@@ -60,7 +60,7 @@ export const ImageUploader = ({
           >
             <Icon name="Upload" />
             Upload an image
-          </Button>
+          </BlockButton>
         </div>
       </div>
       <input

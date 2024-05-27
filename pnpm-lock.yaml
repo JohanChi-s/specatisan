@@ -460,7 +460,7 @@ dependencies:
     version: 4.19.2
   jotai:
     specifier: ^2.8.1
-    version: 2.8.1(@types/react@18.3.3)(react@18.3.1)
+    version: 2.8.2(@types/react@18.3.3)(react@18.3.1)
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
@@ -475,7 +475,7 @@ dependencies:
     version: 0.287.0(react@18.3.1)
   million:
     specifier: ^3.1.5
-    version: 3.1.5
+    version: 3.1.6
   next:
     specifier: ^14.2.3
     version: 14.2.3(@babel/core@7.24.6)(react-dom@18.3.1)(react@18.3.1)
@@ -1948,8 +1948,8 @@ packages:
     resolution: {integrity: sha512-QZqem4QuAnAyzfz+Gj5/+SLxqwCAw2qmt7732ZXodr6VDWGeYLG6w1i/vYLa55JQM9wRuBKLmXmiZ2P0LtE5rw==}
     dev: false
 
-  /@million/install@0.0.6:
-    resolution: {integrity: sha512-XsBVyZZUBQ0fAAC6taX7jBuSdA3R9Q+cTWzZifZmHUCLyy+azgOQ8ZMHTClXPzPaI+yWLf6mr3l3UYcaJdCE4w==}
+  /@million/install@0.0.7:
+    resolution: {integrity: sha512-knhZwT8mi6jWfdPPzVuk9HfNWyhfOJsUmLmR1A7pQYxERiya8YKXdm3XZZXQF9An/5n1CjeLeyXPwk7Pc0utRQ==}
     hasBin: true
     dependencies:
       '@antfu/ni': 0.21.12
@@ -1957,7 +1957,7 @@ packages:
       '@babel/core': 7.24.6
       '@babel/types': 7.24.6
       '@clack/prompts': 0.7.0
-      cli-high: 0.4.1
+      cli-high: 0.4.2
       diff: 5.2.0
       nanoid: 5.0.7
       posthog-node: 3.6.3
@@ -4972,9 +4972,9 @@ packages:
       '@udecode/utils': 31.0.0
       clsx: 1.2.1
       is-hotkey: 0.2.0
-      jotai: 2.8.1(@types/react@18.3.3)(react@18.3.1)
-      jotai-optics: 0.3.2(jotai@2.8.1)(optics-ts@2.4.1)
-      jotai-x: 1.2.3(@types/react@18.3.3)(jotai@2.8.1)(react@18.3.1)
+      jotai: 2.8.2(@types/react@18.3.3)(react@18.3.1)
+      jotai-optics: 0.3.2(jotai@2.8.2)(optics-ts@2.4.1)
+      jotai-x: 1.2.3(@types/react@18.3.3)(jotai@2.8.2)(react@18.3.1)
       lodash: 4.17.21
       nanoid: 3.3.7
       optics-ts: 2.4.1
@@ -5011,9 +5011,9 @@ packages:
       '@udecode/utils': 31.0.0
       clsx: 1.2.1
       is-hotkey: 0.2.0
-      jotai: 2.8.1(@types/react@18.3.3)(react@18.3.1)
-      jotai-optics: 0.3.2(jotai@2.8.1)(optics-ts@2.4.1)
-      jotai-x: 1.2.3(@types/react@18.3.3)(jotai@2.8.1)(react@18.3.1)
+      jotai: 2.8.2(@types/react@18.3.3)(react@18.3.1)
+      jotai-optics: 0.3.2(jotai@2.8.2)(optics-ts@2.4.1)
+      jotai-x: 1.2.3(@types/react@18.3.3)(jotai@2.8.2)(react@18.3.1)
       lodash: 4.17.21
       nanoid: 3.3.7
       optics-ts: 2.4.1
@@ -6285,7 +6285,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.23.0
-      caniuse-lite: 1.0.30001621
+      caniuse-lite: 1.0.30001623
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.1
@@ -6414,8 +6414,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001621
-      electron-to-chromium: 1.4.782
+      caniuse-lite: 1.0.30001623
+      electron-to-chromium: 1.4.783
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.0)
 
@@ -6498,8 +6498,8 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /caniuse-lite@1.0.30001621:
-    resolution: {integrity: sha512-+NLXZiviFFKX0fk8Piwv3PfLPGtRqJeq2TiNoUff/qB5KJgwecJTvCXDpmlyP/eCI/GUEmp/h/y5j0yckiiZrA==}
+  /caniuse-lite@1.0.30001623:
+    resolution: {integrity: sha512-X/XhAVKlpIxWPpgRTnlgZssJrF0m6YtRA0QDWgsBNT12uZM6LPRydR7ip405Y3t1LamD8cP2TZFEDZFBf5ApcA==}
 
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -6605,10 +6605,9 @@ packages:
       timers-ext: 0.1.7
     dev: true
 
-  /cli-high@0.4.1:
-    resolution: {integrity: sha512-fPbkILfCVG6mfxbsJbJZQsKE5JmfgJNlfBxap52XHXjLwPDhs/OMFVFrNR7bqiavZt2r5A80+wiRHzJyzWqwEQ==}
+  /cli-high@0.4.2:
+    resolution: {integrity: sha512-q/CIxOggmzAw/67QYS4j1bMo72IpC+dAlswZl8xHxp8XvmWS97x3Q30pWNXq8mg0pZLSJwIFWZpUWTfcF119wA==}
     hasBin: true
-    requiresBuild: true
     dependencies:
       '@clack/prompts': 0.7.0
       sugar-high: 0.6.1
@@ -7173,8 +7172,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electron-to-chromium@1.4.782:
-    resolution: {integrity: sha512-JUfU61e8tr+i5Y1FKXcKs+Xe+rJ+CEqm4cgv1kMihPE2EvYHmYyVr3Im/+1+Z5B29Be2EEGCZCwAc6Tazdl1Yg==}
+  /electron-to-chromium@1.4.783:
+    resolution: {integrity: sha512-bT0jEz/Xz1fahQpbZ1D7LgmPYZ3iHVY39NcWWro1+hA2IvjiPeaXtfSqrQ+nXjApMvQRE2ASt1itSLRrebHMRQ==}
 
   /emoji-picker-react@4.9.3(react@18.3.1):
     resolution: {integrity: sha512-1O38tt6Yty8MiAB/3BWBpjyKr6sKVIl7Uc/fcATBxgz43fN31j1gVAsbY0+S2Yolaxgro838tFd2iADV2Ot2nA==}
@@ -8156,6 +8155,7 @@ packages:
 
   /glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -8167,6 +8167,7 @@ packages:
   /glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
     dependencies:
       fs.realpath: 1.0.0
       inflight: 1.0.6
@@ -8731,17 +8732,17 @@ packages:
     resolution: {integrity: sha512-jc7BFxgKPKi94uOvEmzlSWFFe2+vASyXaKUpdQKatWAESU2MWjDfFf0fdfc83CDKcA5QecabZeNLyfhe3yKNkg==}
     dev: false
 
-  /jotai-optics@0.3.2(jotai@2.8.1)(optics-ts@2.4.1):
+  /jotai-optics@0.3.2(jotai@2.8.2)(optics-ts@2.4.1):
     resolution: {integrity: sha512-RH6SvqU5hmkVqnHmaqf9zBXvIAs4jLxkDHS4fr5ljuBKHs8+HQ02v+9hX7ahTppxx6dUb0GGUE80jQKJ0kFTLw==}
     peerDependencies:
       jotai: '>=1.11.0'
       optics-ts: '*'
     dependencies:
-      jotai: 2.8.1(@types/react@18.3.3)(react@18.3.1)
+      jotai: 2.8.2(@types/react@18.3.3)(react@18.3.1)
       optics-ts: 2.4.1
     dev: false
 
-  /jotai-x@1.2.3(@types/react@18.3.3)(jotai@2.8.1)(react@18.3.1):
+  /jotai-x@1.2.3(@types/react@18.3.3)(jotai@2.8.2)(react@18.3.1):
     resolution: {integrity: sha512-hQSO2oKZAHvH2Ndm8sMQQ+MjQfSZOh33ET6C0S/D10WWOvKTlvAvwvDkt6NNj8psENt+J2rYP8+brmbyimdYDw==}
     peerDependencies:
       '@types/react': '>=17.0.0'
@@ -8754,12 +8755,12 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.3.3
-      jotai: 2.8.1(@types/react@18.3.3)(react@18.3.1)
+      jotai: 2.8.2(@types/react@18.3.3)(react@18.3.1)
       react: 18.3.1
     dev: false
 
-  /jotai@2.8.1(@types/react@18.3.3)(react@18.3.1):
-    resolution: {integrity: sha512-Gmk5Y3yJL/vN5S0rQ6AaWpXH5Q+HBGHThMHXfylVzXGVuO8YxPRtZf8Y9XYvl+h7ZMQXoHNdFi37vNsJFsiszQ==}
+  /jotai@2.8.2(@types/react@18.3.3)(react@18.3.1):
+    resolution: {integrity: sha512-AU+EU82YqP94izfbGYQQL3oa/06gmn+Ijf/CKx0QybAURtbqh2e4N6zA2fxeIh0JEUgASF6z5IhagJ8NicR95A==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=17.0.0'
@@ -9175,13 +9176,13 @@ packages:
       braces: 3.0.3
       picomatch: 2.3.1
 
-  /million@3.1.5:
-    resolution: {integrity: sha512-EUNMtvdZdD3gN9+qxxzr4TRRIolb6ldy/HVQKCVMJlBWs0pF0i/GKA+zOipp//tqckBA0KMEEp3aWDlwZQFTjg==}
+  /million@3.1.6:
+    resolution: {integrity: sha512-GbI6S88EEwJKJ8wsFyqAG/Fuy9lrWjWJGDENONfGcGe1Pv0Cunk1oRliPY65ZpJ2AovViZEBjsAWIBXY6dA9sg==}
     hasBin: true
     dependencies:
       '@babel/core': 7.24.6
       '@babel/types': 7.24.6
-      '@million/install': 0.0.6
+      '@million/install': 0.0.7
       '@rollup/pluginutils': 5.1.0
       kleur: 4.1.5
       undici: 6.18.1
@@ -9417,7 +9418,7 @@ packages:
       '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001621
+      caniuse-lite: 1.0.30001623
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -10612,6 +10613,7 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

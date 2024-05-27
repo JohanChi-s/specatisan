@@ -1,4 +1,4 @@
-import { Button } from "@/components/BlockEditor/ui/Button";
+import { BlockButton } from "@/components/BlockEditor/ui/Button";
 import { Icon } from "@/components/BlockEditor/ui/Icon";
 import { Surface } from "@/components/BlockEditor/ui/Surface";
 import { Toggle } from "@/components/BlockEditor/ui/Toggle";
@@ -71,14 +71,14 @@ export const LinkEditorPanel = ({
             onChange={state.onChange}
           />
         </label>
-        <Button
+        <BlockButton
           variant="primary"
           buttonSize="small"
           type="submit"
           disabled={!state.isValidUrl}
         >
           Set Link
-        </Button>
+        </BlockButton>
       </form>
       <div className="mt-3">
         <label className="flex items-center justify-start gap-2 text-sm font-semibold cursor-pointer select-none text-neutral-500 dark:text-neutral-400">

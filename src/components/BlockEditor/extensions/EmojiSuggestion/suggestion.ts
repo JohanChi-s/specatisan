@@ -29,38 +29,56 @@ export const emojiSuggestion = {
           editor: props.editor,
         });
 
-        popup = tippy("body", {
-          getReferenceClientRect: props.clientRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
-        });
+        // popup = tippy("body", {
+        //   getReferenceClientRect: () => {
+        //     // Implement logic to get the client rectangle of the reference element
+        //     // For example:
+        //     const referenceElement = document.getElementById(
+        //       "reference-element-id"
+        //     );
+        //     return referenceElement
+        //       ? referenceElement.getBoundingClientRect()
+        //       : null;
+        //   },
+        //   appendTo: () => document.body,
+        //   content: component.element,
+        //   showOnCreate: true,
+        //   interactive: true,
+        //   trigger: "manual",
+        //   placement: "bottom-start",
+        // });
       },
 
       onUpdate(props: SuggestionProps<any>) {
         component.updateProps(props);
 
-        popup[0].setProps({
-          getReferenceClientRect: props.clientRect,
-        });
+        // popup[0].setProps({
+        //   getReferenceClientRect: () => {
+        //     // Implement logic to get the client rectangle of the reference element
+        //     // For example:
+        //     const referenceElement = document.getElementById(
+        //       "reference-element-id"
+        //     );
+        //     return referenceElement
+        //       ? referenceElement.getBoundingClientRect()
+        //       : null;
+        //   },
+        // });
       },
 
       onKeyDown(props: SuggestionKeyDownProps) {
         if (props.event.key === "Escape") {
-          popup[0].hide();
+          // popup[0].hide();
           component.destroy();
 
           return true;
         }
 
-        return component.ref?.onKeyDown(props);
+        // return component.ref?.onKeyDown(props);
       },
 
       onExit() {
-        popup[0].destroy();
+        // popup[0].destroy();
         component.destroy();
       },
     };

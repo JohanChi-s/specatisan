@@ -1,9 +1,5 @@
 "use client";
 
-import { Document } from "@/lib/supabase/supabase.types";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,16 +7,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Tag } from "@/lib/supabase/supabase.types";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { MoreHorizontal, TagIcon } from "lucide-react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { deleteTag, updateTag } from "@/lib/supabase/queries";
+import type { Tag } from "@/lib/supabase/supabase.types";
+import { MoreHorizontal } from "lucide-react";
+import React from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import { toast } from "../ui/use-toast";
 
 type TagActionsProps = {
