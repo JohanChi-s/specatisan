@@ -1,7 +1,7 @@
-import { CommandIcon, SearchIcon } from 'lucide-react';
-import { CommandMenu } from './CommandMenu';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { CommandIcon, SearchIcon } from "lucide-react";
+import { CommandMenu } from "./CommandMenu";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const SearchCommandPalette: React.FC = () => {
   return (

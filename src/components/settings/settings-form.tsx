@@ -48,7 +48,6 @@ import { v4 } from "uuid";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
 import { postData } from "@/lib/utils";
@@ -58,6 +57,7 @@ import LogoutButton from "../global/logout-button";
 import { Colab } from "../global/workspace-creator";
 import CollaboratorItem from "../global/CollaboratorItem";
 import { CollectionPermission } from "@/shared/types";
+import { Button } from "../ui/button";
 
 const SettingsForm = () => {
   const { toast } = useToast();

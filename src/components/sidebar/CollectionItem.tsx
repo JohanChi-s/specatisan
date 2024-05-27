@@ -7,7 +7,6 @@ import { Delete, Edit2, Settings } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import EmojiPicker from "../global/emoji-picker";
-import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +30,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { toast } from "../ui/use-toast";
+import { Button } from "../ui/button";
 
 type Props = {
   collection: Collection;
