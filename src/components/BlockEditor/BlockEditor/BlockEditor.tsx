@@ -62,7 +62,7 @@ export const BlockEditor = ({ aiToken, ydoc, provider }: TiptapProps) => {
           onClose={leftSidebar.close}
           editor={editor}
         />
-        <div className="relative flex flex-col flex-1 h-full overflow-hidden">
+        <div className="relative flex flex-col flex-1 w-full h-full overflow-hidden">
           <EditorHeader
             characters={characterCount.characters()}
             collabState={collabState}
