@@ -1,23 +1,20 @@
 export const dynamic = "force-dynamic";
 
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/lib/providers/next-theme-provider";
-import { DM_Sans } from "next/font/google";
-import { twMerge } from "tailwind-merge";
+import { SocketProvider } from "@/lib/providers/socket-provider";
 import AppStateProvider from "@/lib/providers/state-provider";
 import { SupabaseUserProvider } from "@/lib/providers/supabase-user-provider";
-import { Toaster } from "@/components/ui/toaster";
-import { SocketProvider } from "@/lib/providers/socket-provider";
-import db from "@/lib/supabase/db";
+import type { Metadata } from "next";
+import { DM_Sans } from "next/font/google";
+import { twMerge } from "tailwind-merge";
+import "./globals.css";
 const inter = DM_Sans({
   subsets: ["latin"],
   weight: "400",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://demos.speacatisan.dev"),
   title: "Speacatisan editor ",
   description:
     "Speacatisan is a suite of open source content editing and real-time collaboration tools for developers building apps like Notion or Google Docs.",

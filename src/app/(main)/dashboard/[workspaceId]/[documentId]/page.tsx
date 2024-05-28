@@ -94,7 +94,7 @@ export default function Document({
     };
 
     dataFetch();
-  }, []);
+  }, [user]);
 
   // useEffect(() => {
   //   // fetch data
