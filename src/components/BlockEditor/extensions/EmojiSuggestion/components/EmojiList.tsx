@@ -108,7 +108,13 @@ const EmojiList = forwardRef((props: EmojiListProps, ref) => {
           data-emoji-name={item.name}
         >
           {item.fallbackImage ? (
-            <Image src={item.fallbackImage} className="w-5 h-5" alt="emoji" />
+            <Image
+              src={item.fallbackImage}
+              className="w-5 h-5"
+              width={20}
+              height={20}
+              alt="emoji"
+            />
           ) : (
             item.emoji
           )}{" "}

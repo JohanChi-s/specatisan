@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { cn } from "@/lib/utils";
 import { Node } from "@tiptap/pm/model";
 import { Editor, NodeViewWrapper } from "@tiptap/react";
@@ -34,7 +35,7 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
     <NodeViewWrapper>
       <div className={wrapperClassName} style={{ width: node.attrs.width }}>
         <div contentEditable={false} ref={imageWrapperRef}>
-          <Image className="block" src={src} alt="" onClick={onClick} />
+          <img className="block" src={src} alt="" onClick={onClick} />
         </div>
       </div>
     </NodeViewWrapper>
