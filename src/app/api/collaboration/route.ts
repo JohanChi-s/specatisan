@@ -5,12 +5,12 @@ const JWT_SECRET = process.env.TIPTAP_COLLAB_SECRET as string;
 
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    const { user, role } = await req.json();
+    const { userId, email } = await req.json();
 
     // Define the payload object to be encoded in the JWT
     const payload = {
-      user,
-      role,
+      userId,
+      email,
       exp: Math.floor(Date.now() / 1000) + 60 * 60, // Optional: Set expiration time (1 hour)
     };
 
