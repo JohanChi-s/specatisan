@@ -2,7 +2,6 @@
 import { cn } from "@/lib/utils";
 import { Node } from "@tiptap/pm/model";
 import { Editor, NodeViewWrapper } from "@tiptap/react";
-import Image from "next/image";
 import { useCallback, useRef } from "react";
 
 interface ImageBlockViewProps {
