@@ -6,6 +6,7 @@ export interface TiptapProps {
   aiToken?: string;
   hasCollab: boolean;
   ydoc: YDoc;
+  user: any;
   provider?: TiptapCollabProvider | null | undefined;
 }
 

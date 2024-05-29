@@ -139,28 +139,28 @@ dependencies:
     version: 4.2.6(react-dom@18.3.1)(react@18.3.1)
   '@tiptap-pro/extension-drag-handle':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap-pro/extension-node-range@2.8.7)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5)
+    version: 2.8.8(@tiptap-pro/extension-node-range@2.8.8)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5)
   '@tiptap-pro/extension-drag-handle-react':
     specifier: ^2.8.7
-    version: 2.8.7(@tiptap-pro/extension-drag-handle@2.8.7)(@tiptap/pm@2.4.0)(@tiptap/react@2.4.0)(react-dom@18.3.1)(react@18.3.1)
+    version: 2.8.8(@tiptap-pro/extension-drag-handle@2.8.8)(@tiptap/pm@2.4.0)(@tiptap/react@2.4.0)(react-dom@18.3.1)(react@18.3.1)
   '@tiptap-pro/extension-emoji':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)(emojibase@15.3.0)
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)(emojibase@15.3.0)
   '@tiptap-pro/extension-file-handler':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap-pro/extension-mathematics':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(katex@0.16.10)
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(katex@0.16.10)
   '@tiptap-pro/extension-node-range':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap-pro/extension-table-of-contents':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap-pro/extension-unique-id':
     specifier: ^2.8.1
-    version: 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
   '@tiptap/core':
     specifier: ^2.3.0
     version: 2.4.0(@tiptap/pm@2.4.0)
@@ -3924,8 +3924,8 @@ packages:
       tippy.js: 6.3.7
     dev: false
 
-  /@tiptap-pro/extension-drag-handle-react@2.8.7(@tiptap-pro/extension-drag-handle@2.8.7)(@tiptap/pm@2.4.0)(@tiptap/react@2.4.0)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-LMGZhTBw0g+t+Ad5wADlyLTT49f66S0Zr9aj4gULt1S5KlPkAi25Z+A0wBESZ6eidRWUCYO53QsEm30fTixqKA==}
+  /@tiptap-pro/extension-drag-handle-react@2.8.8(@tiptap-pro/extension-drag-handle@2.8.8)(@tiptap/pm@2.4.0)(@tiptap/react@2.4.0)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-lECcpyGo0Ls6oB7uphCYhVOI6b8kqUyFahsJ0FSRcloVq0fop91ndKXyJr1D1KMzoneEKWgnRn/lTU4aLAak4A==}
     peerDependencies:
       '@tiptap-pro/extension-drag-handle': ^2.7.7
       '@tiptap/pm': ^2.0.0
@@ -3933,15 +3933,15 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
     dependencies:
-      '@tiptap-pro/extension-drag-handle': 2.8.7(@tiptap-pro/extension-node-range@2.8.7)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5)
+      '@tiptap-pro/extension-drag-handle': 2.8.8(@tiptap-pro/extension-node-range@2.8.8)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5)
       '@tiptap/pm': 2.4.0
       '@tiptap/react': 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     dev: false
 
-  /@tiptap-pro/extension-drag-handle@2.8.7(@tiptap-pro/extension-node-range@2.8.7)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5):
-    resolution: {integrity: sha512-b902GJTI2KXuuT4xvC1Aek7YtjPDztUKa3bH6Cs7s7dAc0AhSEC+iuuR/D2EloPLNVeNGcUv8PE0+UjX8XYHzQ==}
+  /@tiptap-pro/extension-drag-handle@2.8.8(@tiptap-pro/extension-node-range@2.8.8)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5):
+    resolution: {integrity: sha512-iRQOy28cbouz3+opqcl7fWu4Hs3djqrwRzzTf3s5BgX9smlTfQ4AVCHAju7LJuycWeOzb/SAhbnmmd0CgapSSw==}
     peerDependencies:
       '@tiptap-pro/extension-node-range': ^2.7.7
       '@tiptap/core': ^2.0.0
@@ -3949,7 +3949,7 @@ packages:
       '@tiptap/pm': ^2.0.0
       y-prosemirror: ^1.2.5
     dependencies:
-      '@tiptap-pro/extension-node-range': 2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+      '@tiptap-pro/extension-node-range': 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
       '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
       '@tiptap/extension-collaboration': 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5)
       '@tiptap/pm': 2.4.0
@@ -3957,8 +3957,8 @@ packages:
       y-prosemirror: 1.2.5(prosemirror-model@1.21.0)(prosemirror-state@1.4.3)(prosemirror-view@1.33.6)(y-protocols@1.0.6)(yjs@13.6.15)
     dev: false
 
-  /@tiptap-pro/extension-emoji@2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)(emojibase@15.3.0):
-    resolution: {integrity: sha512-3D959ZYlRC2/TmH+b4wLHip0ukxbu0JOp75oMhAqj1/6ZTZ1fG6+B70A5r0Z7PCJ2MjMuBYlKvbewQ9xL6doVw==}
+  /@tiptap-pro/extension-emoji@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)(emojibase@15.3.0):
+    resolution: {integrity: sha512-ftoKxgeYla9z6c/IzHBh8TMxXQqGbn7DqftC3bL6ZMDABnSSiD8s7WnHktvT7/P5Ye8W0oRKFbSpoIMn4jOVMA==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -3974,8 +3974,8 @@ packages:
       - emojibase
     dev: false
 
-  /@tiptap-pro/extension-file-handler@2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
-    resolution: {integrity: sha512-DGezh+iSAQ9LWjFjCNIjvV51FRQhai2+nHmiCYhzusahv3/3vtVqrd2UmagRia9Tedxtm+ZzV8lsy4Icrxg3ug==}
+  /@tiptap-pro/extension-file-handler@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
+    resolution: {integrity: sha512-zZbvlEUwtqCiUqhJ7brv9FH4LeyIHt6YFdZlaKBcMfv78bLasXQFQqrmTP2nsIs+N7NWMSGkrgd/5FLsBuc/JA==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -3984,8 +3984,8 @@ packages:
       '@tiptap/pm': 2.4.0
     dev: false
 
-  /@tiptap-pro/extension-mathematics@2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(katex@0.16.10):
-    resolution: {integrity: sha512-iRQxBb9UbMGIaT5St+ypn19jeAknFwrWZk23Ly+qxSyAliQhwecT/ghy1aZBE2OeDXNbdr0h6mzGGOUbA1XZEQ==}
+  /@tiptap-pro/extension-mathematics@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(katex@0.16.10):
+    resolution: {integrity: sha512-N0JoTSBfkTxnaUP8TKmaI64m54YORIm/0RaGBjbHxNASmUgFihFWwrPh9SXics77wpIw25vT/hueMDtTB2L9FA==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -3996,8 +3996,8 @@ packages:
       katex: 0.16.10
     dev: false
 
-  /@tiptap-pro/extension-node-range@2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
-    resolution: {integrity: sha512-U3iS/E00XcWVak7LEtA4U7VwdNpTVBsKHGHZuHXLTmwJUXON3CWZnHn8MIXSLYJWy/59IvEIyIqaX4HhpSW84g==}
+  /@tiptap-pro/extension-node-range@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
+    resolution: {integrity: sha512-d+P20wDhq8UC4IeUn/m68swm+TMYjT3wAUAOpxFFr/RuQinFCVw1lZm/4gfA9k6ne9kMfi+ZQXBscg/2ASucQA==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -4006,8 +4006,8 @@ packages:
       '@tiptap/pm': 2.4.0
     dev: false
 
-  /@tiptap-pro/extension-table-of-contents@2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
-    resolution: {integrity: sha512-wG5x2hmiydESQ6ePzFUtn4Qq4m2tsLEvbiZqBS0USZAW0zCT4bkNnqfMpC9C9tQGqH2ZEF4rdciZD7qbJL1rhw==}
+  /@tiptap-pro/extension-table-of-contents@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
+    resolution: {integrity: sha512-bdOXNiz5BeyQ8KcBisz5F+awNEC8KJzDfGlhLgn/oeOjyJSNwE/Mj2hX4siyFj83vHTYgGjefv3f8ZduYrTHhg==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -4017,8 +4017,8 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /@tiptap-pro/extension-unique-id@2.8.7(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
-    resolution: {integrity: sha512-8JafZ+M2sApW3ADc71gYboRFqycnaFqozlou+Bb2E7b1YKKrzcVnE7wA94VaOZJTwLireuoMJqxaLIsTmUhd1g==}
+  /@tiptap-pro/extension-unique-id@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
+    resolution: {integrity: sha512-sHIzO6YcKKGaehTJEZgfmI0g9csLm5wH3lUSV9D6B71k/4QIJfY5Xy7wbmZwqOeTQYLK3ZWi624FznN/DQ+wFg==}
     peerDependencies:
       '@tiptap/core': ^2.0.0
       '@tiptap/pm': ^2.0.0
@@ -6285,7 +6285,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.23.0
-      caniuse-lite: 1.0.30001623
+      caniuse-lite: 1.0.30001625
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.1
@@ -6414,7 +6414,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001623
+      caniuse-lite: 1.0.30001625
       electron-to-chromium: 1.4.783
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.0)
@@ -6498,8 +6498,8 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /caniuse-lite@1.0.30001623:
-    resolution: {integrity: sha512-X/XhAVKlpIxWPpgRTnlgZssJrF0m6YtRA0QDWgsBNT12uZM6LPRydR7ip405Y3t1LamD8cP2TZFEDZFBf5ApcA==}
+  /caniuse-lite@1.0.30001625:
+    resolution: {integrity: sha512-4KE9N2gcRH+HQhpeiRZXd+1niLB/XNLAhSy4z7fI8EzcbcPoAqjNInxVHTiTwWfTIV4w096XG8OtCOCQQKPv3w==}
 
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -7524,7 +7524,7 @@ packages:
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1)(eslint@8.57.0)
       eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.8.0(eslint@8.57.0)
-      eslint-plugin-react: 7.34.1(eslint@8.57.0)
+      eslint-plugin-react: 7.34.2(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
       typescript: 5.4.5
     transitivePeerDependencies:
@@ -7664,8 +7664,8 @@ packages:
       eslint: 8.57.0
     dev: true
 
-  /eslint-plugin-react@7.34.1(eslint@8.57.0):
-    resolution: {integrity: sha512-N97CxlouPT1AHt8Jn0mhhN2RrADlUAsk1/atcT2KyA/l9Q/E6ll7OIGwNumFmWfZ9skV3XXccYS19h80rHtgkw==}
+  /eslint-plugin-react@7.34.2(eslint@8.57.0):
+    resolution: {integrity: sha512-2HCmrU+/JNigDN6tg55cRDKCQWicYAPB38JGSFDQt95jDm8rrvSUo7YPkOIm5l6ts1j1zCvysNcasvfTMQzUOw==}
     engines: {node: '>=4'}
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
@@ -9185,7 +9185,7 @@ packages:
       '@million/install': 0.0.7
       '@rollup/pluginutils': 5.1.0
       kleur: 4.1.5
-      undici: 6.18.1
+      undici: 6.18.2
       unplugin: 1.10.1
     transitivePeerDependencies:
       - debug
@@ -9418,7 +9418,7 @@ packages:
       '@next/env': 14.2.3
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001623
+      caniuse-lite: 1.0.30001625
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.3.1
@@ -11081,7 +11081,6 @@ packages:
 
   /string_decoder@1.3.0:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
-    requiresBuild: true
     dependencies:
       safe-buffer: 5.2.1
     dev: false
@@ -11499,8 +11498,8 @@ packages:
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  /undici@6.18.1:
-    resolution: {integrity: sha512-/0BWqR8rJNRysS5lqVmfc7eeOErcOP4tZpATVjJOojjHZ71gSYVAtFhEmadcIjwMIUehh5NFyKGsXCnXIajtbA==}
+  /undici@6.18.2:
+    resolution: {integrity: sha512-o/MQLTwRm9IVhOqhZ0NQ9oXax1ygPjw6Vs+Vq/4QRjbOAC3B1GCHy7TYxxbExKlb7bzDRzt9vBWU6BDz0RFfYg==}
     engines: {node: '>=18.17'}
     dev: false
 

@@ -133,7 +133,7 @@ export default function Document({
     }
   }, [setProvider, collabToken, ydoc, documentId, hasCollab]);
 
-  if (hasCollab && (!collabToken || !provider)) return;
+  if (hasCollab && (!collabToken || !provider || !user)) return;
   return (
     <>
       <BlockEditor
@@ -141,6 +141,7 @@ export default function Document({
         hasCollab={hasCollab}
         ydoc={ydoc}
         provider={provider}
+        user={user}
       />
     </>
   );
