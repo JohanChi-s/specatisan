@@ -13,41 +13,27 @@ import { useToast } from "../ui/use-toast";
 import CollectionItem from "./CollectionItem";
 
 interface CollectionsDropdownListProps {
-  workspaceCollections: Collection[];
   workspaceId: string;
 }
 
 const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
-  workspaceCollections,
   workspaceId,
 }) => {
   // useSupabaseRealtime();
-  const { state, dispatch, collectionId } = useAppState();
+  const { state, dispatch } = useAppState();
   const { user } = useSupabaseUser();
   const { open, setOpen } = useSubscriptionModal();
   const { toast } = useToast();
-  const [collections, setCollections] = useState(workspaceCollections);
+  const [collections, setCollections] = useState<Collection[]>(
+    state.collections
+  );
+
+  useEffect(() => {
+    const collections = state.collections.filter((c) => c.inTrash === null);
+    setCollections(collections);
+  }, [state.collections]);
 
   const { subscription } = useSupabaseUser();
-
-  useEffect(() => {
-    if (workspaceCollections.length > 0) {
-      dispatch({
-        type: "SET_FOLDERS",
-        payload: {
-          workspaceId,
-          collections: workspaceCollections,
-        },
-      });
-    }
-  }, [dispatch, workspaceCollections, workspaceId]);
-
-  useEffect(() => {
-    setCollections(
-      state.workspaces.find((workspace) => workspace.id === workspaceId)
-        ?.collections || []
-    );
-  }, [state, workspaceId]);
 
   //add collection
   const addCollectionHandler = async () => {
@@ -75,7 +61,7 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
       createdById: user?.id || null,
     };
     dispatch({
-      type: "ADD_FOLDER",
+      type: "ADD_COLLECTION",
       payload: { workspaceId, collection: { ...newCollection } },
     });
     const { data, error } = await createCollection(newCollection);

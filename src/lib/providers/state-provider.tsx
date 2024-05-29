@@ -11,6 +11,7 @@ import React, {
   useReducer,
 } from "react";
 import {
+  getCollections,
   getDocumentByWorkspaceId,
   getStars,
   getTags,
@@ -27,14 +28,10 @@ import {
 } from "../supabase/supabase.types";
 import { useSupabaseUser } from "./supabase-user-provider";
 
-export type appWorkspacesType = Workspace & {
-  collections: Collection[] | [];
-  documents: DocumentWithTags[] | [];
-};
-
 interface AppState {
-  workspaces: appWorkspacesType[] | [];
-  currentWorkspace: appWorkspacesType | null;
+  workspaces: Workspace[] | [];
+  currentWorkspace: Workspace | null;
+  collections: Collection[] | [];
   tags: Tag[] | [];
   favorites: StarWithDocument[] | [];
   documents: DocumentWithTags[] | [];
@@ -42,26 +39,26 @@ interface AppState {
 }
 
 type Action =
-  | { type: "ADD_WORKSPACE"; payload: appWorkspacesType }
+  | { type: "ADD_WORKSPACE"; payload: Workspace }
   | { type: "DELETE_WORKSPACE"; payload: string }
   | {
       type: "UPDATE_WORKSPACE";
-      payload: { workspace: Partial<appWorkspacesType>; workspaceId: string };
+      payload: { workspace: Partial<Workspace>; workspaceId: string };
     }
   | {
       type: "SET_WORKSPACES";
-      payload: { workspaces: appWorkspacesType[] };
+      payload: { workspaces: Workspace[] };
     }
   | {
       type: "SET_CURRENT_WORKSPACES";
-      payload: { workspace: appWorkspacesType };
+      payload: { workspace: Workspace };
     }
   | {
-      type: "SET_FOLDERS";
+      type: "SET_COLLECTIONS";
       payload: { workspaceId: string; collections: Collection[] | [] };
     }
   | {
-      type: "ADD_FOLDER";
+      type: "ADD_COLLECTION";
       payload: { workspaceId: string; collection: Collection };
     }
   | {
@@ -72,7 +69,7 @@ type Action =
       };
     }
   | {
-      type: "DELETE_FOLDER";
+      type: "DELETE_COLLECTION";
       payload: { workspaceId: string; collectionId: string };
     }
   | {
@@ -83,7 +80,7 @@ type Action =
       };
     }
   | {
-      type: "UPDATE_FOLDER";
+      type: "UPDATE_COLLECTION";
       payload: {
         collection: Partial<Collection>;
         workspaceId: string;
@@ -167,6 +164,7 @@ const initialState: AppState = {
   workspaces: [],
   currentWorkspace: null,
   tags: [],
+  collections: [],
   favorites: [],
   documents: [],
   userPermisison: undefined,
@@ -212,68 +210,35 @@ const appReducer = (
         ...state,
         currentWorkspace: action.payload.workspace,
       };
-    case "SET_FOLDERS":
+    case "SET_COLLECTIONS":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
+        collections: action.payload.collections,
+      };
+    case "ADD_COLLECTION":
+      return {
+        ...state,
+        collections: [...state.collections, action.payload.collection],
+      };
+    case "UPDATE_COLLECTION":
+      return {
+        ...state,
+        collections: state.collections.map((collection) => {
+          if (collection.id === action.payload.collectionId) {
             return {
-              ...workspace,
-              collections: action.payload.collections,
+              ...collection,
+              ...action.payload.collection,
             };
           }
-          return workspace;
+          return collection;
         }),
       };
-    case "ADD_FOLDER":
+    case "DELETE_COLLECTION":
       return {
         ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          return {
-            ...workspace,
-            collections: [
-              ...workspace.collections,
-              action.payload.collection,
-            ].sort(
-              (a, b) =>
-                new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
-            ),
-          };
-        }),
-      };
-    case "UPDATE_FOLDER":
-      return {
-        ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              collections: workspace.collections.map((collection) => {
-                if (collection.id === action.payload.collectionId) {
-                  return { ...collection, ...action.payload.collection };
-                }
-                return collection;
-              }),
-            };
-          }
-          return workspace;
-        }),
-      };
-    case "DELETE_FOLDER":
-      return {
-        ...state,
-        workspaces: state.workspaces.map((workspace) => {
-          if (workspace.id === action.payload.workspaceId) {
-            return {
-              ...workspace,
-              collections: workspace.collections.filter(
-                (collection) => collection.id !== action.payload.collectionId
-              ),
-            };
-          }
-          return workspace;
-        }),
+        collections: state.collections.filter(
+          (collection) => collection.id !== action.payload.collectionId
+        ),
       };
     case "SET_FILES":
       return {
@@ -421,15 +386,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
             await getUserWorkspaces(userId);
           if (workspacesError || !workspaces) return;
 
-          const transformedData = workspaces.map((workspace) => ({
-            ...workspace,
-            collections: [],
-            documents: [],
-          }));
-
-          const currentWorkspace = transformedData.find(
-            (w) => w.id === workspaceId
-          );
+          const currentWorkspace = workspaces.find((w) => w.id === workspaceId);
 
           if (currentWorkspace) {
             dispatch({
@@ -439,7 +396,7 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
           }
           dispatch({
             type: "SET_WORKSPACES",
-            payload: { workspaces: transformedData },
+            payload: { workspaces: workspaces },
           });
 
           const { data: tags, error: tagsError } = await getTags(workspaceId);
@@ -453,6 +410,16 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
             dispatch({
               type: "SET_FILES",
               payload: { documents, workspaceId },
+            });
+          }
+
+          // set collections
+          const { data: collections, error: collectionsError } =
+            await getCollections(workspaceId);
+          if (!collectionsError && collections) {
+            dispatch({
+              type: "SET_COLLECTIONS",
+              payload: { workspaceId, collections },
             });
           }
 

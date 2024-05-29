@@ -59,7 +59,7 @@ const TrashPage = () => {
       );
       setCollections(updatedCollections);
       dispatch({
-        type: "UPDATE_FOLDER",
+        type: "UPDATE_COLLECTION",
         payload: {
           workspaceId,
           collection: { id: collectionId, inTrash: null },
@@ -88,7 +88,7 @@ const TrashPage = () => {
       );
       setCollections(updatedCollections);
       dispatch({
-        type: "DELETE_FOLDER",
+        type: "DELETE_COLLECTION",
         payload: { workspaceId, collectionId },
       });
       toast({ variant: "default", title: "Collection deleted permanently" });

@@ -19,7 +19,8 @@ const CollectionsPage: React.FC = () => {
     const fetchCollections = async () => {
       const { data, error } = await getCollections(workspaceId);
       if (error) return;
-      setCollections(data || []);
+      const collections = data?.filter((c) => c.inTrash === null);
+      setCollections(collections || []);
     };
     fetchCollections();
   }, [workspaceId]);

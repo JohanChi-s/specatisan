@@ -32,6 +32,7 @@
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import { useSearchParams } from "next/navigation";
 import {
+  Suspense,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -42,6 +43,7 @@ import { Doc as YDoc } from "yjs";
 
 import { BlockEditor } from "@/components/BlockEditor/BlockEditor";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { LoadingEditor } from "@/components/Loading";
 
 export interface AiState {
   isAiLoading: boolean;
@@ -136,13 +138,15 @@ export default function Document({
   if (hasCollab && (!collabToken || !provider || !user)) return;
   return (
     <>
-      <BlockEditor
-        // aiToken={aiToken}
-        hasCollab={hasCollab}
-        ydoc={ydoc}
-        provider={provider}
-        user={user}
-      />
+      <Suspense fallback={<LoadingEditor />}>
+        <BlockEditor
+          // aiToken={aiToken}
+          hasCollab={hasCollab}
+          ydoc={ydoc}
+          provider={provider}
+          user={user}
+        />
+      </Suspense>
     </>
   );
 }

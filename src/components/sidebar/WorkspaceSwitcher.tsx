@@ -7,21 +7,13 @@ import { useAppState } from "@/lib/providers/state-provider";
 import { Workspace } from "@/lib/supabase/supabase.types";
 import { cn } from "@/lib/utils";
 import { Cloud, PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import CustomDialogTrigger from "../global/custom-dialog-trigger";
 import WorkspaceCreator from "../global/workspace-creator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "../ui/command";
+import { Command, CommandGroup, CommandList } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useRouter } from "next/navigation";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -35,9 +27,7 @@ interface WorkspaceSwitcherProps extends PopoverTriggerProps {
 }
 
 export default function WorkspaceSwitcher({
-  className,
   privateWorkspaces,
-  sharedWorkspaces,
   collaboratingWorkspaces,
   defaultWorkspace,
 }: WorkspaceSwitcherProps) {
@@ -51,10 +41,9 @@ export default function WorkspaceSwitcher({
 
   const handleSelect = (option: Workspace) => {
     setSelectedWorkspace(option);
-    const workspace = { ...option, collections: [], documents: [] };
     dispatch({
       type: "SET_CURRENT_WORKSPACES",
-      payload: { workspace: workspace },
+      payload: { workspace: option },
     });
     setOpen(false);
 
