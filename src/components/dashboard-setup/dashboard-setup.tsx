@@ -96,7 +96,7 @@ const DashboardSetup: React.FC<DashboardSetupProps> = ({
       }
       dispatch({
         type: "ADD_WORKSPACE",
-        payload: { ...newWorkspace, collections: [], documents: [] },
+        payload: { ...newWorkspace },
       });
 
       toast({

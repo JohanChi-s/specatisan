@@ -7,6 +7,7 @@ import { useAppState } from "@/lib/providers/state-provider";
 import {
   deleteCollection,
   deleteDocument,
+  getCollections,
   getDocumentByWorkspaceId,
   updateCollection,
   updateDocument,
@@ -21,12 +22,18 @@ const TrashPage = () => {
   const [documents, setDocuments] = useState<Document[] | []>([]);
 
   useEffect(() => {
-    const workspace = state.workspaces.find((w) => w.id === workspaceId);
-    if (workspace) {
-      const collectionsInTrash =
-        workspace?.collections?.filter((w) => w.inTrash !== null) || [];
-      setCollections(collectionsInTrash);
-    }
+    const fetchCollectionsInTrash = async () => {
+      if (!workspaceId) return console.error("No workspaceId");
+      const { data, error } = await getCollections(workspaceId);
+      if (error) {
+        console.error("Error fetching collections in trash", error);
+      } else {
+        const collectionsInTrash =
+          data?.filter((c) => c.inTrash !== null) || [];
+        setCollections(collectionsInTrash || []);
+      }
+    };
+    fetchCollectionsInTrash();
   }, [state.workspaces, workspaceId]);
 
   // fetch documents in trash
