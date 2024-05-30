@@ -47,7 +47,7 @@ const CollectionItem: React.FC<Props> = ({
   const handleSaveChange = async () => {
     if (!workspaceId) return;
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_COLLECTION",
       payload: {
         workspaceId,
         collectionId: collection.id,
@@ -71,7 +71,7 @@ const CollectionItem: React.FC<Props> = ({
 
   const handleDeleteCollection = async (collectionId: string) => {
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_COLLECTION",
       payload: {
         collection: { inTrash: `Deleted by ${user?.email}` },
         collectionId: collectionId,

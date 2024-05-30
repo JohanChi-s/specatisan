@@ -1,8 +1,7 @@
 "use client";
 
-import { WebSocketStatus } from "@hocuspocus/provider";
-import { EditorContent, PureEditorContent } from "@tiptap/react";
-import React, { useMemo, useRef } from "react";
+import { EditorContent } from "@tiptap/react";
+import { useMemo, useRef } from "react";
 
 import { LinkMenu } from "@/components/BlockEditor/menus";
 
@@ -11,7 +10,6 @@ import { useBlockEditor } from "@/hooks/useBlockEditor";
 import "@/components/BlockEditor/styles/index.css";
 
 import { Sidebar } from "@/components/BlockEditor/Sidebar";
-import { Loader } from "@/components/BlockEditor/ui/Loader";
 import { EditorContext } from "@/components/BlockEditor/context/EditorContext";
 import ImageBlockMenu from "@/components/BlockEditor/extensions/ImageBlock/components/ImageBlockMenu";
 import { ColumnsMenu } from "@/components/BlockEditor/extensions/MultiColumn/menus";
@@ -19,20 +17,25 @@ import {
   TableColumnMenu,
   TableRowMenu,
 } from "@/components/BlockEditor/extensions/Table/menus";
+import { Loader } from "@/components/BlockEditor/ui/Loader";
 import { useAIState } from "@/hooks/useAIState";
 import { createPortal } from "react-dom";
-import { TiptapProps } from "./types";
-import { EditorHeader } from "./components/EditorHeader";
-import { TextMenu } from "../menus/TextMenu";
 import { ContentItemMenu } from "../menus/ContentItemMenu";
+import { TextMenu } from "../menus/TextMenu";
+import { EditorHeader } from "./components/EditorHeader";
+import { TiptapProps } from "./types";
 
-export const BlockEditor = ({ aiToken, ydoc, provider }: TiptapProps) => {
+export const BlockEditor = ({ aiToken, ydoc, provider, user }: TiptapProps) => {
   const aiState = useAIState();
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
-
   const { editor, users, characterCount, collabState, leftSidebar } =
-    useBlockEditor({ aiToken, ydoc, provider });
+    useBlockEditor({
+      aiToken,
+      ydoc,
+      provider,
+      username: user?.email,
+    });
 
   const displayedUsers = users.slice(0, 3);
 

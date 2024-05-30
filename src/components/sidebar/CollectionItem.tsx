@@ -45,7 +45,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
   const handleSaveChange = async () => {
     if (!workspaceId) return;
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_COLLECTION",
       payload: {
         workspaceId,
         collectionId: collection.id,
@@ -69,7 +69,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
   const onChangeEmoji = async (selectedEmoji: string) => {
     if (!workspaceId) return;
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_COLLECTION",
       payload: {
         workspaceId,
         collectionId: collection.id,
@@ -96,7 +96,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
 
   const handleDeleteCollection = async (collectionId: string) => {
     dispatch({
-      type: "UPDATE_FOLDER",
+      type: "UPDATE_COLLECTION",
       payload: {
         collection: { inTrash: `Deleted by ${user?.email}` },
         collectionId: collectionId,
@@ -122,7 +122,7 @@ const CollectionItem: React.FC<Props> = ({ collection, workspaceId }) => {
   };
 
   return (
-    <li className="flex flex-1 w-full px-2 py-1 rounded-md dark:bg-muted hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
+    <li className="flex flex-1 w-full px-2 py-1 rounded-md hover:bg-muted justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white">
       <EmojiPicker getValue={onChangeEmoji}>{collection.icon}</EmojiPicker>
       <Link
         href={`/dashboard/${workspaceId}/collections/${collection.id}`}

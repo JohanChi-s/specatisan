@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Settings from "../settings/settings";
 import WorkspaceSwitcher from "./WorkspaceSwitcher";
 
@@ -32,6 +32,7 @@ import { UUID } from "crypto";
 import { AuthUser } from "@supabase/supabase-js";
 import UserCard from "./user-card";
 import FavoritesList from "./Favorites";
+import { LoadingEditor } from "../Loading";
 
 interface SidebarProps {
   params: { workspaceId: string };
@@ -41,10 +42,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
   const router = useRouter();
-
-  const [workspaceCollectionData, setWorkspaceCollectionData] = useState<
-    Collection | any
-  >([]);
   const [privateWorkspaces, setPrivateWorkspaces] = useState<Workspace | any>(
     []
   );
@@ -70,16 +67,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         }
 
         setUser(user);
-
-        const { data: workspaceCollectionData, error: collectionsError } =
-          await getCollections(params.workspaceId);
-        if (workspaceCollectionData)
-          setWorkspaceCollectionData(workspaceCollectionData);
-
-        if (collectionsError) {
-          router.push(`/dashboard/${params.workspaceId}`); // Redirect to dashboard on collections error
-          return;
-        }
 
         const [privateWs, collabWs, sharedWs] = await Promise.all([
           getPrivateWorkspaces(user.id),
@@ -150,16 +137,13 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
     >
       <div className="p-2 w-full">
         <div className="flex w-full items-center justify-between">
-          <WorkspaceSwitcher
-            privateWorkspaces={privateWorkspaces}
-            collaboratingWorkspaces={collaboratingWorkspaces}
-            sharedWorkspaces={sharedWorkspaces}
-            defaultWorkspace={[
-              ...privateWorkspaces,
-              ...sharedWorkspaces,
-              collaboratingWorkspaces,
-            ].find((workspace) => workspace?.id === params.workspaceId)}
-          />
+          <Suspense fallback={<LoadingEditor />}>
+            <WorkspaceSwitcher
+              privateWorkspaces={privateWorkspaces}
+              collaboratingWorkspaces={collaboratingWorkspaces}
+              sharedWorkspaces={sharedWorkspaces}
+            />
+          </Suspense>
           <AccountInfo />
         </div>
         {/* Quick Search */}
@@ -200,12 +184,15 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
           ) : null}
         </ul>
         {/* Favorites */}
-        <FavoritesList />
+
+        <Suspense fallback={<LoadingEditor />}>
+          <FavoritesList />
+        </Suspense>
         {/* Collections */}
-        <CollectionsDropdownList
-          workspaceCollections={workspaceCollectionData}
-          workspaceId={params.workspaceId}
-        />
+
+        <Suspense fallback={<LoadingEditor />}>
+          <CollectionsDropdownList workspaceId={params.workspaceId} />
+        </Suspense>
 
         <Separator orientation="horizontal" className="my-2" />
         {/* Others */}

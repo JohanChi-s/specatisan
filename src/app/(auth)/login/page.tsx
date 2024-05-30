@@ -10,7 +10,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { actionLoginUser } from "@/lib/server-actions/auth-actions";
+import {
+  actionLoginUser,
+  actionLoginUserGoogle,
+} from "@/lib/server-actions/auth-actions";
 import { FormSchema } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -39,6 +42,15 @@ const LoginPage = () => {
       form.reset();
       setSubmitError(error.message);
     }
+    router.replace("/dashboard");
+  };
+
+  const handleLoginGoolge = async () => {
+    const { error } = await actionLoginUserGoogle();
+    if (error) {
+      setSubmitError(error.message);
+    }
+    console.log("Google login");
     router.replace("/dashboard");
   };
 
@@ -97,6 +109,7 @@ const LoginPage = () => {
         <Button
           variant="outline"
           type="button"
+          onClick={handleLoginGoolge}
           disabled={isLoading}
           className="flex items-center"
         >

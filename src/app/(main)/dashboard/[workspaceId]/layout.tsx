@@ -1,4 +1,6 @@
 "use client";
+import { LoadingEditor } from "@/components/Loading";
+import Loader from "@/components/global/Loader";
 import Sidebar from "@/components/sidebar/sidebar";
 import {
   ResizableHandle,
@@ -7,10 +9,9 @@ import {
 } from "@/components/ui/resizable";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 interface LayoutProps {
   children: React.ReactNode;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   params: any;
 }
 
@@ -36,7 +37,9 @@ const Layout: React.FC<LayoutProps> = ({ children, params }) => {
             maxSize={30}
           >
             <div className="flex h-full justify-center p-4">
-              <Sidebar isCollapsed={isCollapsed} params={params} />
+              <Suspense fallback={<LoadingEditor />}>
+                <Sidebar isCollapsed={isCollapsed} params={params} />
+              </Suspense>
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle className="h-full" />

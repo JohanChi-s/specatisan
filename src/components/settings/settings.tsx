@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import clsx from "clsx";
-import SettingsForm from "./settings-form";
+import SettingsForm from "./setting-form";
 
 interface SettingsProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function LoadingEditor() {
+export default function LoadingEditor() {
   return (
     <div className="flex items-center space-x-4 justify-center">
       <Skeleton className="h-12 w-12 rounded-full" />
