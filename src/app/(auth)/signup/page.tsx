@@ -51,16 +51,16 @@ const Signup = () => {
     return searchParams.get("error_description");
   }, [searchParams]);
 
-  const confirmationAndErrorStyles = useMemo(
-    () =>
-      clsx("bg-primary", {
-        "bg-red-500/10": codeExchangeError,
-        "border-red-500/50": codeExchangeError,
-        "text-red-700": codeExchangeError,
-        "dark:bg-red-500/20": codeExchangeError,
-      }),
-    [codeExchangeError]
-  );
+  // const confirmationAndErrorStyles = useMemo(
+  //   () =>
+  //     clsx("bg-primary", {
+  //       "bg-red-500/10": codeExchangeError,
+  //       "border-red-500/50": codeExchangeError,
+  //       "text-red-700": codeExchangeError,
+  //       "dark:bg-red-500/20": codeExchangeError,
+  //     }),
+  //   [codeExchangeError]
+  // );
 
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     mode: "onChange",
@@ -156,7 +156,7 @@ const Signup = () => {
         </div>
         {(confirmation || codeExchangeError) && (
           <>
-            <Alert className={confirmationAndErrorStyles}>
+            <Alert>
               {!codeExchangeError && <MailCheck className="h-4 w-4" />}
               <AlertTitle>
                 {codeExchangeError ? "Invalid Link" : "Check your email."}
