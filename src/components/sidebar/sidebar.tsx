@@ -142,11 +142,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               privateWorkspaces={privateWorkspaces}
               collaboratingWorkspaces={collaboratingWorkspaces}
               sharedWorkspaces={sharedWorkspaces}
-              defaultWorkspace={[
-                ...privateWorkspaces,
-                ...sharedWorkspaces,
-                collaboratingWorkspaces,
-              ].find((workspace) => workspace?.id === params.workspaceId)}
             />
           </Suspense>
           <AccountInfo />

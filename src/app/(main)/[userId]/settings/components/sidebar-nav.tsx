@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {

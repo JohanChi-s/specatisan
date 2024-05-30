@@ -23,20 +23,18 @@ interface WorkspaceSwitcherProps extends PopoverTriggerProps {
   privateWorkspaces: Workspace[] | [];
   sharedWorkspaces: Workspace[] | [];
   collaboratingWorkspaces: Workspace[] | [];
-  defaultWorkspace: Workspace | undefined;
 }
 
 export default function WorkspaceSwitcher({
   privateWorkspaces,
   collaboratingWorkspaces,
-  defaultWorkspace,
 }: WorkspaceSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const { dispatch } = useAppState();
   const router = useRouter();
   const [selectedWorkspace, setSelectedWorkspace] = React.useState<
     Workspace | undefined
-  >(defaultWorkspace);
+  >();
   const { state } = useAppState();
 
   const handleSelect = (option: Workspace) => {
@@ -51,11 +49,8 @@ export default function WorkspaceSwitcher({
   };
 
   React.useEffect(() => {
-    const findSelectedWorkspace = state.workspaces.find(
-      (workspace) => workspace.id === defaultWorkspace?.id
-    );
-    if (findSelectedWorkspace) setSelectedWorkspace(findSelectedWorkspace);
-  }, [state, defaultWorkspace]);
+    setSelectedWorkspace(state.currentWorkspace || state.workspaces[0]);
+  }, [state.currentWorkspace, state.workspaces]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
