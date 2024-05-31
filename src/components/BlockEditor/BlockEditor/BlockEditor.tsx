@@ -75,6 +75,7 @@ export const BlockEditor = ({ aiToken, ydoc, provider, user }: TiptapProps) => {
             toggleSidebar={leftSidebar.toggle}
           />
           <EditorContent
+            id="editor-content"
             editor={editor}
             ref={editorRef}
             className="flex-1 overflow-y-auto"

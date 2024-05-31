@@ -166,6 +166,7 @@
     "drizzle-orm": "^0.28.6",
     "emoji-picker-react": "^4.9.3",
     "express": "^4.19.2",
+    "html2pdf.js": "^0.10.1",
     "jotai": "^2.8.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",

@@ -80,8 +80,6 @@ export default function Document({
             email: user.email, // Add any other relevant information
           }),
         });
-        console.log("response.ok", response);
-
         if (!response.ok) {
           throw new Error("Failed to fetch token");
         }
