@@ -332,8 +332,6 @@ const AppStateContext = createContext<
       state: AppState;
       dispatch: Dispatch<Action>;
       workspaceId: string | undefined;
-      collectionId: string | undefined;
-      fileId: string | undefined;
     }
   | undefined
 >(undefined);
@@ -360,109 +358,85 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
       }
   }, [pathname]);
 
-  const collectionId = useMemo(() => {
-    const urlSegments = parsePathname(pathname);
-    if (urlSegments)
-      if (urlSegments?.length > 4) {
-        return urlSegments[4];
-      }
-  }, [pathname]);
-
-  const fileId = useMemo(() => {
-    const urlSegments = parsePathname(pathname);
-    if (urlSegments)
-      if (urlSegments?.length > 3) {
-        return urlSegments[3];
-      }
-  }, [pathname]);
-
-  const fetchData = useMemo(
-    () =>
-      debounce(async (userId, workspaceId) => {
-        if (!userId || !workspaceId) return;
-
-        try {
-          const { data: workspaces, error: workspacesError } =
-            await getUserWorkspaces(userId);
-          if (workspacesError || !workspaces) return;
-
-          const currentWorkspace = workspaces.find((w) => w.id === workspaceId);
-
-          if (currentWorkspace) {
-            dispatch({
-              type: "SET_CURRENT_WORKSPACES",
-              payload: { workspace: currentWorkspace },
-            });
-          }
-          dispatch({
-            type: "SET_WORKSPACES",
-            payload: { workspaces: workspaces },
-          });
-
-          const { data: tags, error: tagsError } = await getTags(workspaceId);
-          if (!tagsError && tags) {
-            dispatch({ type: "SET_TAGS", payload: { tags, workspaceId } });
-          }
-
-          const { data: documents, error: docError } =
-            await getDocumentByWorkspaceId(workspaceId);
-          if (!docError && documents) {
-            dispatch({
-              type: "SET_FILES",
-              payload: { documents, workspaceId },
-            });
-          }
-
-          // set collections
-          const { data: collections, error: collectionsError } =
-            await getCollections(workspaceId);
-          if (!collectionsError && collections) {
-            dispatch({
-              type: "SET_COLLECTIONS",
-              payload: { workspaceId, collections },
-            });
-          }
-
-          const { data: favorites, error: favoriteError } = await getStars(
-            userId,
-            workspaceId
-          );
-          if (!favoriteError && favorites) {
-            dispatch({
-              type: "SET_FAVORITES",
-              payload: { favorites, workspaceId },
-            });
-          }
-
-          const { data: currentUserPermission, error: permissionError } =
-            await getUserPermission(workspaceId, userId);
-          if (!permissionError && currentUserPermission) {
-            dispatch({
-              type: "SET_USER_PERMISSION",
-              payload: {
-                permission: currentUserPermission.permission,
-                workspaceId,
-              },
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }, 500), // Adjust the debounce delay as necessary
-    []
-  );
-
   useEffect(() => {
+    if (!user?.id || !workspaceId) return;
+    const fetchData = async (userId: string, workspaceId: string) => {
+      try {
+        const { data: workspaces, error: workspacesError } =
+          await getUserWorkspaces(userId);
+        if (workspacesError || !workspaces) return;
+
+        const currentWorkspace = workspaces.find((w) => w.id === workspaceId);
+
+        if (currentWorkspace) {
+          dispatch({
+            type: "SET_CURRENT_WORKSPACES",
+            payload: { workspace: currentWorkspace },
+          });
+        }
+        dispatch({
+          type: "SET_WORKSPACES",
+          payload: { workspaces: workspaces },
+        });
+
+        const { data: tags, error: tagsError } = await getTags(workspaceId);
+        if (!tagsError && tags) {
+          dispatch({ type: "SET_TAGS", payload: { tags, workspaceId } });
+        }
+
+        const { data: documents, error: docError } =
+          await getDocumentByWorkspaceId(workspaceId);
+        if (!docError && documents) {
+          dispatch({
+            type: "SET_FILES",
+            payload: { documents, workspaceId },
+          });
+        }
+
+        // set collections
+        const { data: collections, error: collectionsError } =
+          await getCollections(workspaceId);
+        if (!collectionsError && collections) {
+          dispatch({
+            type: "SET_COLLECTIONS",
+            payload: { workspaceId, collections },
+          });
+        }
+
+        const { data: favorites, error: favoriteError } = await getStars(
+          userId,
+          workspaceId
+        );
+        if (!favoriteError && favorites) {
+          dispatch({
+            type: "SET_FAVORITES",
+            payload: { favorites, workspaceId },
+          });
+        }
+
+        const { data: currentUserPermission, error: permissionError } =
+          await getUserPermission(workspaceId, userId);
+        if (!permissionError && currentUserPermission) {
+          dispatch({
+            type: "SET_USER_PERMISSION",
+            payload: {
+              permission: currentUserPermission.permission,
+              workspaceId,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
     fetchData(user?.id, workspaceId);
-  }, [user?.id, workspaceId, fetchData]);
+  }, [user?.id, workspaceId]);
   useEffect(() => {
     console.log("App State Changed", state);
   }, [state]);
 
   return (
-    <AppStateContext.Provider
-      value={{ state, dispatch, workspaceId, collectionId, fileId }}
-    >
+    <AppStateContext.Provider value={{ state, dispatch, workspaceId }}>
       {children}
     </AppStateContext.Provider>
   );
