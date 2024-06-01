@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "@aws-sdk/client-rds-data": "^3.583.0",
+    "@aws-sdk/client-s3": "^3.588.0",
     "@aws-sdk/credential-providers": "^3.583.0",
+    "@aws-sdk/s3-presigned-post": "^3.588.0",
     "@hocuspocus/extension-logger": "^2.13.0",
     "@hocuspocus/extension-sqlite": "^2.13.0",
     "@hocuspocus/extension-webhook": "^2.13.0",
