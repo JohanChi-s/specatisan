@@ -44,11 +44,17 @@ import {
   Column,
   TaskItem,
   TaskList,
+  CodeBlock,
 } from ".";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
+import DetailsSummary from "@tiptap-pro/extension-details-summary";
+import DetailsContent from "@tiptap-pro/extension-details-content";
 import { ImageUpload } from "./ImageUpload";
 import { TableOfContentsNode } from "./TableOfContentsNode";
-import { lowlight } from "lowlight";
+import Details from "@tiptap-pro/extension-details";
+import { emojis } from "@tiptap-pro/extension-emoji";
+// import { lowlight } from "lowlight";
+import { lowlight } from "lowlight/lib/core";
 
 interface ExtensionKitProps {
   provider?: HocuspocusProvider | null;
@@ -89,11 +95,30 @@ export const ExtensionKit = ({
     horizontalRule: false,
     blockquote: false,
     history: false,
-    codeBlock: false,
+  }),
+  Details.configure({
+    persist: true,
+    HTMLAttributes: {
+      class: "details",
+    },
+  }),
+  DetailsSummary,
+  DetailsContent,
+  Placeholder.configure({
+    includeChildren: true,
+    placeholder: ({ node }) => {
+      if (node.type.name === "detailsSummary") {
+        return "Summary";
+      }
+
+      return "";
+    },
+  }),
+  CodeBlock.configure({
+    languageClassPrefix: "language-",
   }),
   CodeBlockLowlight.configure({
     lowlight,
-    defaultLanguage: null,
   }),
   TextStyle,
   FontSize,
@@ -138,7 +163,7 @@ export const ExtensionKit = ({
   }),
   Emoji.configure({
     enableEmoticons: true,
-    // suggestion: emojiSuggestion,
+    emojis: emojis,
   }),
   TextAlign.extend({
     addKeyboardShortcuts() {

@@ -106,6 +106,16 @@ export const GROUPS: Group[] = [
           editor.chain().focus().setCodeBlock().run();
         },
       },
+      {
+        name: "toggleList",
+        label: "Toggle List",
+        iconName: "ChevronRight",
+        description: "Toggle List",
+        shouldBeHidden: (editor) => editor.isActive("columns"),
+        action: (editor) => {
+          editor.chain().focus().setDetails().run();
+        },
+      },
     ],
   },
   {

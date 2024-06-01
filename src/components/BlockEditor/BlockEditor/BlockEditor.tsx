@@ -25,7 +25,13 @@ import { TextMenu } from "../menus/TextMenu";
 import { EditorHeader } from "./components/EditorHeader";
 import { TiptapProps } from "./types";
 
-export const BlockEditor = ({ aiToken, ydoc, provider, user }: TiptapProps) => {
+export const BlockEditor = ({
+  aiToken,
+  ydoc,
+  provider,
+  user,
+  colabs,
+}: TiptapProps) => {
   const aiState = useAIState();
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -35,6 +41,7 @@ export const BlockEditor = ({ aiToken, ydoc, provider, user }: TiptapProps) => {
       ydoc,
       provider,
       username: user?.email,
+      colaborators: colabs,
     });
 
   const displayedUsers = users.slice(0, 3);

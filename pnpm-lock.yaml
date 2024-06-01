@@ -13,7 +13,7 @@ dependencies:
     version: 3.588.0
   '@aws-sdk/credential-providers':
     specifier: ^3.583.0
-    version: 3.587.0(@aws-sdk/client-sso-oidc@3.587.0)
+    version: 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)
   '@aws-sdk/s3-presigned-post':
     specifier: ^3.588.0
     version: 3.588.0
@@ -143,6 +143,15 @@ dependencies:
   '@tippyjs/react':
     specifier: ^4.2.6
     version: 4.2.6(react-dom@18.3.1)(react@18.3.1)
+  '@tiptap-pro/extension-details':
+    specifier: ^2.8.8
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+  '@tiptap-pro/extension-details-content':
+    specifier: ^2.8.8
+    version: 2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+  '@tiptap-pro/extension-details-summary':
+    specifier: ^2.8.8
+    version: 2.8.8(@tiptap/core@2.4.0)
   '@tiptap-pro/extension-drag-handle':
     specifier: ^2.8.1
     version: 2.8.8(@tiptap-pro/extension-node-range@2.8.8)(@tiptap/core@2.4.0)(@tiptap/extension-collaboration@2.4.0)(@tiptap/pm@2.4.0)(y-prosemirror@1.2.5)
@@ -218,6 +227,9 @@ dependencies:
   '@tiptap/extension-link':
     specifier: ^2.3.0
     version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
+  '@tiptap/extension-mention':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0)
   '@tiptap/extension-ordered-list':
     specifier: ^2.3.0
     version: 2.4.0(@tiptap/core@2.4.0)
@@ -1263,6 +1275,29 @@ packages:
       - aws-crt
     dev: false
 
+  /@aws-sdk/credential-provider-ini@3.587.0(@aws-sdk/client-sso-oidc@3.588.0)(@aws-sdk/client-sts@3.587.0):
+    resolution: {integrity: sha512-rjRPF1mmMGiPdQsIba/PRknGPWpQZJ06EpEn91wftW5szfJkStadRTIfYYwSfuSO/xIwT11/KQiDVP9hclnSFg==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-sts': ^3.587.0
+    dependencies:
+      '@aws-sdk/client-sts': 3.587.0
+      '@aws-sdk/credential-provider-env': 3.587.0
+      '@aws-sdk/credential-provider-http': 3.587.0
+      '@aws-sdk/credential-provider-process': 3.587.0
+      '@aws-sdk/credential-provider-sso': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)
+      '@aws-sdk/credential-provider-web-identity': 3.587.0(@aws-sdk/client-sts@3.587.0)
+      '@aws-sdk/types': 3.577.0
+      '@smithy/credential-provider-imds': 3.1.0
+      '@smithy/property-provider': 3.1.0
+      '@smithy/shared-ini-file-loader': 3.1.0
+      '@smithy/types': 3.0.0
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - aws-crt
+    dev: false
+
   /@aws-sdk/credential-provider-ini@3.588.0(@aws-sdk/client-sso-oidc@3.588.0)(@aws-sdk/client-sts@3.588.0):
     resolution: {integrity: sha512-tP/YmEKvYpmp7pCR2OuhoOhAOtm6BbZ1hbeG9Sw9RFZi55dbGPHqMmfvvzHFAGsJ20z4/oDS+UnHaWVhRnV82w==}
     engines: {node: '>=16.0.0'}
@@ -1295,6 +1330,28 @@ packages:
       '@aws-sdk/credential-provider-ini': 3.587.0(@aws-sdk/client-sso-oidc@3.587.0)(@aws-sdk/client-sts@3.587.0)
       '@aws-sdk/credential-provider-process': 3.587.0
       '@aws-sdk/credential-provider-sso': 3.587.0(@aws-sdk/client-sso-oidc@3.587.0)
+      '@aws-sdk/credential-provider-web-identity': 3.587.0(@aws-sdk/client-sts@3.587.0)
+      '@aws-sdk/types': 3.577.0
+      '@smithy/credential-provider-imds': 3.1.0
+      '@smithy/property-provider': 3.1.0
+      '@smithy/shared-ini-file-loader': 3.1.0
+      '@smithy/types': 3.0.0
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - '@aws-sdk/client-sts'
+      - aws-crt
+    dev: false
+
+  /@aws-sdk/credential-provider-node@3.587.0(@aws-sdk/client-sso-oidc@3.588.0)(@aws-sdk/client-sts@3.587.0):
+    resolution: {integrity: sha512-ZMbRCHdSsTzDV1+wPdF0A+umWji9BFPFeICG0gkisZR9Tj9rkb20jIYqD280BpCsKd8Ep7rpFZepyoeNZqI6Nw==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@aws-sdk/credential-provider-env': 3.587.0
+      '@aws-sdk/credential-provider-http': 3.587.0
+      '@aws-sdk/credential-provider-ini': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)(@aws-sdk/client-sts@3.587.0)
+      '@aws-sdk/credential-provider-process': 3.587.0
+      '@aws-sdk/credential-provider-sso': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)
       '@aws-sdk/credential-provider-web-identity': 3.587.0(@aws-sdk/client-sts@3.587.0)
       '@aws-sdk/types': 3.577.0
       '@smithy/credential-provider-imds': 3.1.0
@@ -1357,6 +1414,22 @@ packages:
       - aws-crt
     dev: false
 
+  /@aws-sdk/credential-provider-sso@3.587.0(@aws-sdk/client-sso-oidc@3.588.0):
+    resolution: {integrity: sha512-7ADd1HV3fmdMB2+DdFMtZGep5qubhtTenfo2BpDdADUkZ0HCpXx7mPLJ2mAww9sQpJsX8dDbc38+pi+bcsPWeA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@aws-sdk/client-sso': 3.587.0
+      '@aws-sdk/token-providers': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)
+      '@aws-sdk/types': 3.577.0
+      '@smithy/property-provider': 3.1.0
+      '@smithy/shared-ini-file-loader': 3.1.0
+      '@smithy/types': 3.0.0
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - aws-crt
+    dev: false
+
   /@aws-sdk/credential-provider-sso@3.588.0(@aws-sdk/client-sso-oidc@3.588.0):
     resolution: {integrity: sha512-1GstMCyFzenVeppK7hWazMvo3P1DXKP70XkXAjH8H2ELBVg5X8Zt043cnQ7CMt4XjCV+ettHAtc9kz/gJTkDNQ==}
     engines: {node: '>=16.0.0'}
@@ -1399,7 +1472,7 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/credential-providers@3.587.0(@aws-sdk/client-sso-oidc@3.587.0):
+  /@aws-sdk/credential-providers@3.587.0(@aws-sdk/client-sso-oidc@3.588.0):
     resolution: {integrity: sha512-EvlOWR5HHWjMMfLd1qFbiVcZGGTlAb+J40aINW+PFd9iCApI0DZUyGIBVW8QeUYFb6aZTfoDi0KA/g+2EeaFag==}
     engines: {node: '>=16.0.0'}
     dependencies:
@@ -1409,10 +1482,10 @@ packages:
       '@aws-sdk/credential-provider-cognito-identity': 3.587.0
       '@aws-sdk/credential-provider-env': 3.587.0
       '@aws-sdk/credential-provider-http': 3.587.0
-      '@aws-sdk/credential-provider-ini': 3.587.0(@aws-sdk/client-sso-oidc@3.587.0)(@aws-sdk/client-sts@3.587.0)
-      '@aws-sdk/credential-provider-node': 3.587.0(@aws-sdk/client-sso-oidc@3.587.0)(@aws-sdk/client-sts@3.587.0)
+      '@aws-sdk/credential-provider-ini': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)(@aws-sdk/client-sts@3.587.0)
+      '@aws-sdk/credential-provider-node': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)(@aws-sdk/client-sts@3.587.0)
       '@aws-sdk/credential-provider-process': 3.587.0
-      '@aws-sdk/credential-provider-sso': 3.587.0(@aws-sdk/client-sso-oidc@3.587.0)
+      '@aws-sdk/credential-provider-sso': 3.587.0(@aws-sdk/client-sso-oidc@3.588.0)
       '@aws-sdk/credential-provider-web-identity': 3.587.0(@aws-sdk/client-sts@3.587.0)
       '@aws-sdk/types': 3.577.0
       '@smithy/credential-provider-imds': 3.1.0
@@ -4511,6 +4584,34 @@ packages:
       tippy.js: 6.3.7
     dev: false
 
+  /@tiptap-pro/extension-details-content@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
+    resolution: {integrity: sha512-wA3gTBVe4+fgvhKUbGYMylKDFgMRAWb3ptafkzSohQv8r6iA9gJFdF4mk0nLguwkBCfInZ0Hty5jNjy55NV1IQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
+      '@tiptap/pm': 2.4.0
+    dev: false
+
+  /@tiptap-pro/extension-details-summary@2.8.8(@tiptap/core@2.4.0):
+    resolution: {integrity: sha512-HQrocVkUglplNBuA4c+VadzsrdxDGsPKBefMV+DNh8FSYA2Yh2QKo/LBdvbupBWe01FMGk2grpjHf2W7A4KIcw==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
+    dev: false
+
+  /@tiptap-pro/extension-details@2.8.8(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0):
+    resolution: {integrity: sha512-PKWYMQIgbYT8RhceIn/lMfCGayItMx25+okbBbJP7tW/84OsT9kYMeF3VwDy84DOmIrmHUcD/F+OS27UcwDoNQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
+      '@tiptap/pm': 2.4.0
+    dev: false
+
   /@tiptap-pro/extension-drag-handle-react@2.8.8(@tiptap-pro/extension-drag-handle@2.8.8)(@tiptap/pm@2.4.0)(@tiptap/react@2.4.0)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-lECcpyGo0Ls6oB7uphCYhVOI6b8kqUyFahsJ0FSRcloVq0fop91ndKXyJr1D1KMzoneEKWgnRn/lTU4aLAak4A==}
     peerDependencies:
@@ -4866,6 +4967,18 @@ packages:
       '@tiptap/core': ^2.0.0
     dependencies:
       '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
+    dev: false
+
+  /@tiptap/extension-mention@2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)(@tiptap/suggestion@2.4.0):
+    resolution: {integrity: sha512-7BqCNfqF1Mv9IrtdlHADwXMFo968UNmthf/TepVXC7EX2Ke6/Y4vvxmpYVNZc55FdswFwpVyZ2VeXBj3AC2JcA==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+      '@tiptap/suggestion': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.4.0(@tiptap/pm@2.4.0)
+      '@tiptap/pm': 2.4.0
+      '@tiptap/suggestion': 2.4.0(@tiptap/core@2.4.0)(@tiptap/pm@2.4.0)
     dev: false
 
   /@tiptap/extension-ordered-list@2.4.0(@tiptap/core@2.4.0):

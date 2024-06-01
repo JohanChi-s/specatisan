@@ -8,6 +8,7 @@ export interface TiptapProps {
   ydoc: YDoc;
   user: any;
   provider?: TiptapCollabProvider | null | undefined;
+  colabs: string[];
 }
 
 export type EditorUser = {
