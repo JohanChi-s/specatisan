@@ -2,6 +2,7 @@ import { Icon } from "@/components/BlockEditor/ui/Icon";
 import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
 import { Button } from "@/components/ui/button";
 import html2pdf from "html2pdf.js";
+import TurndownService from "turndown";
 
 import {
   DropdownMenu,
@@ -38,6 +39,24 @@ export const EditorHeader = ({
     const element = document.getElementById("editor-content"); // Replace 'document' with the ID of your document container
     html2pdf().from(element).save();
   };
+  const exportToMarkdown = () => {
+    const element = document.getElementById("editor-content");
+    if (element) {
+      const turndownService = new TurndownService();
+      const markdown = turndownService.turndown(element.innerHTML);
+      const blob = new Blob([markdown], {
+        type: "text/markdown;charset=utf-8",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "document.md";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
   return (
     <div className="flex flex-row items-center justify-between flex-none py-2 pl-6 pr-3 text-black bg-white border-b border-neutral-200 dark:bg-black dark:text-white dark:border-neutral-800">
       <div className="flex flex-row gap-x-1.5 items-center">
@@ -62,7 +81,7 @@ export const EditorHeader = ({
                   <FileText className="mr-2 h-4 w-4" />
                   <span>Export to PDF</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={exportToMarkdown}>
                   <FileText className="mr-2 h-4 w-4" />
                   <span>Export to Markdown</span>
                 </DropdownMenuItem>
