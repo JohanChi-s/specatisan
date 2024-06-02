@@ -21,6 +21,8 @@ import { EditorInfo } from "./EditorInfo";
 export type EditorHeaderProps = {
   isSidebarOpen?: boolean;
   toggleSidebar?: () => void;
+  isSidebarThreadOpen?: boolean;
+  toggleSidebarThread?: () => void;
   characters: number;
   words: number;
   collabState: WebSocketStatus;
@@ -34,6 +36,8 @@ export const EditorHeader = ({
   words,
   isSidebarOpen,
   toggleSidebar,
+  isSidebarThreadOpen,
+  toggleSidebarThread,
 }: EditorHeaderProps) => {
   const exportToPDF = () => {
     const element = document.getElementById("editor-content"); // Replace 'document' with the ID of your document container
@@ -68,6 +72,14 @@ export const EditorHeader = ({
             className={isSidebarOpen ? "bg-transparent" : ""}
           >
             <Icon name={isSidebarOpen ? "PanelLeftClose" : "PanelLeft"} />
+          </Toolbar.Button>
+          <Toolbar.Button
+            tooltip={isSidebarThreadOpen ? "Close Comments" : "Open Comments"}
+            onClick={toggleSidebarThread}
+            active={isSidebarThreadOpen}
+            className={isSidebarThreadOpen ? "bg-transparent" : ""}
+          >
+            <Icon name="MessagesSquare" />
           </Toolbar.Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

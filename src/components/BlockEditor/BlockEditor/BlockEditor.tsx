@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { EditorContent } from "@tiptap/react";
@@ -20,6 +21,8 @@ import {
 import { Loader } from "@/components/BlockEditor/ui/Loader";
 import { useAIState } from "@/hooks/useAIState";
 import { createPortal } from "react-dom";
+import { SidebarThread } from "../Sidebar/SidebarThread";
+import { ThreadsProvider } from "../extensions/Comment/ThreadContext";
 import { ContentItemMenu } from "../menus/ContentItemMenu";
 import { TextMenu } from "../menus/TextMenu";
 import { EditorHeader } from "./components/EditorHeader";
@@ -35,14 +38,29 @@ export const BlockEditor = ({
   const aiState = useAIState();
   const menuContainerRef = useRef(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
-  const { editor, users, characterCount, collabState, leftSidebar } =
-    useBlockEditor({
-      aiToken,
-      ydoc,
-      provider,
-      username: user?.email,
-      colaborators: colabs,
-    });
+  const {
+    editor,
+    users,
+    characterCount,
+    collabState,
+    leftSidebar,
+    leftSidebarThread,
+    threads,
+    selectThreadInEditor,
+    createThread,
+    deleteThread,
+    onHoverThread,
+    onLeaveThread,
+    resolveThread,
+    updateComment,
+    unresolveThread,
+  } = useBlockEditor({
+    aiToken,
+    ydoc,
+    provider,
+    user: user,
+    colaborators: colabs,
+  });
 
   const displayedUsers = users.slice(0, 3);
 
@@ -55,7 +73,7 @@ export const BlockEditor = ({
     };
   }, [aiState]);
 
-  if (!editor) {
+  if (!editor || provider === null || provider === undefined) {
     return null;
   }
 
@@ -66,36 +84,57 @@ export const BlockEditor = ({
 
   return (
     <EditorContext.Provider value={providerValue}>
-      <div className="flex h-full w-full" ref={menuContainerRef}>
-        <Sidebar
-          isOpen={leftSidebar.isOpen}
-          onClose={leftSidebar.close}
-          editor={editor}
-        />
-        <div className="relative flex flex-col flex-1 w-full h-full overflow-hidden">
-          <EditorHeader
-            characters={characterCount.characters()}
-            collabState={collabState}
-            users={displayedUsers}
-            words={characterCount.words()}
-            isSidebarOpen={leftSidebar.isOpen}
-            toggleSidebar={leftSidebar.toggle}
-          />
-          <EditorContent
-            id="editor-content"
+      <ThreadsProvider
+        onClickThread={selectThreadInEditor}
+        onDeleteThread={deleteThread}
+        onHoverThread={onHoverThread}
+        onLeaveThread={onLeaveThread}
+        onResolveThread={resolveThread}
+        onUpdateComment={updateComment}
+        onUnresolveThread={unresolveThread}
+        selectedThreads={editor.storage.comments.focusedThreads}
+        threads={threads}
+      >
+        <div className="flex h-full w-full" ref={menuContainerRef}>
+          <Sidebar
+            isOpen={leftSidebar.isOpen}
+            onClose={leftSidebar.close}
             editor={editor}
-            ref={editorRef}
-            className="flex-1 overflow-y-auto"
           />
-          <ContentItemMenu editor={editor} />
-          <LinkMenu editor={editor} appendTo={menuContainerRef} />
-          <TextMenu editor={editor} />
-          <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
-          <TableRowMenu editor={editor} appendTo={menuContainerRef} />
-          <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
-          <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+          <div className="relative flex flex-col flex-1 w-full h-full overflow-hidden">
+            <EditorHeader
+              characters={characterCount.characters()}
+              collabState={collabState}
+              users={displayedUsers}
+              words={characterCount.words()}
+              isSidebarOpen={leftSidebar.isOpen}
+              toggleSidebar={leftSidebar.toggle}
+              isSidebarThreadOpen={leftSidebarThread.isOpen}
+              toggleSidebarThread={leftSidebarThread.toggle}
+            />
+            <EditorContent
+              id="editor-content"
+              editor={editor}
+              ref={editorRef}
+              className="flex-1 overflow-y-auto"
+            />
+            <ContentItemMenu editor={editor} />
+            <LinkMenu editor={editor} appendTo={menuContainerRef} />
+            <TextMenu editor={editor} createThread={createThread} />
+            <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
+            <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+            <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
+            <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
+          </div>
+
+          <SidebarThread
+            isOpen={leftSidebarThread.isOpen}
+            onClose={leftSidebarThread.close}
+            user={user}
+            provider={provider}
+          />
         </div>
-      </div>
+      </ThreadsProvider>
       {aiState.isAiLoading && aiLoaderPortal}
     </EditorContext.Provider>
   );

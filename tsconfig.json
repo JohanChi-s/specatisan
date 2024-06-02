@@ -38,7 +38,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/EditorPreview.js"  ],
+, "src/EditorPreview.js", "src/components/BlockEditor/extensions/Comment/useThreads.js"  ],
   "exclude": [
     "node_modules"
   ]

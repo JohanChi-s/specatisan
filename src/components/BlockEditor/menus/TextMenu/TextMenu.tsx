@@ -1,18 +1,17 @@
+import { ColorPicker } from "@/components/BlockEditor/panels";
 import { Icon } from "@/components/BlockEditor/ui/Icon";
+import { Surface } from "@/components/BlockEditor/ui/Surface";
 import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
-import { useTextmenuCommands } from "./hooks/useTextmenuCommands";
-import { useTextmenuStates } from "./hooks/useTextmenuStates";
+import * as Popover from "@radix-ui/react-popover";
 import { BubbleMenu, Editor } from "@tiptap/react";
 import { memo } from "react";
-import * as Popover from "@radix-ui/react-popover";
-import { Surface } from "@/components/BlockEditor/ui/Surface";
-import { ColorPicker } from "@/components/BlockEditor/panels";
+import { ContentTypePicker } from "./components/ContentTypePicker";
+import { EditLinkPopover } from "./components/EditLinkPopover";
 import { FontFamilyPicker } from "./components/FontFamilyPicker";
 import { FontSizePicker } from "./components/FontSizePicker";
+import { useTextmenuCommands } from "./hooks/useTextmenuCommands";
 import { useTextmenuContentTypes } from "./hooks/useTextmenuContentTypes";
-import { ContentTypePicker } from "./components/ContentTypePicker";
-import { AIDropdown } from "./components/AIDropdown";
-import { EditLinkPopover } from "./components/EditLinkPopover";
+import { useTextmenuStates } from "./hooks/useTextmenuStates";
 
 // We memorize the button so each button is not rerendered
 // on every editor state change
@@ -24,9 +23,10 @@ const MemoContentTypePicker = memo(ContentTypePicker);
 
 export type TextMenuProps = {
   editor: Editor;
+  createThread: () => void;
 };
 
-export const TextMenu = ({ editor }: TextMenuProps) => {
+export const TextMenu = ({ editor, createThread }: TextMenuProps) => {
   const commands = useTextmenuCommands(editor);
   const states = useTextmenuStates(editor);
   const blockOptions = useTextmenuContentTypes(editor);
@@ -129,6 +129,22 @@ export const TextMenu = ({ editor }: TextMenuProps) => {
           <Popover.Trigger asChild>
             <MemoButton active={!!states.currentColor} tooltip="Text color">
               <Icon name="Palette" />
+            </MemoButton>
+          </Popover.Trigger>
+          <Popover.Content side="top" sideOffset={8} asChild>
+            <Surface className="p-1">
+              <MemoColorPicker
+                color={states.currentColor}
+                onChange={commands.onChangeColor}
+                onClear={commands.onClearColor}
+              />
+            </Surface>
+          </Popover.Content>
+        </Popover.Root>
+        <Popover.Root>
+          <Popover.Trigger asChild>
+            <MemoButton tooltip="Create New Comment" onClick={createThread}>
+              <Icon name="MessageSquare" />
             </MemoButton>
           </Popover.Trigger>
           <Popover.Content side="top" sideOffset={8} asChild>

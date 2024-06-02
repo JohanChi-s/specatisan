@@ -1,23 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
-import { SuggestionOptions, SuggestionProps } from "@tiptap/suggestion";
-import tippy, { Instance } from "tippy.js";
 import { Editor, ReactRenderer, useEditor } from "@tiptap/react";
+import { SuggestionProps } from "@tiptap/suggestion";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import tippy, { Instance } from "tippy.js";
 // import Ai from "@tiptap-pro/extension-ai";
 import { TiptapCollabProvider, WebSocketStatus } from "@hocuspocus/provider";
+import { CommentsKit } from "@tiptap-pro/extension-comments";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Mention from "@tiptap/extension-mention";
 import type { Doc as YDoc } from "yjs";
 
 import { EditorUser } from "@/components/BlockEditor/BlockEditor/types";
+import { useThreads } from "@/components/BlockEditor/extensions/Comment/useThreads";
+import MentionList, {
+  MentionListRef,
+} from "@/components/BlockEditor/extensions/Mention/MentionList";
 import { ExtensionKit } from "@/components/BlockEditor/extensions/extension-kit";
 import { userColors } from "@/lib/BlockEditor/constants";
 import { initialContent } from "@/lib/BlockEditor/data/initialContent";
 import { randomElement } from "@/lib/BlockEditor/utils";
 import { useSidebar } from "./useSidebar";
-import MentionList, {
-  MentionListRef,
-} from "@/components/BlockEditor/extensions/Mention/MentionList";
 declare global {
   interface Window {
     editor: Editor | null;
@@ -28,16 +30,17 @@ export const useBlockEditor = ({
   aiToken,
   ydoc,
   provider,
-  username,
+  user,
   colaborators,
 }: {
   aiToken?: string;
   ydoc: YDoc;
   provider?: TiptapCollabProvider | null | undefined;
-  username?: string;
+  user?: any;
   colaborators?: string[];
 }) => {
   const leftSidebar = useSidebar();
+  const leftSidebarThread = useSidebar();
   const [collabState, setCollabState] = useState<WebSocketStatus>(
     WebSocketStatus.Connecting
   );
@@ -63,7 +66,7 @@ export const useBlockEditor = ({
         CollaborationCursor.configure({
           provider,
           user: {
-            name: username,
+            name: user?.email || "Anonymous",
             color: randomElement(userColors),
           },
         }),
@@ -137,6 +140,10 @@ export const useBlockEditor = ({
             },
           },
         }),
+
+        CommentsKit.configure({
+          provider: provider,
+        }),
       ],
       editorProps: {
         attributes: {
@@ -148,6 +155,72 @@ export const useBlockEditor = ({
       },
     },
     [ydoc, provider]
+  );
+  const { threads, createThread, removeThread } = useThreads(
+    provider,
+    editor,
+    user
+  );
+
+  const selectThreadInEditor = useCallback(
+    (threadId: string) => {
+      editor?.chain().selectThread({ id: threadId }).run();
+    },
+    [editor]
+  );
+
+  const deleteThread = useCallback(
+    (threadId: string) => {
+      provider?.deleteThread(threadId);
+      editor?.commands.removeThread({ id: threadId });
+    },
+    [editor?.commands, provider]
+  );
+
+  const resolveThread = useCallback(
+    (threadId: string) => {
+      editor?.commands.resolveThread({ id: threadId });
+    },
+    [editor]
+  );
+
+  const unresolveThread = useCallback(
+    (threadId: string) => {
+      editor?.commands.unresolveThread({ id: threadId });
+    },
+    [editor]
+  );
+
+  const updateComment = useCallback(
+    (threadId: string, commentId: string, content: any, metaData: any) => {
+      editor?.commands.updateComment({
+        threadId,
+        id: commentId,
+        content,
+        data: metaData,
+      });
+    },
+    [editor]
+  );
+
+  const onHoverThread = useCallback(
+    (threadId: string) => {
+      const { tr } = editor?.state!;
+
+      tr.setMeta("threadMouseOver", threadId);
+      editor?.view.dispatch(tr);
+    },
+    [editor]
+  );
+
+  const onLeaveThread = useCallback(
+    (threadId: string) => {
+      const { tr } = editor?.state!;
+
+      tr.setMeta("threadMouseOut", threadId);
+      editor?.view.dispatch(tr);
+    },
+    [editor]
   );
 
   const users = useMemo(() => {
@@ -178,5 +251,21 @@ export const useBlockEditor = ({
 
   window.editor = editor;
 
-  return { editor, users, characterCount, collabState, leftSidebar };
+  return {
+    editor,
+    users,
+    characterCount,
+    collabState,
+    leftSidebar,
+    leftSidebarThread,
+    threads,
+    selectThreadInEditor,
+    createThread,
+    deleteThread,
+    onHoverThread,
+    onLeaveThread,
+    resolveThread,
+    updateComment,
+    unresolveThread,
+  };
 };

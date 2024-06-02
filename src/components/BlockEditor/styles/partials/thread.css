@@ -1,0 +1,27 @@
+.ProseMirror {
+  .tiptap-thread {
+    &--block {
+      @apply contents;
+    }
+  }
+
+  .tiptap-thread--block > :not(p, h1, h2, h3, h4, h5, h6, li) {
+    @apply p-2;
+  }
+
+  .tiptap-thread--unresolved {
+    @apply bg-yellow-400/20 border-b-2 border-yellow-400 rounded-sm;
+  }
+
+  .tiptap-thread--unresolved.tiptap-thread--hovered {
+    @apply bg-yellow-400/40;
+  }
+
+  .tiptap-thread--block.tiptap-thread--unresolved > * {
+    @apply bg-yellow-400/20 border-b-2 border-yellow-400;
+  }
+
+  .tiptap-thread--block.tiptap-thread--unresolved.tiptap-thread--hovered > * {
+    @apply bg-yellow-400/40;
+  }
+}
