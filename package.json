@@ -194,6 +194,7 @@
     "react-hook-form": "^7.51.5",
     "react-hot-toast": "^2.4.1",
     "react-lite-youtube-embed": "^2.4.0",
+    "react-onesignal": "^3.0.1",
     "react-resizable-panels": "^2.0.19",
     "react-tweet": "^3.2.1",
     "slate": "^0.103.0",
