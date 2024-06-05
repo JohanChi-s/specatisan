@@ -1,3 +1,5 @@
+import { AI } from "@/components/chat/lib/chat/actions";
+import { nanoid } from "@/components/chat/lib/utils";
 import { SubscriptionModalProvider } from "@/lib/providers/subscription-modal-provider";
 import { getActiveProductsWithPrice } from "@/lib/supabase/queries";
 import React from "react";
@@ -11,10 +13,12 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = async ({ children, params }) => {
   // const { data: products, error } = await getActiveProductsWithPrice();
   // if (error) throw new Error();
+
+  const id = nanoid();
   return (
     <main className="flex">
       {/* <SubscriptionModalProvider products={products}> */}
-      {children}
+      <AI>{children}</AI>
       {/* </SubscriptionModalProvider> */}
     </main>
   );

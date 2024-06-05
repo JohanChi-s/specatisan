@@ -21,6 +21,7 @@ import {
 import { Loader } from "@/components/BlockEditor/ui/Loader";
 import { useAIState } from "@/hooks/useAIState";
 import { createPortal } from "react-dom";
+import { SidebarAI } from "../Sidebar/SidebarAI";
 import { SidebarThread } from "../Sidebar/SidebarThread";
 import { ThreadsProvider } from "../extensions/Comment/ThreadContext";
 import { ContentItemMenu } from "../menus/ContentItemMenu";
@@ -132,6 +133,10 @@ export const BlockEditor = ({
             onClose={leftSidebarThread.close}
             user={user}
             provider={provider}
+          />
+          <SidebarAI
+            isOpen={leftSidebarThread.isOpen}
+            onClose={leftSidebarThread.close}
           />
         </div>
       </ThreadsProvider>

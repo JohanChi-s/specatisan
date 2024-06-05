@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Command, CommandGroup, CommandList } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { isCollapsed } from "@udecode/slate";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -23,11 +24,13 @@ interface WorkspaceSwitcherProps extends PopoverTriggerProps {
   privateWorkspaces: Workspace[] | [];
   sharedWorkspaces: Workspace[] | [];
   collaboratingWorkspaces: Workspace[] | [];
+  isCollapsed?: boolean;
 }
 
 export default function WorkspaceSwitcher({
   privateWorkspaces,
   collaboratingWorkspaces,
+  isCollapsed,
 }: WorkspaceSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const { dispatch } = useAppState();
@@ -55,23 +58,32 @@ export default function WorkspaceSwitcher({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="flex w-full items-center cursor-pointer rounded-md hover:bg-accent hover:text-accent-foreground">
+        {isCollapsed ? (
           <Avatar>
             <AvatarImage src="" />
             <AvatarFallback className="outline-1 outline-emerald-900">
               W
             </AvatarFallback>
           </Avatar>
-          <div className="flex-col p-2 w-full justify-start">
-            <div className="font-bold text-base">
-              {selectedWorkspace?.title}
-            </div>
-            <div className="font-light text-sm text-left flex items-center">
-              <Cloud size={20} className="mr-2" />
-              <span>Cloud</span>
+        ) : (
+          <div className="flex w-full items-center cursor-pointer rounded-md hover:bg-accent hover:text-accent-foreground">
+            <Avatar>
+              <AvatarImage src="" />
+              <AvatarFallback className="outline-1 outline-emerald-900">
+                W
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-col p-2 w-full justify-start">
+              <div className="font-bold text-base">
+                {selectedWorkspace?.title}
+              </div>
+              <div className="font-light text-sm text-left flex items-center">
+                <Cloud size={20} className="mr-2" />
+                <span>Cloud</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-50">
         <Command>

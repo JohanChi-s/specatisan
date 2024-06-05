@@ -15,6 +15,7 @@
     "up": "drizzle-kit up:pg"
   },
   "dependencies": {
+    "@ai-sdk/openai": "0.0.9",
     "@aws-sdk/client-rds-data": "^3.583.0",
     "@aws-sdk/client-s3": "^3.588.0",
     "@aws-sdk/credential-providers": "^3.583.0",
@@ -165,9 +166,11 @@
     "@udecode/react-utils": "^33.0.0",
     "@udecode/slate": "^32.0.1",
     "@udecode/slate-react": "^32.0.1",
+    "ai": "3.1.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "d3-scale": "^4.0.2",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.28.6",
@@ -180,6 +183,7 @@
     "lowlight": "^2.9.0",
     "lucide-react": "^0.287.0",
     "million": "^3.1.5",
+    "nanoid": "^5.0.7",
     "next": "^14.2.3",
     "next-themes": "^0.2.1",
     "pg": "^8.11.5",
@@ -194,9 +198,15 @@
     "react-hook-form": "^7.51.5",
     "react-hot-toast": "^2.4.1",
     "react-lite-youtube-embed": "^2.4.0",
+    "react-markdown": "^9.0.1",
     "react-onesignal": "^3.0.1",
     "react-resizable-panels": "^2.0.19",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-textarea-autosize": "^8.5.3",
     "react-tweet": "^3.2.1",
+    "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "server-only": "^0.0.1",
     "slate": "^0.103.0",
     "slate-history": "^0.100.0",
     "slate-hyperscript": "^0.100.0",
@@ -210,6 +220,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
     "turndown": "^7.2.0",
+    "usehooks-ts": "^3.1.0",
     "utf-8-validate": "^5.0.10",
     "uuid": "^9.0.1",
     "webpack-node-externals": "^3.0.0",
@@ -218,11 +229,13 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/d3-scale": "^4.0.8",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.12",
     "@types/quill": "^2.0.14",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@types/turndown": "^5.0.4",
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.19",
@@ -231,7 +244,6 @@
     "eslint-config-next": "latest",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
 }

@@ -125,27 +125,6 @@ export default function Document({
     dataFetch();
   }, [user]);
 
-  // useEffect(() => {
-  //   // fetch data
-  //   const dataFetch = async () => {
-  //     const data = await (
-  //       await fetch("/api/ai", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       })
-  //     ).json();
-
-  //     const { token } = data;
-
-  //     // set state when the data received
-  //     setAiToken(token);
-  //   };
-
-  //   dataFetch();
-  // }, []);
-
   const ydoc = useMemo(() => new YDoc(), []);
 
   useLayoutEffect(() => {

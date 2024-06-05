@@ -142,6 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               privateWorkspaces={privateWorkspaces}
               collaboratingWorkspaces={collaboratingWorkspaces}
               sharedWorkspaces={sharedWorkspaces}
+              isCollapsed={isCollapsed}
             />
           </Suspense>
           <AccountInfo />
@@ -149,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         {/* Quick Search */}
         <Separator orientation="horizontal" className="my-6" />
 
-        <SearchCommandPalette />
+        {!isCollapsed && <SearchCommandPalette />}
 
         <ul className="w-full mt-2 gap-2">
           {/* All Docs */}
@@ -158,11 +159,12 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href={`/dashboard/${params.workspaceId}/alldocs`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                isCollapsed && "w-4"
               )}
             >
               <FolderIcon className="mr-2 h-4 w-4" />
-              <span>All docs</span>
+              {!isCollapsed && <span>All docs</span>}
             </Link>
           </li>
           {state?.userPermisison === "admin" ||
@@ -173,31 +175,32 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
                   variant="ghost"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "sm" }),
-                    " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
+                    " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                    isCollapsed && "w-4"
                   )}
                 >
                   <Settings2 className="mr-2 h-4 w-4" />
-                  <span>Setting</span>
+                  {!isCollapsed && <span>Setting</span>}
                 </Button>
               </Settings>
             </li>
           ) : null}
         </ul>
         {/* Favorites */}
-
-        <Suspense fallback={<LoadingEditor />}>
-          <FavoritesList />
-        </Suspense>
+        {!isCollapsed && (
+          <Suspense fallback={<LoadingEditor />}>
+            <FavoritesList />
+          </Suspense>
+        )}
         {/* Collections */}
-
-        <Suspense fallback={<LoadingEditor />}>
-          <CollectionsDropdownList workspaceId={params.workspaceId} />
-        </Suspense>
-
+        {!isCollapsed && (
+          <Suspense fallback={<LoadingEditor />}>
+            <CollectionsDropdownList workspaceId={params.workspaceId} />
+          </Suspense>
+        )}
         <Separator orientation="horizontal" className="my-2" />
         {/* Others */}
         <ul className="w-full mt-2 gap-2">
-          {/* All Docs */}
           <span
             className="text-Neutrals-8 
         font-bold 
@@ -214,7 +217,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               )}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              <span>Trash</span>
+              {!isCollapsed && <span>Trash</span>}
             </Link>
           </li>
           <li className="flex items-center">

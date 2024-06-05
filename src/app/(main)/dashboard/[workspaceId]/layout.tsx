@@ -16,13 +16,15 @@ interface LayoutProps {
 }
 
 const defaultProps = {
-  defaultLayout: [265, 1095],
+  defaultLayout: [265, 655, 440],
   defaultCollapsed: false,
   navCollapsedSize: 4,
 };
 
 const Layout: React.FC<LayoutProps> = ({ children, params }) => {
-  const [isCollapsed, setIsCollapsed] = useState(defaultProps.defaultCollapsed);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(
+    defaultProps.defaultCollapsed
+  );
 
   return (
     <div className="flex w-full h-screen bg-background font-sans antialiased">
@@ -33,8 +35,14 @@ const Layout: React.FC<LayoutProps> = ({ children, params }) => {
         >
           <ResizablePanel
             defaultSize={defaultProps.defaultLayout[0]}
-            minSize={20}
+            collapsedSize={defaultProps.navCollapsedSize}
+            collapsible={true}
+            minSize={15}
             maxSize={30}
+            className={cn(
+              isCollapsed &&
+                "min-w-[50px] transition-all duration-300 ease-in-out"
+            )}
           >
             <div className="flex h-full justify-center p-4">
               <Suspense fallback={<LoadingEditor />}>
@@ -49,11 +57,16 @@ const Layout: React.FC<LayoutProps> = ({ children, params }) => {
               "[&_.slate-selected]:!bg-primary/20 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-primary [&_.slate-selection-area]:bg-primary/10"
             )}
             suppressHydrationWarning
+            minSize={30}
             defaultSize={defaultProps.defaultLayout[1]}
           >
             <div className="flex h-full justify-center p-2 m-2 rounded-sm bg-background shadow-2xl">
               {children}
             </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={defaultProps.defaultLayout[2]}>
+            <div className="flex item-center">Hello</div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </TooltipProvider>
