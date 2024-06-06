@@ -41,6 +41,7 @@ export const useBlockEditor = ({
 }) => {
   const leftSidebar = useSidebar();
   const leftSidebarThread = useSidebar();
+  const leftSidebarAi = useSidebar();
   const [collabState, setCollabState] = useState<WebSocketStatus>(
     WebSocketStatus.Connecting
   );
@@ -258,6 +259,7 @@ export const useBlockEditor = ({
     collabState,
     leftSidebar,
     leftSidebarThread,
+    leftSidebarAi,
     threads,
     selectThreadInEditor,
     createThread,

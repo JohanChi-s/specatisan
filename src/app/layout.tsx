@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 import "./globals.css";
+import { SidebarProvider } from "@/components/chat/lib/hooks/use-sidebar";
 const inter = DM_Sans({
   subsets: ["latin"],
   weight: "400",
@@ -45,7 +46,7 @@ export default function RootLayout({
           <SupabaseUserProvider>
             <AppStateProvider>
               <SocketProvider>
-                {children}
+                <SidebarProvider>{children}</SidebarProvider>
                 <Toaster />
               </SocketProvider>
             </AppStateProvider>

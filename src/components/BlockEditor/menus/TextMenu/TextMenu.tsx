@@ -12,6 +12,7 @@ import { FontSizePicker } from "./components/FontSizePicker";
 import { useTextmenuCommands } from "./hooks/useTextmenuCommands";
 import { useTextmenuContentTypes } from "./hooks/useTextmenuContentTypes";
 import { useTextmenuStates } from "./hooks/useTextmenuStates";
+import { AIDropdown } from "./components/AIDropdown";
 
 // We memorize the button so each button is not rerendered
 // on every editor state change
@@ -40,17 +41,17 @@ export const TextMenu = ({ editor, createThread }: TextMenuProps) => {
       updateDelay={100}
     >
       <Toolbar.Wrapper>
-        {/* <AIDropdown
-          onCompleteSentence={commands.onCompleteSentence}
-          onEmojify={commands.onEmojify}
-          onFixSpelling={commands.onFixSpelling}
-          onMakeLonger={commands.onMakeLonger}
-          onMakeShorter={commands.onMakeShorter}
-          onSimplify={commands.onSimplify}
-          onTldr={commands.onTldr}
-          onTone={commands.onTone}
-          onTranslate={commands.onTranslate}
-        /> */}
+        <AIDropdown
+          onCompleteSentence={() => {}}
+          onEmojify={() => {}}
+          onFixSpelling={() => {}}
+          onMakeLonger={() => {}}
+          onMakeShorter={() => {}}
+          onSimplify={() => {}}
+          onTldr={() => {}}
+          onTone={() => {}}
+          onTranslate={() => {}}
+        />
         <Toolbar.Divider />
         <MemoContentTypePicker options={blockOptions} />
         <MemoFontFamilyPicker

@@ -28,6 +28,7 @@ import { ContentItemMenu } from "../menus/ContentItemMenu";
 import { TextMenu } from "../menus/TextMenu";
 import { EditorHeader } from "./components/EditorHeader";
 import { TiptapProps } from "./types";
+import WorkspaceNavbar from "@/components/workspace/WorkspaceNavbar";
 
 export const BlockEditor = ({
   aiToken,
@@ -46,6 +47,7 @@ export const BlockEditor = ({
     collabState,
     leftSidebar,
     leftSidebarThread,
+    leftSidebarAi,
     threads,
     selectThreadInEditor,
     createThread,
@@ -112,6 +114,8 @@ export const BlockEditor = ({
               toggleSidebar={leftSidebar.toggle}
               isSidebarThreadOpen={leftSidebarThread.isOpen}
               toggleSidebarThread={leftSidebarThread.toggle}
+              isSidebarAiOpen={leftSidebarAi.isOpen}
+              toggleSidebarAi={leftSidebarAi.toggle}
             />
             <EditorContent
               id="editor-content"
@@ -135,8 +139,8 @@ export const BlockEditor = ({
             provider={provider}
           />
           <SidebarAI
-            isOpen={leftSidebarThread.isOpen}
-            onClose={leftSidebarThread.close}
+            isOpen={leftSidebarAi.isOpen}
+            onClose={leftSidebarAi.close}
           />
         </div>
       </ThreadsProvider>

@@ -1,7 +1,5 @@
 import { AI } from "@/components/chat/lib/chat/actions";
 import { nanoid } from "@/components/chat/lib/utils";
-import { SubscriptionModalProvider } from "@/lib/providers/subscription-modal-provider";
-import { getActiveProductsWithPrice } from "@/lib/supabase/queries";
 import React from "react";
 
 interface LayoutProps {

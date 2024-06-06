@@ -19,7 +19,14 @@ import type {
   Document,
   Workspace,
 } from "@/lib/supabase/supabase.types";
-import { Download, FolderIcon, Plus, Settings2, Trash2 } from "lucide-react";
+import {
+  Download,
+  FolderIcon,
+  PanelLeft,
+  Plus,
+  Settings2,
+  Trash2,
+} from "lucide-react";
 import { Button, buttonVariants } from "../ui/button";
 import { Separator } from "../ui/separator";
 import AccountInfo from "./AccountInfo";
@@ -36,11 +43,12 @@ import { LoadingEditor } from "../Loading";
 
 interface SidebarProps {
   params: { workspaceId: string };
-  isCollapsed: boolean;
+  isOpen: boolean;
+  toggle: (value: boolean) => void;
   className?: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
+const Sidebar: React.FC<SidebarProps> = ({ params, isOpen, toggle }) => {
   const router = useRouter();
   const [privateWorkspaces, setPrivateWorkspaces] = useState<Workspace | any>(
     []
@@ -132,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
 
   return (
     <aside
-      data-collapsed={isCollapsed}
+      data-collapsed={isOpen}
       className="group flex flex-col gap-4 w-full py-2 data-[collapsed=true]:py-2"
     >
       <div className="p-2 w-full">
@@ -142,7 +150,6 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               privateWorkspaces={privateWorkspaces}
               collaboratingWorkspaces={collaboratingWorkspaces}
               sharedWorkspaces={sharedWorkspaces}
-              isCollapsed={isCollapsed}
             />
           </Suspense>
           <AccountInfo />
@@ -150,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
         {/* Quick Search */}
         <Separator orientation="horizontal" className="my-6" />
 
-        {!isCollapsed && <SearchCommandPalette />}
+        <SearchCommandPalette />
 
         <ul className="w-full mt-2 gap-2">
           {/* All Docs */}
@@ -159,12 +166,11 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               href={`/dashboard/${params.workspaceId}/alldocs`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                isCollapsed && "w-4"
+                " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <FolderIcon className="mr-2 h-4 w-4" />
-              {!isCollapsed && <span>All docs</span>}
+              <span>All docs</span>
             </Link>
           </li>
           {state?.userPermisison === "admin" ||
@@ -175,25 +181,24 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
                   variant="ghost"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "sm" }),
-                    " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                    isCollapsed && "w-4"
+                    " w-full justify-start items-center dark:text-white dark:hover:bg-muted dark:hover:text-white"
                   )}
                 >
                   <Settings2 className="mr-2 h-4 w-4" />
-                  {!isCollapsed && <span>Setting</span>}
+                  <span>Setting</span>
                 </Button>
               </Settings>
             </li>
           ) : null}
         </ul>
         {/* Favorites */}
-        {!isCollapsed && (
+        {!isOpen && (
           <Suspense fallback={<LoadingEditor />}>
             <FavoritesList />
           </Suspense>
         )}
         {/* Collections */}
-        {!isCollapsed && (
+        {!isOpen && (
           <Suspense fallback={<LoadingEditor />}>
             <CollectionsDropdownList workspaceId={params.workspaceId} />
           </Suspense>
@@ -217,7 +222,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isCollapsed }) => {
               )}
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              {!isCollapsed && <span>Trash</span>}
+              {!isOpen && <span>Trash</span>}
             </Link>
           </li>
           <li className="flex items-center">

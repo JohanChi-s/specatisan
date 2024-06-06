@@ -58,7 +58,9 @@ export const CommentCard: React.FC<CommentCardProps> = ({
       )}
       <div className="flex-1">
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="text-sm font-bold leading-none">{name}</div>
+          <div className="text-sm font-bold leading-none">
+            {name.split("@")[0] || "anonymous"}
+          </div>
           <div className="text-xs font-medium leading-none text-gray-500">
             {new Date(createdAt).toLocaleTimeString()}
           </div>

@@ -17,12 +17,15 @@ import { WebSocketStatus } from "@hocuspocus/provider";
 import { FileText } from "lucide-react";
 import { EditorUser } from "../types";
 import { EditorInfo } from "./EditorInfo";
+import { useSidebar } from "@/components/chat/lib/hooks/use-sidebar";
 
 export type EditorHeaderProps = {
   isSidebarOpen?: boolean;
   toggleSidebar?: () => void;
   isSidebarThreadOpen?: boolean;
   toggleSidebarThread?: () => void;
+  isSidebarAiOpen?: boolean;
+  toggleSidebarAi?: () => void;
   characters: number;
   words: number;
   collabState: WebSocketStatus;
@@ -38,11 +41,15 @@ export const EditorHeader = ({
   toggleSidebar,
   isSidebarThreadOpen,
   toggleSidebarThread,
+  isSidebarAiOpen,
+  toggleSidebarAi,
 }: EditorHeaderProps) => {
   const exportToPDF = () => {
     const element = document.getElementById("editor-content"); // Replace 'document' with the ID of your document container
     html2pdf().from(element).save();
   };
+  const { isSidebarOpen: MainSidebar, toggleSidebar: toggleMainSidebar } =
+    useSidebar();
   const exportToMarkdown = () => {
     const element = document.getElementById("editor-content");
     if (element) {
@@ -66,12 +73,22 @@ export const EditorHeader = ({
       <div className="flex flex-row gap-x-1.5 items-center">
         <div className="flex items-center gap-x-1.5">
           <Toolbar.Button
-            tooltip={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+            tooltip={MainSidebar ? "Close sidebar" : "Open sidebar"}
+            onClick={toggleMainSidebar}
+            active={MainSidebar}
+            className={MainSidebar ? "bg-transparent" : ""}
+          >
+            <Icon name={MainSidebar ? "PanelLeftClose" : "PanelLeft"} />
+          </Toolbar.Button>
+          <Toolbar.Button
+            tooltip={
+              isSidebarOpen ? "Close table content" : "Open table content"
+            }
             onClick={toggleSidebar}
             active={isSidebarOpen}
             className={isSidebarOpen ? "bg-transparent" : ""}
           >
-            <Icon name={isSidebarOpen ? "PanelLeftClose" : "PanelLeft"} />
+            <Icon name="GanttChart" />
           </Toolbar.Button>
           <Toolbar.Button
             tooltip={isSidebarThreadOpen ? "Close Comments" : "Open Comments"}
@@ -80,6 +97,14 @@ export const EditorHeader = ({
             className={isSidebarThreadOpen ? "bg-transparent" : ""}
           >
             <Icon name="MessagesSquare" />
+          </Toolbar.Button>
+          <Toolbar.Button
+            tooltip={isSidebarAiOpen ? "Close Ai Panel" : "Open Ai Panel"}
+            onClick={toggleSidebarAi}
+            active={isSidebarAiOpen}
+            className={isSidebarAiOpen ? "bg-transparent" : ""}
+          >
+            <Icon name="Sparkles" />
           </Toolbar.Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

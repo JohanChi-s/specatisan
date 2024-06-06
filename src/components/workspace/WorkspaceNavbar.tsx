@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppState } from "@/lib/providers/state-provider";
 import { updateDocument } from "@/lib/supabase/queries";
 import clsx from "clsx";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, PanelLeft } from "lucide-react";
 import Link from "next/link";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { toast } from "../ui/use-toast";
 import WorkspaceBreadcumb, { BreadcrumbItemProps } from "./WorkspaceBreadcumb";
+import { useSidebar } from "../chat/lib/hooks/use-sidebar";
 
 type WorkspaceNavbarProps = {
   title?: string;
@@ -31,6 +32,7 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const tab = pathname?.split("/")[3] || "alldocs";
+  const { toggleSidebar } = useSidebar();
   const { workspaceId } = useAppState();
 
   if (!workspaceId) return redirect("/dashboard");
@@ -80,6 +82,11 @@ const WorkspaceNavbar: React.FC<WorkspaceNavbarProps> = ({
     <div className="flex items-center justify-between w-full h-12 rounded-sm mb-1">
       {/* Create a back button with nextjs */}
       <div className="flex items-center">
+        <div className="flex items-center justify-end">
+          <Button variant={"ghost"} onClick={() => toggleSidebar()}>
+            <PanelLeft className="w-4 h-4" />
+          </Button>
+        </div>
         <Button variant={"ghost"} onClick={() => handleBack()}>
           <ChevronLeft size={24} />
         </Button>
