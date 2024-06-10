@@ -5,8 +5,6 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import { API } from "@/lib/BlockEditor/api";
 
 import {
-  // AiWriter,
-  // AiImage,
   BlockquoteFigure,
   CharacterCount,
   Color,
@@ -53,7 +51,6 @@ import { ImageUpload } from "./ImageUpload";
 import { TableOfContentsNode } from "./TableOfContentsNode";
 import Details from "@tiptap-pro/extension-details";
 import { emojis } from "@tiptap-pro/extension-emoji";
-// import { lowlight } from "lowlight";
 import { lowlight } from "lowlight/lib/core";
 
 interface ExtensionKitProps {
@@ -63,25 +60,13 @@ interface ExtensionKitProps {
   userColor?: string;
 }
 
-export const ExtensionKit = ({
-  provider,
-  userId,
-  userName = "Maxi",
-}: ExtensionKitProps) => [
+export const ExtensionKit = ({ provider }: ExtensionKitProps) => [
   Document,
   Columns,
   TaskList,
   TaskItem.configure({
     nested: true,
   }),
-  // AiWriter.configure({
-  //   authorId: userId,
-  //   authorName: userName,
-  // }),
-  // AiImage.configure({
-  //   authorId: userId,
-  //   authorName: userName,
-  // }),
   Column,
   Selection,
   Heading.configure({

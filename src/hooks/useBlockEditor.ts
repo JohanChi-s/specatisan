@@ -77,7 +77,7 @@ export const useBlockEditor = ({
           },
           suggestion: {
             items: ({ query }) => {
-              if (colaborators?.length) {
+              if (colaborators && query && colaborators?.length) {
                 return (
                   colaborators?.filter((colab) =>
                     colab.toLowerCase().includes(query.toLowerCase())
