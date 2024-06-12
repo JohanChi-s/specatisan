@@ -27,7 +27,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
     },
     {
       title: "Notifications",
-      href: `/${user.id}/settings/notifications`,
+      href: `/${user.id}/settings/notification`,
     },
     {
       title: "Display",
