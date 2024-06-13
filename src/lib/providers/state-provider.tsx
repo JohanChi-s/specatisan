@@ -1,6 +1,5 @@
 "use client";
 
-import { debounce } from "lodash";
 import { usePathname } from "next/navigation";
 import React, {
   Dispatch,
@@ -345,13 +344,8 @@ const AppStateProvider: React.FC<AppStateProviderProps> = ({ children }) => {
   const pathname = usePathname();
   const { user } = useSupabaseUser();
 
-  const parsePathname = (pathname: string | null) => {
-    const urlSegments = pathname?.split("/").filter(Boolean);
-    return urlSegments;
-  };
-
   const workspaceId = useMemo(() => {
-    const urlSegments = parsePathname(pathname);
+    const urlSegments = pathname?.split("/").filter(Boolean);
     if (urlSegments)
       if (urlSegments.length > 1) {
         return urlSegments[1];
