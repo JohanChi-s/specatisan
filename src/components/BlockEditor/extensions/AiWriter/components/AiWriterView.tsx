@@ -78,7 +78,6 @@ export const AiWriterView = ({
 
     try {
       const { text } = await generate(promf);
-      console.log("🚀 ~ generateText ~ responseMessage:", text);
 
       setPreviewText(text);
 
