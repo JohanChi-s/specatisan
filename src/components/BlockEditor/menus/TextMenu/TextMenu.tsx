@@ -42,15 +42,15 @@ export const TextMenu = ({ editor, createThread }: TextMenuProps) => {
     >
       <Toolbar.Wrapper>
         <AIDropdown
-          onCompleteSentence={() => {}}
-          onEmojify={() => {}}
-          onFixSpelling={() => {}}
-          onMakeLonger={() => {}}
-          onMakeShorter={() => {}}
-          onSimplify={() => {}}
-          onTldr={() => {}}
-          onTone={() => {}}
-          onTranslate={() => {}}
+          onCompleteSentence={commands.onCompleteSentence}
+          onEmojify={commands.onEmojify}
+          onFixSpelling={commands.onFixSpelling}
+          onMakeLonger={commands.onMakeLonger}
+          onMakeShorter={commands.onMakeShorter}
+          onSimplify={commands.onSimplify}
+          onTldr={commands.onTldr}
+          onTone={commands.onTone}
+          onTranslate={commands.onTranslate}
         />
         <Toolbar.Divider />
         <MemoContentTypePicker options={blockOptions} />

@@ -30,7 +30,10 @@ const CollectionsPage: React.FC = () => {
     <div className="container mx-auto">
       <WorkspaceNavbar
         items={[
-          { href: `dashboard/${workspaceId}/collections`, label: "All Docs" },
+          {
+            href: `/dashboard/${workspaceId}/collections`,
+            label: "Collections",
+          },
         ]}
       />
       <Separator className="my-2" />

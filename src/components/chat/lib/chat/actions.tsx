@@ -11,6 +11,7 @@ import {
 
 import { BotMessage } from "../../components/stocks";
 
+import { generateText } from "ai";
 import { SpinnerMessage, UserMessage } from "../../components/stocks/message";
 import { Chat, Message } from "../types";
 import { nanoid } from "../utils";
@@ -79,6 +80,16 @@ async function submitUserMessage(content: string) {
   };
 }
 
+async function generate(question: string) {
+  "use server";
+  const { text, finishReason, usage } = await generateText({
+    model: openai("gpt-3.5-turbo"),
+    prompt: question,
+  });
+
+  return { text, finishReason, usage };
+}
+
 export type AIState = {
   chatId: string;
   messages: Message[];
@@ -92,6 +103,7 @@ export type UIState = {
 export const AI = createAI<AIState, UIState>({
   actions: {
     submitUserMessage,
+    generate,
   },
   initialUIState: [],
   initialAIState: { chatId: nanoid(), messages: [] },

@@ -27,7 +27,6 @@ const TagsPage = () => {
   useEffect(() => {
     if (!workspaceId) {
       redirect("/dashboard");
-      return;
     }
 
     const fetchData = async () => {

@@ -52,6 +52,7 @@ import { TableOfContentsNode } from "./TableOfContentsNode";
 import Details from "@tiptap-pro/extension-details";
 import { emojis } from "@tiptap-pro/extension-emoji";
 import { lowlight } from "lowlight/lib/core";
+import { AiWriter } from "./AiWriter";
 
 interface ExtensionKitProps {
   provider?: HocuspocusProvider | null;
@@ -66,6 +67,10 @@ export const ExtensionKit = ({ provider }: ExtensionKitProps) => [
   TaskList,
   TaskItem.configure({
     nested: true,
+  }),
+  AiWriter.configure({
+    authorId: "",
+    authorName: "",
   }),
   Column,
   Selection,

@@ -1,17 +1,13 @@
-import {
-  Extension,
-  NodeViewWrapper,
-  NodeViewWrapperProps,
-} from "@tiptap/react";
+import { NodeViewWrapper, NodeViewWrapperProps } from "@tiptap/react";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { v4 as uuid } from "uuid";
 
 import { BlockButton } from "@/components/BlockEditor/ui/Button";
+import { Icon } from "@/components/BlockEditor/ui/Icon";
 import { Loader } from "@/components/BlockEditor/ui/Loader";
 import { Panel, PanelHeadline } from "@/components/BlockEditor/ui/Panel";
 import { Textarea } from "@/components/BlockEditor/ui/Textarea";
-import { Icon } from "@/components/BlockEditor/ui/Icon";
 
 import {
   AiTone,
@@ -19,10 +15,11 @@ import {
 } from "@/components/BlockEditor/BlockEditor/types";
 import { tones } from "@/lib/BlockEditor/constants";
 
-import * as Dropdown from "@radix-ui/react-dropdown-menu";
-import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
-import { Surface } from "@/components/BlockEditor/ui/Surface";
 import { DropdownButton } from "@/components/BlockEditor/ui/Dropdown";
+import { Surface } from "@/components/BlockEditor/ui/Surface";
+import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
+import * as Dropdown from "@radix-ui/react-dropdown-menu";
+import { useActions } from "ai/rsc";
 
 export interface DataProps {
   text: string;
@@ -39,10 +36,6 @@ export const AiWriterView = ({
   getPos,
   deleteNode,
 }: NodeViewWrapperProps) => {
-  const aiOptions = editor.extensionManager.extensions.find(
-    (ext: Extension) => ext.name === "ai"
-  ).options;
-
   const [data, setData] = useState<DataProps>({
     text: "",
     tone: undefined,
@@ -54,6 +47,8 @@ export const AiWriterView = ({
   const [previewText, setPreviewText] = useState(undefined);
   const [isFetching, setIsFetching] = useState(false);
   const textareaId = useMemo(() => uuid(), []);
+
+  const { generate } = useActions();
 
   const generateText = useCallback(async () => {
     const {
@@ -72,37 +67,18 @@ export const AiWriterView = ({
     }
 
     setIsFetching(true);
-
-    const payload = {
-      text: dataText,
-      textLength: textLength,
-      textUnit: textUnit,
-      useHeading: addHeading,
-      tone,
-      language,
-    };
+    const promf =
+      [language, tone, textLength, textUnit].reduce((pf, item) => {
+        if (item) {
+          return pf + item + ",";
+        }
+      }, "") +
+      ": " +
+      dataText;
 
     try {
-      const { baseUrl, appId, token } = aiOptions;
-      const response = await fetch(`${baseUrl}/text/prompt`, {
-        method: "POST",
-        headers: {
-          accept: "application.json",
-          "Content-Type": "application/json",
-          "X-App-Id": appId.trim(),
-          Authorization: `Bearer ${token.trim()}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const json = await response.json();
-      const text = json.response;
-
-      if (!text.length) {
-        setIsFetching(false);
-
-        return;
-      }
+      const { text } = await generate(promf);
+      console.log("🚀 ~ generateText ~ responseMessage:", text);
 
       setPreviewText(text);
 
@@ -117,7 +93,7 @@ export const AiWriterView = ({
       setIsFetching(false);
       toast.error(message);
     }
-  }, [data, aiOptions]);
+  }, [data, generate]);
 
   const insert = useCallback(() => {
     const from = getPos();

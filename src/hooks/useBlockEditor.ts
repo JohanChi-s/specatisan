@@ -1,6 +1,6 @@
 import { Editor, ReactRenderer, useEditor } from "@tiptap/react";
 import { SuggestionProps } from "@tiptap/suggestion";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import tippy, { Instance } from "tippy.js";
 // import Ai from "@tiptap-pro/extension-ai";
 import { TiptapCollabProvider, WebSocketStatus } from "@hocuspocus/provider";
@@ -20,6 +20,7 @@ import { userColors } from "@/lib/BlockEditor/constants";
 import { initialContent } from "@/lib/BlockEditor/data/initialContent";
 import { randomElement } from "@/lib/BlockEditor/utils";
 import { useSidebar } from "./useSidebar";
+import { EditorContext } from "@/components/BlockEditor/context/EditorContext";
 declare global {
   interface Window {
     editor: Editor | null;
@@ -45,7 +46,7 @@ export const useBlockEditor = ({
   const [collabState, setCollabState] = useState<WebSocketStatus>(
     WebSocketStatus.Connecting
   );
-  // const { setIsAiLoading, setAiError } = useContext(EditorContext)
+  const { setIsAiLoading, setAiError } = useContext(EditorContext);
 
   const editor = useEditor(
     {
@@ -141,9 +142,9 @@ export const useBlockEditor = ({
       ],
       editorProps: {
         attributes: {
-          autocomplete: "off",
-          autocorrect: "off",
-          autocapitalize: "off",
+          autocomplete: "on",
+          autocorrect: "on",
+          autocapitalize: "on",
           class: "min-h-full",
         },
       },
