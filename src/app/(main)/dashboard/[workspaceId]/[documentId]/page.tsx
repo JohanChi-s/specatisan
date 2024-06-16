@@ -142,8 +142,7 @@ export default function Document({
     }
   }, [setProvider, collabToken, ydoc, documentId, hasCollab]);
 
-  if (hasCollab && (!collabToken || !provider || !user || !workspaceCollabs))
-    return;
+  if (hasCollab && (!collabToken || !provider || !user)) return;
   return (
     <>
       <Suspense fallback={<LoadingEditor />}>

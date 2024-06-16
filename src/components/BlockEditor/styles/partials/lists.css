@@ -30,10 +30,6 @@
   ul[data-type='taskList'] {
     @apply list-none p-0;
 
-    p {
-      @apply m-0;
-    }
-
     li {
       @apply flex;
 

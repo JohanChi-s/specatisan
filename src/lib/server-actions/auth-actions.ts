@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { FormSchema } from "../types";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function actionLoginUser({
   email,
@@ -18,10 +19,14 @@ export async function actionLoginUser({
 }
 export async function actionLoginUserGoogle() {
   const supabase = createRouteHandlerClient({ cookies });
-  const response = await supabase.auth.signInWithOAuth({
+  const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}auth/callback`,
+    },
   });
-  return response;
+  if (!error) redirect(data.url!);
+  return { error };
 }
 
 export async function actionSignUpUser({

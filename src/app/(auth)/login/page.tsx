@@ -17,7 +17,7 @@ import {
 import { FormSchema } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -48,10 +48,9 @@ const LoginPage = () => {
   const handleLoginGoolge = async () => {
     const { error } = await actionLoginUserGoogle();
     if (error) {
-      setSubmitError(error.message);
+      setSubmitError("error.message auth");
     }
-    console.log("Google login");
-    router.replace("/dashboard");
+    return;
   };
 
   return (
