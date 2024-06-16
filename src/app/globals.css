@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import './editor.css';
 
 @layer base {
   :root {
@@ -109,4 +110,3 @@
   padding: 2px 6px;
   pointer-events: none;
 }
-@import './editor.css';
