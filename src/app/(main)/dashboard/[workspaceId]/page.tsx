@@ -7,7 +7,7 @@ const Workspace = async ({ params }: { params: { workspaceId: string } }) => {
   const { error } = await getWorkspaceDetails(params.workspaceId);
   if (error) {
     console.log("error", error);
-    return redirect("/login");
+    return redirect("/auth/login");
   }
   return redirect(`/dashboard/${params.workspaceId}/alldocs`);
 };

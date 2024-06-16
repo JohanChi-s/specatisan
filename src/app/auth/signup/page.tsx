@@ -150,7 +150,7 @@ const Signup = () => {
         {submitError && <FormMessage>{submitError}</FormMessage>}
         <div className="self-container text-right w-full">
           Already have an account?{" "}
-          <Link href="/login" className="text-primary">
+          <Link href="/auth/login" className="text-primary">
             Login
           </Link>
         </div>

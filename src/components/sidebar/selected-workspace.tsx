@@ -27,7 +27,7 @@ const SelectedWorkspace: React.FC<SelectedWorkspaceProps> = ({
   }, [supabase.storage, workspace]);
   return (
     <Link
-      href={`/dashboard/${workspace.id}`}
+      href={`/dashboard/${workspace.id}/alldocs`}
       onClick={() => {
         if (onClick) onClick(workspace);
       }}

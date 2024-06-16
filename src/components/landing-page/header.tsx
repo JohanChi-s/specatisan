@@ -91,12 +91,12 @@ const Header = () => {
         justify-end
       "
       >
-        <Link href={"/login"}>
+        <Link href={"/auth/login"}>
           <Button variant={"secondary"} className="hidden sm:block">
             Login
           </Button>
         </Link>
-        <Link href="/signup">
+        <Link href="/auth/signup">
           <Button className="whitespace-nowrap">Sign Up</Button>
         </Link>
       </aside>
