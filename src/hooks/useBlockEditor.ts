@@ -77,14 +77,7 @@ export const useBlockEditor = ({
           },
           suggestion: {
             items: ({ query }) => {
-              if (colaborators && query && colaborators?.length) {
-                return (
-                  colaborators?.filter((colab) =>
-                    colab.toLowerCase().includes(query.toLowerCase())
-                  ) || []
-                );
-              }
-              return [];
+              return colaborators || [];
             },
             render: () => {
               let component: ReactRenderer<MentionListRef> | undefined;

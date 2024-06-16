@@ -82,6 +82,8 @@ export default function Document({
           data.map((user: User) => {
             collabs.push(user.email!);
           });
+        } else {
+          collabs.push(user?.email!);
         }
         // Set state when the data is received
         setWorkspaceColabs(collabs);
@@ -91,7 +93,7 @@ export default function Document({
     };
 
     dataFetch();
-  }, [workspaceId]);
+  }, [user?.email, workspaceId]);
 
   useEffect(() => {
     // Fetch data
@@ -140,7 +142,8 @@ export default function Document({
     }
   }, [setProvider, collabToken, ydoc, documentId, hasCollab]);
 
-  if (hasCollab && (!collabToken || !provider || !user)) return;
+  if (hasCollab && (!collabToken || !provider || !user || !workspaceCollabs))
+    return;
   return (
     <>
       <Suspense fallback={<LoadingEditor />}>

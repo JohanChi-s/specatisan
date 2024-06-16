@@ -48,7 +48,7 @@ export default function WorkspaceSwitcher({
     });
     setOpen(false);
 
-    router.push(`/dashboard/${option.id}`);
+    router.push(`/dashboard/${option.id}/alldocs`);
   };
 
   React.useEffect(() => {
