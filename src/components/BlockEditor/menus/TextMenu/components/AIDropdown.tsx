@@ -7,7 +7,7 @@ import * as Dropdown from "@radix-ui/react-dropdown-menu";
 import { useCallback } from "react";
 
 export type AIDropdownProps = {
-  onSimplify: () => void;
+  onSimplify: (onSetMessage: any) => void;
   onFixSpelling: () => void;
   onMakeShorter: () => void;
   onMakeLonger: () => void;

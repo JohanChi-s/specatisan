@@ -11,6 +11,7 @@ import { Message } from "../lib/types";
 import { ChatList } from "./chat-list";
 import { ChatPanel } from "./chat-panel";
 import { EmptyScreen } from "./empty-screen";
+import { useAisState } from "@/components/BlockEditor/extensions/AiWriter/AiContext";
 
 export interface ChatProps extends React.ComponentProps<"div"> {
   initialMessages?: Message[];
@@ -20,9 +21,14 @@ export interface ChatProps extends React.ComponentProps<"div"> {
 
 export function Chat({ id, className, missingKeys }: ChatProps) {
   const router = useRouter();
+  const { message } = useAisState();
   const [input, setInput] = useState("");
   const [messages] = useUIState();
   const [aiState] = useAIState();
+
+  useEffect(() => {
+    setInput(message as string);
+  }, [message]);
 
   const [_, setNewChatId] = useLocalStorage("newChatId", id);
 

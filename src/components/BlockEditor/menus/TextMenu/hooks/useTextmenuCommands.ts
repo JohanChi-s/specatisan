@@ -71,42 +71,16 @@ export const useTextmenuCommands = (editor: Editor) => {
     [editor]
   );
 
-  const onSimplify = useCallback(
-    () => editor.chain().focus().aiSimplify().run(),
-    [editor]
-  );
-  const onEmojify = useCallback(
-    () => editor.chain().focus().aiEmojify().run(),
-    [editor]
-  );
-  const onCompleteSentence = useCallback(
-    () => editor.chain().focus().aiComplete().run(),
-    [editor]
-  );
-  const onFixSpelling = useCallback(
-    () => editor.chain().focus().aiFixSpellingAndGrammar().run(),
-    [editor]
-  );
-  const onMakeLonger = useCallback(
-    () => editor.chain().focus().aiExtend().run(),
-    [editor]
-  );
-  const onMakeShorter = useCallback(
-    () => editor.chain().focus().aiShorten().run(),
-    [editor]
-  );
-  const onTldr = useCallback(
-    () => editor.chain().focus().aiTldr().run(),
-    [editor]
-  );
-  const onTone = useCallback(
-    (tone: string) => editor.chain().focus().aiAdjustTone(tone).run(),
-    [editor]
-  );
-  const onTranslate = useCallback(
-    (language: any) => editor.chain().focus().aiTranslate(language).run(),
-    [editor]
-  );
+  const onSimplify = (onSetMessage: any) => {
+    const state = editor.state;
+    const { from, to } = state.selection;
+    if (from !== to) {
+      const slice = state.doc.slice(from, to);
+      console.log("select text: ", slice.content.textBetween(0, slice.size));
+      const msg = slice.content.textBetween(0, slice.size) || "";
+      onSetMessage(msg);
+    }
+  };
   const onLink = useCallback(
     (url: string, inNewTab?: boolean) =>
       editor
@@ -157,14 +131,6 @@ export const useTextmenuCommands = (editor: Editor) => {
     onSetFont,
     onSetFontSize,
     onSimplify,
-    onEmojify,
-    onCompleteSentence,
-    onFixSpelling,
-    onMakeLonger,
-    onMakeShorter,
-    onTldr,
-    onTone,
-    onTranslate,
     onLink,
   };
 };

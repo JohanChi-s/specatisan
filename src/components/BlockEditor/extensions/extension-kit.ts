@@ -53,6 +53,7 @@ import Details from "@tiptap-pro/extension-details";
 import { emojis } from "@tiptap-pro/extension-emoji";
 import { lowlight } from "lowlight/lib/core";
 import { AiWriter } from "./AiWriter";
+import { AiQuick } from "./AiWriter/AiToolbarExtention";
 
 interface ExtensionKitProps {
   provider?: HocuspocusProvider | null;
@@ -77,6 +78,7 @@ export const ExtensionKit = ({ provider }: ExtensionKitProps) => [
   Heading.configure({
     levels: [1, 2, 3, 4, 5, 6],
   }),
+  AiQuick,
   HorizontalRule,
   StarterKit.configure({
     document: false,

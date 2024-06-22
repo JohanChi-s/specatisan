@@ -4,7 +4,9 @@ import { Surface } from "@/components/BlockEditor/ui/Surface";
 import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
 import * as Popover from "@radix-ui/react-popover";
 import { BubbleMenu, Editor } from "@tiptap/react";
-import { memo } from "react";
+import { memo, useCallback } from "react";
+import { useAisState } from "../../extensions/AiWriter/AiContext";
+import { AIDropdown } from "./components/AIDropdown";
 import { ContentTypePicker } from "./components/ContentTypePicker";
 import { EditLinkPopover } from "./components/EditLinkPopover";
 import { FontFamilyPicker } from "./components/FontFamilyPicker";
@@ -12,7 +14,6 @@ import { FontSizePicker } from "./components/FontSizePicker";
 import { useTextmenuCommands } from "./hooks/useTextmenuCommands";
 import { useTextmenuContentTypes } from "./hooks/useTextmenuContentTypes";
 import { useTextmenuStates } from "./hooks/useTextmenuStates";
-import { AIDropdown } from "./components/AIDropdown";
 
 // We memorize the button so each button is not rerendered
 // on every editor state change
@@ -25,12 +26,101 @@ const MemoContentTypePicker = memo(ContentTypePicker);
 export type TextMenuProps = {
   editor: Editor;
   createThread: () => void;
+  leftSidebarAi: any;
 };
 
-export const TextMenu = ({ editor, createThread }: TextMenuProps) => {
+export const TextMenu = ({
+  editor,
+  createThread,
+  leftSidebarAi,
+}: TextMenuProps) => {
   const commands = useTextmenuCommands(editor);
   const states = useTextmenuStates(editor);
+  const { onSetMessage } = useAisState();
   const blockOptions = useTextmenuContentTypes(editor);
+
+  const getSlectContent = useCallback(() => {
+    const state = editor.state;
+    const { from, to } = state.selection;
+    if (from !== to) {
+      const slice = state.doc.slice(from, to);
+      leftSidebarAi.open();
+      const msg = slice.content.textBetween(0, slice.size) || "";
+      return msg;
+    }
+  }, [editor.state, leftSidebarAi]);
+
+  const onSimplify = () => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Simplify: " + cnt;
+      onSetMessage(msg);
+    }
+  };
+
+  const onEmojify = useCallback(() => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Emojify: " + cnt;
+      onSetMessage(msg);
+    }
+  }, [getSlectContent, onSetMessage]);
+
+  const onCompleteSentence = useCallback(() => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Complete Sentence: " + cnt;
+      onSetMessage(msg);
+    }
+  }, [getSlectContent, onSetMessage]);
+  const onFixSpelling = useCallback(() => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Fix Spelling: " + cnt;
+      onSetMessage(msg);
+    }
+  }, [getSlectContent, onSetMessage]);
+  const onMakeLonger = useCallback(() => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Make Longer: " + cnt;
+      onSetMessage(msg);
+    }
+  }, [getSlectContent, onSetMessage]);
+  const onMakeShorter = useCallback(() => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Make Shorter: " + cnt;
+      onSetMessage(msg);
+    }
+  }, [getSlectContent, onSetMessage]);
+  const onTldr = useCallback(() => {
+    const cnt = getSlectContent();
+    if (cnt) {
+      const msg = "Tldr: " + cnt;
+      onSetMessage(msg);
+    }
+  }, [getSlectContent, onSetMessage]);
+  const onTone = useCallback(
+    (tone: string) => {
+      const cnt = getSlectContent();
+      if (cnt) {
+        const msg = "Change to tone: " + tone + "\n" + cnt;
+        onSetMessage(msg);
+      }
+    },
+    [getSlectContent, onSetMessage]
+  );
+  const onTranslate = useCallback(
+    (language: any) => {
+      const cnt = getSlectContent();
+      if (cnt) {
+        const msg = "Translate to: " + language + "\n" + cnt;
+        onSetMessage(msg);
+      }
+    },
+    [getSlectContent, onSetMessage]
+  );
 
   return (
     <BubbleMenu
@@ -42,15 +132,15 @@ export const TextMenu = ({ editor, createThread }: TextMenuProps) => {
     >
       <Toolbar.Wrapper>
         <AIDropdown
-          onCompleteSentence={commands.onCompleteSentence}
-          onEmojify={commands.onEmojify}
-          onFixSpelling={commands.onFixSpelling}
-          onMakeLonger={commands.onMakeLonger}
-          onMakeShorter={commands.onMakeShorter}
-          onSimplify={commands.onSimplify}
-          onTldr={commands.onTldr}
-          onTone={commands.onTone}
-          onTranslate={commands.onTranslate}
+          onCompleteSentence={onCompleteSentence}
+          onEmojify={onEmojify}
+          onFixSpelling={onFixSpelling}
+          onMakeLonger={onMakeLonger}
+          onMakeShorter={onMakeShorter}
+          onSimplify={onSimplify}
+          onTldr={onTldr}
+          onTone={onTone}
+          onTranslate={onTranslate}
         />
         <Toolbar.Divider />
         <MemoContentTypePicker options={blockOptions} />
