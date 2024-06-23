@@ -23,9 +23,11 @@ import {
   User,
   Workspace,
 } from "./supabase.types";
-import { omit } from "lodash";
+import { omit, template } from "lodash";
 import { Colab } from "@/components/global/workspace-creator";
 import { CollectionPermission } from "@/shared/types";
+import { boolean } from "drizzle-orm/mysql-core";
+import { error } from "console";
 
 export const getUserById = async (userId: string) => {
   try {
@@ -126,6 +128,23 @@ export const getDocumentDetails = async (fileId: string) => {
   } catch (error) {
     console.log("🔴Error", error);
     return { data: null, error: "Error" };
+  }
+};
+
+export const updateAccessibleAccess = async (
+  fileId: string,
+  right: boolean
+) => {
+  const isValid = validate(fileId);
+  if (!isValid) return { data: null, error: "INVALID_FILE_ID" };
+  try {
+    const response = await db
+      .update(documents)
+      .set({ template: right })
+      .where(eq(documents.id, fileId));
+    return { data: response, error: null };
+  } catch (error) {
+    return { data: null, error: error };
   }
 };
 

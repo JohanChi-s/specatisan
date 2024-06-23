@@ -1,16 +1,14 @@
 "use client";
 
 import { TiptapCollabProvider } from "@hocuspocus/provider";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
 
 import { BlockEditor } from "@/components/BlockEditor/BlockEditor";
 import { LoadingEditor } from "@/components/Loading";
-import { useAppState } from "@/lib/providers/state-provider";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { getCollaborators } from "@/lib/supabase/queries";
-import { User } from "@/lib/supabase/supabase.types";
+import { getDocumentDetails } from "@/lib/supabase/queries";
+import { v4 } from "uuid";
 
 export interface AiState {
   isAiLoading: boolean;
@@ -24,54 +22,39 @@ export default function Document({
 }) {
   const [provider, setProvider] = useState<TiptapCollabProvider | null>(null);
   const [collabToken, setCollabToken] = useState<string | null>(null);
-  const { workspaceId } = useAppState();
-  const { user } = useSupabaseUser();
-  const [workspaceCollabs, setWorkspaceColabs] = useState<string[]>([
-    user?.email!,
-  ]);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const hasCollab = parseInt(searchParams?.get("noCollab") as string) !== 1;
+  const user = {
+    username: "anonymous",
+    email: "anonymous",
+  };
 
   const { documentId } = params;
 
   useEffect(() => {
-    // Fetch data
-    const dataFetch = async () => {
-      try {
-        if (!workspaceId) return;
-        const data = await getCollaborators(workspaceId);
-        const collabs: string[] = [];
-        if (data) {
-          data.map((user: User) => {
-            collabs.push(user.email!);
-          });
-        } else {
-          collabs.push(user?.email!);
-        }
-        // Set state when the data is received
-        setWorkspaceColabs(collabs);
-      } catch (error) {
-        console.error("Error fetching workspace collaborators:", error);
+    const checkRight = async () => {
+      const document = await getDocumentDetails(documentId);
+      if (!document.data?.template || !document.data) {
+        return router.push("/documents/accessDeny");
       }
     };
-
-    dataFetch();
-  }, [user?.email, workspaceId]);
+    checkRight();
+  }, [documentId]);
 
   useEffect(() => {
     // Fetch data
     const dataFetch = async () => {
       try {
-        if (!user) return;
         const response = await fetch("/api/collaboration", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id, // Replace with actual user data
-            email: user.email, // Add any other relevant information
+            userId: v4(), // Replace with actual user data
+            email: "anonymous", // Add any other relevant information
           }),
         });
         if (!response.ok) {
@@ -89,7 +72,7 @@ export default function Document({
     };
 
     dataFetch();
-  }, [user]);
+  }, []);
 
   const ydoc = useMemo(() => new YDoc(), []);
 
@@ -106,17 +89,15 @@ export default function Document({
     }
   }, [setProvider, collabToken, ydoc, documentId, hasCollab]);
 
-  if (hasCollab && (!collabToken || !provider || !user)) return;
+  if (hasCollab && (!collabToken || !provider)) return;
   return (
     <>
       <Suspense fallback={<LoadingEditor />}>
         <BlockEditor
-          // aiToken={aiToken}
           hasCollab={hasCollab}
           ydoc={ydoc}
           provider={provider}
           user={user}
-          colabs={workspaceCollabs}
         />
       </Suspense>
     </>

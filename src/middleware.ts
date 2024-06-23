@@ -7,6 +7,15 @@ export async function middleware(req: NextRequest) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
+
+  // Define the dynamic route pattern
+  const publicRoutePattern = /^\/dashboard\/[a-f0-9-]/;
+
+  // Check if the requested path matches the public route pattern
+  if (publicRoutePattern.test(req.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
   if (req.nextUrl.pathname.startsWith("/dashboard")) {
     if (!session) {
       return NextResponse.redirect(new URL("/auth/login", req.url));

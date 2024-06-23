@@ -27,7 +27,7 @@ export function Chat({ id, className, missingKeys }: ChatProps) {
   const [aiState] = useAIState();
 
   useEffect(() => {
-    setInput(message as string);
+    setInput((message as string) || "");
   }, [message]);
 
   const [_, setNewChatId] = useLocalStorage("newChatId", id);

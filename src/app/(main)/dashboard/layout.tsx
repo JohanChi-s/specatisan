@@ -1,4 +1,3 @@
-import { AI } from "@/components/chat/lib/chat/actions";
 import { nanoid } from "@/components/chat/lib/utils";
 import React from "react";
 
@@ -16,7 +15,7 @@ const Layout: React.FC<LayoutProps> = async ({ children, params }) => {
   return (
     <main className="flex">
       {/* <SubscriptionModalProvider products={products}> */}
-      <AI>{children}</AI>
+      {children}
       {/* </SubscriptionModalProvider> */}
     </main>
   );

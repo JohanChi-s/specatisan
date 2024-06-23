@@ -10,6 +10,8 @@ import { DM_Sans } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 import "./globals.css";
 import { SidebarProvider } from "@/components/chat/lib/hooks/use-sidebar";
+import { AI } from "@/components/chat/lib/chat/actions";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 const inter = DM_Sans({
   subsets: ["latin"],
   weight: "400",
@@ -46,8 +48,12 @@ export default function RootLayout({
           <SupabaseUserProvider>
             <AppStateProvider>
               <SocketProvider>
-                <SidebarProvider>{children}</SidebarProvider>
-                <Toaster />
+                <TooltipProvider delayDuration={0}>
+                  <AI>
+                    <SidebarProvider>{children}</SidebarProvider>
+                  </AI>
+                  <Toaster />
+                </TooltipProvider>
               </SocketProvider>
             </AppStateProvider>
           </SupabaseUserProvider>

@@ -39,6 +39,17 @@ import {
 } from "../ui/sheet";
 import { toast } from "../ui/use-toast";
 import { v4 } from "uuid";
+import CustomDialogTrigger from "../global/custom-dialog-trigger";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../ui/drawer";
 
 type Props = {
   document: Document;
@@ -79,6 +90,48 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
       toast({
         title: "Success",
         description: "Update name for the Document",
+      });
+    }
+  };
+
+  const handlePublishDocument = async (DocumentId: string) => {
+    dispatch({
+      type: "UPDATE_FILE",
+      payload: {
+        document: { template: true },
+        fileId: document.id,
+        workspaceId,
+      },
+    });
+    const { error } = await updateDocument({ template: true }, DocumentId);
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Could not share the Document ",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Shared Document susscessful",
+      });
+    }
+  };
+  const changeToPrivate = async (DocumentId: string) => {
+    dispatch({
+      type: "UPDATE_FILE",
+      payload: {
+        document: { template: false },
+        fileId: document.id,
+        workspaceId,
+      },
+    });
+    const { error } = await updateDocument({ template: false }, DocumentId);
+    if (error) {
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Error updating Document",
       });
     }
   };
@@ -158,7 +211,7 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
 
   const hanldeCopyLink = (document: Document) => {
     navigator.clipboard.writeText(
-      `${window.location.origin}/dashboard/${workspaceId}/${document.id}`
+      `${window.location.origin}/documents/${document.id}`
     );
     toast({
       title: "Copied",
@@ -184,14 +237,36 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
       >
         <ExternalLink className="h-4 w-4" />
       </Button>
-      <Button
-        variant="default"
-        className="text-sm"
-        size="sm"
-        onClick={() => hanldeCopyLink(document)}
-      >
-        <Link2 className="h-4 w-4" />
-      </Button>
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button variant="default" className="text-sm" size="sm">
+            <Link2 className="h-4 w-4" />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="mx-auto w-full max-w-sm">
+            <DrawerHeader>
+              <DrawerTitle>Share this document</DrawerTitle>
+            </DrawerHeader>
+            <div className="flex space-x-2">
+              <Input
+                className="w-full"
+                value={`${window.location.origin}/documents/${document.id}`}
+                readOnly
+                disabled
+              />
+            </div>
+            <DrawerFooter>
+              <Button onClick={() => hanldeCopyLink(document)}>
+                Copy this link
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       <Button
         variant="ghost"
@@ -240,6 +315,19 @@ const FileActionsDropdown: React.FC<Props> = ({ document }) => {
               </SheetTrigger>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+            {document.template ? (
+              <DropdownMenuItem onClick={() => changeToPrivate(document.id)}>
+                <Delete className="mr-2 h-4 w-4" />
+                <span>Change to private</span>
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => handlePublishDocument(document.id)}
+              >
+                <Delete className="mr-2 h-4 w-4" />
+                <span>Publish</span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={() => handleDeleteDocument(document.id)}>
               <Delete className="mr-2 h-4 w-4" />
               <span>Delete</span>
