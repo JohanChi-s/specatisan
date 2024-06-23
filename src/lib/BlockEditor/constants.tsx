@@ -3,21 +3,27 @@ import {
   LanguageOption,
 } from "@/components/BlockEditor/BlockEditor/types";
 
-// export const languages: LanguageOption[] = [
-//   { name: 'arabic', label: 'Arabic', value: 'ar' as LanguageOption['value'] },
-//   { name: 'chinese', label: 'Chinese', value: 'zh' as LanguageOption['value'] },
-//   { name: 'english', label: 'English', value: 'en' as LanguageOption['value'] },
-//   { name: 'french', label: 'French', value: 'fr' as LanguageOption['value'] },
-//   { name: 'german', label: 'German', value: 'de' as LanguageOption['value'] },
-//   { name: 'greek', label: 'Greek', value: 'gr' as LanguageOption['value'] },
-//   { name: 'italian', label: 'Italian', value: 'it' as LanguageOption['value'] },
-//   { name: 'japanese', label: 'Japanese', value: 'jp' as LanguageOption['value'] },
-//   { name: 'korean', label: 'Korean', value: 'ko' as LanguageOption['value'] },
-//   { name: 'russian', label: 'Russian', value: 'ru' as LanguageOption['value'] },
-//   { name: 'spanish', label: 'Spanish', value: 'es' as LanguageOption['value'] },
-//   { name: 'swedish', label: 'Swedish', value: 'sv' as LanguageOption['value'] },
-//   { name: 'ukrainian', label: 'Ukrainian', value: 'ua' as LanguageOption['value'] },
-// ]
+export const languages: LanguageOption[] = [
+  { name: "arabic", label: "Arabic" },
+  { name: "chinese", label: "Chinese" },
+  { name: "english", label: "English" },
+  { name: "french", label: "French" },
+  { name: "german", label: "German" },
+  { name: "greek", label: "Greek" },
+  { name: "italian", label: "Italian" },
+  {
+    name: "japanese",
+    label: "Japanese",
+  },
+  { name: "korean", label: "Korean" },
+  { name: "russian", label: "Russian" },
+  { name: "spanish", label: "Spanish" },
+  { name: "swedish", label: "Swedish" },
+  {
+    name: "ukrainian",
+    label: "Ukrainian",
+  },
+];
 
 export const tones: AiToneOption[] = [
   { name: "academic", label: "Academic", value: "academic" },

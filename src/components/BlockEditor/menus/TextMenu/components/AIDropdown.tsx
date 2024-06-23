@@ -2,7 +2,7 @@ import { DropdownButton } from "@/components/BlockEditor/ui/Dropdown";
 import { Icon } from "@/components/BlockEditor/ui/Icon";
 import { Surface } from "@/components/BlockEditor/ui/Surface";
 import { Toolbar } from "@/components/BlockEditor/ui/Toolbar";
-import { tones } from "@/lib/BlockEditor/constants";
+import { tones, languages } from "@/lib/BlockEditor/constants";
 import * as Dropdown from "@radix-ui/react-dropdown-menu";
 import { useCallback } from "react";
 
@@ -119,14 +119,14 @@ export const AIDropdown = ({
             </Dropdown.SubTrigger>
             <Dropdown.SubContent>
               <Surface className="flex flex-col min-w-[15rem] p-2 max-h-[20rem] overflow-auto">
-                {/* {languages.map((lang) => (
+                {languages.map((lang) => (
                   <Dropdown.Item
-                    onClick={handleTranslate(lang.value)}
-                    key={lang.value}
+                    onClick={handleTranslate(lang.name)}
+                    key={lang.name}
                   >
                     <DropdownButton>{lang.label}</DropdownButton>
                   </Dropdown.Item>
-                ))} */}
+                ))}
               </Surface>
             </Dropdown.SubContent>
           </Dropdown.Sub>

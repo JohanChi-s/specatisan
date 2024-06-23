@@ -21,7 +21,6 @@ export type EditorUser = {
 export type LanguageOption = {
   name: string;
   label: string;
-  // value: Language
 };
 
 export type AiTone =
