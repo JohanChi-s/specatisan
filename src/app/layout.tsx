@@ -1,17 +1,18 @@
 export const dynamic = "force-dynamic";
 
+import { AI } from "@/components/chat/lib/chat/actions";
+import { SidebarProvider } from "@/components/chat/lib/hooks/use-sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/lib/providers/next-theme-provider";
-import { SocketProvider } from "@/lib/providers/socket-provider";
 import AppStateProvider from "@/lib/providers/state-provider";
 import { SupabaseUserProvider } from "@/lib/providers/supabase-user-provider";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 import "./globals.css";
-import { SidebarProvider } from "@/components/chat/lib/hooks/use-sidebar";
-import { AI } from "@/components/chat/lib/chat/actions";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { SubscriptionModalProvider } from "@/lib/providers/subscription-modal-provider";
+import { getActiveProductsWithPrice } from "@/lib/supabase/queries";
 const inter = DM_Sans({
   subsets: ["latin"],
   weight: "400",
@@ -35,27 +36,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // console.log(db);
+  const { data: products, error } = await getActiveProductsWithPrice();
+  if (error) throw new Error();
   return (
     <html lang="en">
       <body className={twMerge("bg-background", inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <SupabaseUserProvider>
-            <AppStateProvider>
-              <SocketProvider>
+            <SubscriptionModalProvider products={products}>
+              <AppStateProvider>
                 <TooltipProvider delayDuration={0}>
                   <AI>
                     <SidebarProvider>{children}</SidebarProvider>
                   </AI>
                   <Toaster />
                 </TooltipProvider>
-              </SocketProvider>
-            </AppStateProvider>
+              </AppStateProvider>
+            </SubscriptionModalProvider>
           </SupabaseUserProvider>
         </ThemeProvider>
       </body>
