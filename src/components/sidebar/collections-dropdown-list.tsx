@@ -22,6 +22,8 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
   // useSupabaseRealtime();
   const { state, dispatch } = useAppState();
   const { user } = useSupabaseUser();
+  const { subscription } = useSupabaseUser();
+
   const { open, setOpen } = useSubscriptionModal();
   const { toast } = useToast();
   const [collections, setCollections] = useState<Collection[]>(
@@ -32,9 +34,6 @@ const CollectionsDropdownList: React.FC<CollectionsDropdownListProps> = ({
     const collections = state.collections.filter((c) => c.inTrash === null);
     setCollections(collections);
   }, [state.collections]);
-
-  const { subscription } = useSupabaseUser();
-
   //add collection
   const addCollectionHandler = async () => {
     if (collections.length >= 3 && !subscription) {

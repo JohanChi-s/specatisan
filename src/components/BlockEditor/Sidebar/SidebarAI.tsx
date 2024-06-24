@@ -2,6 +2,8 @@
 import { Chat } from "@/components/chat/components/chat";
 import { AI } from "@/components/chat/lib/chat/actions";
 import { nanoid } from "@/components/chat/lib/utils";
+import { useSubscriptionModal } from "@/lib/providers/subscription-modal-provider";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { cn } from "@/lib/utils";
 import { memo, use, useCallback, useEffect } from "react";
 
@@ -19,6 +21,7 @@ export const SidebarAI = memo(
         onClose();
       }
     }, [onClose]);
+    const { open, setOpen } = useSubscriptionModal();
 
     const id = nanoid();
     const missingKeys = getMissingKeys();
@@ -28,6 +31,16 @@ export const SidebarAI = memo(
       !isOpen && "border-r-transparent hidden",
       isOpen && "w-96 border-l border-l-neutral-200 dark:border-l-neutral-800"
     );
+
+    const { subscription } = useSupabaseUser();
+
+    useEffect(() => {
+      if (!subscription && isOpen) {
+        setOpen(true);
+        onClose();
+        return;
+      }
+    });
 
     return (
       <div className={windowClassName}>

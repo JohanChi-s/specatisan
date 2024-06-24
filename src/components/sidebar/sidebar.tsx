@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isOpen, toggle }) => {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) {
-          router.push("/login"); // Redirect to login if user is not authenticated
+          router.push("/auth/login"); // Redirect to login if user is not authenticated
           return;
         }
 
@@ -225,7 +225,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isOpen, toggle }) => {
               {!isOpen && <span>Trash</span>}
             </Link>
           </li>
-          <li className="flex items-center">
+          {/* <li className="flex items-center">
             <Link
               href="#"
               className={cn(
@@ -236,7 +236,7 @@ const Sidebar: React.FC<SidebarProps> = ({ params, isOpen, toggle }) => {
               <Download className="mr-2 h-4 w-4" />
               <span>Import</span>
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
 
